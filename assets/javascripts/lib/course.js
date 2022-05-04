@@ -1,0 +1,1 @@
+$(function(){$("video").each(function(){var i=$(this).children("source[type='video/mp4']").attr("src");$(this).after('<a href="'+i+'">Download (right-click) this video</a>')})});
