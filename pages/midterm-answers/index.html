@@ -1,0 +1,944 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Answers to Fall 2014 Midterm | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="SQL and more">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="page">
+    <section class="meta">
+        <div class="container">
+            <h1 class="title">
+                Answers to Fall 2014 Midterm
+            </h1>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container"><p>The midterm questions are repeated below, but it may be helpful to review its context within the lesson on <a href="/2014-10-23">October 23, 2014</a></p>
+
+<h2 id="question-1">Question 1</h2>
+
+<blockquote>
+  <p>Query the database and create a list of every county (with state) that has <strong>acquired at least one mine-resistant armored vehicle</strong>. Then <strong>map that list</strong> (Fusion Tables will probably be the easiest method). The map but not exactly the same, as the list behind this <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html?smid=pl-share">NYT interactive map of armored vehicles</a>.</p>
+</blockquote>
+
+<p>The first step is to figure out: what exactly is a "mine-resistant armored vehicle", in the parlance of the 1033 database? Assuming that they are among the most expensive things that the Pentagon can distribute, and that the word "mine" appears in its name, we scout the database like so:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span>  
+<span style="color:#080;font-weight:bold">FROM</span> leso
+<span style="color:#080;font-weight:bold">WHERE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%mine%</span><span style="color:#710">'</span></span>
+<span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span> <span style="color:#088;font-weight:bold">DESC</span>
+LIMIT <span style="color:#00D">10</span>
+</pre></div>
+</div>
+</div>
+
+<p>The result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Item Name</th>
+      <th>Acquisition Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>1309299.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>1084800.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>865000.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>865000.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>865000.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>733000.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>733000.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>733000.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>733000.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>733000.00</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>It looks like <code>MINE RESISTANT VEHICLE</code> is our term. One caveat about the query though: this is only showing the ten most <em>expensive</em> MRVs. What if – <em>Heavens forbid!</em> – there are MRV records in which the <code>Item Name</code> spelling is not quite correct?</p>
+
+<p>Unlikely chance, I know, but it's not too hard to adjust our query by adding a <code>GROUP</code> clause so that we cluster same-named items together and get the top 10 <strong>distinct</strong> <code>Item Name</code> values. I add a <code>COUNT(*)</code> column just as a reference to see how many records fall under each distinct <code>Item Name</code>: </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span>, <span style="color:#369;font-weight:bold">SUM</span>(quantity)
+    <span style="color:#080;font-weight:bold">FROM</span> leso
+    <span style="color:#080;font-weight:bold">WHERE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%mine%</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>
+    <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span> <span style="color:#088;font-weight:bold">DESC</span>
+    LIMIT <span style="color:#00D">10</span>    
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Item Name</th>
+      <th>Acquisition Cost</th>
+      <th>SUM(quantity)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MINE RESISTANT VEHI</td>
+      <td>610764.00</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>610764.00</td>
+      <td>343</td>
+    </tr>
+    <tr>
+      <td>MINEFIELD MARKING SET</td>
+      <td>3665.40</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>CONTROL,MINE DETECTOR</td>
+      <td>3020.52</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>DETECTOR,MINE</td>
+      <td>2189.89</td>
+      <td>115</td>
+    </tr>
+    <tr>
+      <td>DETECTING SET,MINE</td>
+      <td>1196.00</td>
+      <td>236</td>
+    </tr>
+    <tr>
+      <td>DEMINERALIZER,WATER,ION EXCHANGE</td>
+      <td>879.64</td>
+      <td>41</td>
+    </tr>
+    <tr>
+      <td>ANTI-PERSONNEL MINE FOOT PROTECTION</td>
+      <td>663.57</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>DEMINERALIZER,WATER</td>
+      <td>566.50</td>
+      <td>71</td>
+    </tr>
+    <tr>
+      <td>LAMP,ELECTROLUMINESCENT PANEL</td>
+      <td>447.87</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In <code>4</code> instances of MRV distribution, whoever did the data entry just gave up at <code>MINE RESISTANT VEHI</code> – or, more likely – one of the computer systems arbitrarily truncated the length of the name. It happens.</p>
+
+<p>In order to map the counties with MRVs, we now add a <code>JOIN</code> clause to the <code>county_boundaries</code> table. To satisfy my curiosity, I keep the <code>SUM(quantity)</code> column and sort by it, because I want to see which counties if any have ordered more than one MRV. This necessitates adding to the <code>GROUP BY</code> clause too:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span>  leso.state, leso.county, county_boundaries.geometry, <span style="color:#369;font-weight:bold">SUM</span>(quantity) <span style="color:#080;font-weight:bold">AS</span> num_of_mrvs
+    <span style="color:#080;font-weight:bold">FROM</span> leso
+    <span style="color:#080;font-weight:bold">JOIN</span> county_boundaries 
+      <span style="color:#080;font-weight:bold">ON</span> leso.state = county_boundaries.<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">State Abbr.</span><span style="color:#710">`</span></span>
+      <span style="color:#080;font-weight:bold">AND</span> leso.county = county_boundaries.<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">County Name</span><span style="color:#710">`</span></span> 
+    <span style="color:#080;font-weight:bold">WHERE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">MINE RESISTANT VEHI%</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> leso.state, leso.county, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>
+    <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> num_of_mrvs <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>The resulting table will look something like this:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>state</th>
+      <th>county</th>
+      <th>geometry</th>
+      <th>num_of_mrvs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FL</td>
+      <td>MIAMI-DADE</td>
+      <td>&lt;Polygon&gt;&lt;outerBoundaryIs&gt;…</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>FL</td>
+      <td>PINELLAS</td>
+      <td>&lt;Polygon&gt;&lt;outerBoundaryIs&gt;…</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>AZ</td>
+      <td>MARICOPA</td>
+      <td>&lt;Polygon&gt;&lt;outerBoundaryIs&gt;…</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>CA</td>
+      <td>LOS ANGELES</td>
+      <td>&lt;Polygon&gt;&lt;outerBoundaryIs&gt;…</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>IL</td>
+      <td>COOK</td>
+      <td>&lt;Polygon&gt;&lt;outerBoundaryIs&gt;…</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Then it's simply a <a href="https://www.google.com/fusiontables/data?docid=1i-5X4Lkf2m-9J42VnQ5LmEGuZ2rEGwJDIAoBqaTk#map:id=3">matter of exporting into Google Fusion Tables</a>:</p>
+
+<p><img alt="img" src="/files/pages/midterm/fusion-map-of-mrvs.png" /></p>
+
+<h2 id="question-2">Question 2</h2>
+
+<blockquote>
+  <p>Query the database and find the most expensive <em>single</em> item that can be acquired through the 1033 program. Then generate a list of all counties that has so far acquired at least one of these things (you'll likely do two queries to answer this question).</p>
+</blockquote>
+
+<p>This probably should've been <strong>Question 1</strong>, as it would get you in the groove of doing an initial <em>exploratory</em> query (and an aggregation) as a means to get to the actual answer. Question 1 adds the bit about joining to another table.</p>
+
+<p>The exploratory query simply asks the database: Sort the records by <code>Acquisition Cost</code> in descending order and display the first result. It's conceptually no different than opening the dataset in Excel and sorting by a column. We <code>LIMIT</code> to 1 because we just care about the most <em>expensive single</em> item:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> leso 
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span> <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">1</span>;
+</pre></div>
+</div>
+</div>
+
+<p>The result: a helicopter</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>State</th>
+      <th>County</th>
+      <th>psc_code</th>
+      <th>NSN</th>
+      <th>Item Name</th>
+      <th>Quantity</th>
+      <th>UI</th>
+      <th>Acquisition Cost</th>
+      <th>Ship Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FL</td>
+      <td>BREVARD</td>
+      <td>1520</td>
+      <td>1520-DS-HEL-ICOP</td>
+      <td>AIRCRAFT, ROTARY WING</td>
+      <td>1</td>
+      <td>Each</td>
+      <td>18000000.00</td>
+      <td>2011-03-09</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Interestingly, if you were to select all records with an <code>Item Name</code> of <code>AIRCRAFT, ROTARY WING</code> or an <code>NSN</code> of <code>1520-DS-HEL-ICOP</code>, you would get a few records in which the <code>Acquisition Cost</code> is <code>200000.00</code> and one that is <code>6500000.00</code>. Did the price of helicopters decline from $18 million to $200,000? Or is this another data error? We don't have enough information at hand to know. My question is worded vaguely enough that a <code>WHERE</code> clause for <code>AIRCRAFT, ROTARY WING</code> would be a satisfactory answer. But the "real" answer should probably involve just the <code>Acquisition Cost</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> state, county, <span style="color:#369;font-weight:bold">SUM</span>(quantity) <span style="color:#080;font-weight:bold">as</span> num_items 
+  <span style="color:#080;font-weight:bold">FROM</span> leso 
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span> = <span style="color:#00D">18000000</span>
+</pre></div>
+</div>
+</div>
+
+<p>It turns out only one county has ordered such an expensive item:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>state</th>
+      <th>county</th>
+      <th>num_items</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FL</td>
+      <td>BREVARD</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Note: As it turns out, it's not as if Brevard County is getting a fleet of nice helicopters. According to a <a href="http://www.floridatoday.com/longform/news/local/2014/08/23/military-devices-used-in-warzones-now-in-brevard/14499225/">Florida Today investigation</a>, the helicopters come in all shapes and sizes and condition:</p>
+
+<blockquote>
+  <p>The Brevard County Sheriff's Aviation Unit, a five-chopper fleet that rescues stranded individuals and searches for suspects, is made up entirely of military surplus. One of the helicopters was shot down twice in Vietnam, Chief Pilot John Coppola said.</p>
+</blockquote>
+
+<blockquote>
+  <p>The most recent addition is a UH-1H Huey chopper that arrived in May 2013 and will be used to help in firefighting and rescue operations. Coppola said it cost $2,000, but it needed some work. Replacing the machine's rotor blades and rotor shaft, as well as other maintenance, cost $12,000, Coppola said. To buy retail, he estimated it would have cost closer to $400,000.</p>
+</blockquote>
+
+<h2 id="question-3">Question 3</h2>
+
+<blockquote>
+  <p>Query the database to get the <strong>top 10 counties</strong> ordered by <strong>the total number of guns acquired</strong> through the 1033 program. Your answer should look <a href="http://www.npr.org/2014/09/02/342494225/mraps-and-bayonets-what-we-know-about-the-pentagons-1033-program">very similar to what NPR found under</a> the <strong>Total Guns Acquired</strong> graph (e.g. 3,452 guns for Los Angeles)</p>
+</blockquote>
+
+<p>This question again requires at least two queries, the first of which has to find out, "What exactly counts as a 'gun'?"</p>
+
+<p>I included the <code>psc</code> table as a reference, but it was not necessary to actually <em>use</em> it in a query. I can just glance at it as if it were just a spreadsheet:</p>
+
+<p><img alt="img" src="/files/pages/midterm/psc-codes-for-guns.png" /></p>
+
+<p>I didn't specify <em>small arms</em>-type of guns, i.e. rifles and handguns, but as it turns out, the Pentagon doesn't distribute artillery, such as 120mm-mortars, so the <code>psc_code</code> of <code>1005</code> – <code>GUNS, THROUGH 30MM</code> – should have us covered. I add a couple of <code>SUM</code> columns just for easy sorting:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span>,  
+  <span style="color:#369;font-weight:bold">SUM</span>(quantity) <span style="color:#080;font-weight:bold">AS</span> totes_items,
+  <span style="color:#369;font-weight:bold">SUM</span>(quantity * <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span>) <span style="color:#080;font-weight:bold">AS</span> totes_cost 
+  <span style="color:#080;font-weight:bold">FROM</span> leso
+  <span style="color:#080;font-weight:bold">WHERE</span> psc_code = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">1005</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> totes_cost <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>Result: </p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Item Name</th>
+      <th>Acquisition Cost</th>
+      <th>totes_items</th>
+      <th>totes_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RIFLE,5.56 MILLIMETER</td>
+      <td>499.00</td>
+      <td>61530</td>
+      <td>23666673.00</td>
+    </tr>
+    <tr>
+      <td>RIFLE,7.62 MILLIMETER</td>
+      <td>138.00</td>
+      <td>17724</td>
+      <td>2558772.00</td>
+    </tr>
+    <tr>
+      <td>MAGAZINE,CARTRIDGE</td>
+      <td>9.51</td>
+      <td>146856</td>
+      <td>1481972.28</td>
+    </tr>
+    <tr>
+      <td>PISTOL,CALIBER .45,AUTOMATIC</td>
+      <td>58.71</td>
+      <td>8640</td>
+      <td>506197.61</td>
+    </tr>
+    <tr>
+      <td>SUPPRESSOR,SMALL ARMS WEAPON</td>
+      <td>650.00</td>
+      <td>556</td>
+      <td>465808.53</td>
+    </tr>
+    <tr>
+      <td>CLEANING KIT,GUN</td>
+      <td>53.13</td>
+      <td>5979</td>
+      <td>441981.49</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>103.50</td>
+      <td>3778</td>
+      <td>438911.36</td>
+    </tr>
+    <tr>
+      <td>ADAPTER RAIL,WEAPON MOUNTED</td>
+      <td>12.03</td>
+      <td>2227</td>
+      <td>437347.91</td>
+    </tr>
+    <tr>
+      <td>CONVERSION KIT,5.56 MILLIMETER RIFLE</td>
+      <td>60.00</td>
+      <td>1271</td>
+      <td>365674.00</td>
+    </tr>
+    <tr>
+      <td>SIGHT,REAR</td>
+      <td>46.52</td>
+      <td>5424</td>
+      <td>320683.08</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>So again, we run into some messy naming conventions. Doing a <code>WHERE...LIKE</code> for <code>%RIFLE%</code> will catch things like <code>CONVERSION KIT,5.56 MILLIMETER RIFLE</code> or <code>SCOPE,SNIPER RIFLE</code> or <code>RIFLE,DUMMY</code>. For complete thoroughness, you'd want to query the database multiple times and keep track of all the valid terms for firearms. Seem like a pain? Welcome to the world of data-cleaning!</p>
+
+<p>If you wanted to fulfill the requirements of the question and get something close to <a href="http://www.npr.org/2014/09/02/342494225/mraps-and-bayonets-what-we-know-about-the-pentagons-1033-program">NPR's results</a>, this would've been <em>mostly</em> accurate:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> county, state,
+  <span style="color:#369;font-weight:bold">SUM</span>(quantity) <span style="color:#080;font-weight:bold">AS</span> totes_guns
+  <span style="color:#080;font-weight:bold">FROM</span> leso
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">RIFLE,%</span><span style="color:#710">'</span></span> 
+    <span style="color:#080;font-weight:bold">OR</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">PISTOL,%</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">OR</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">SHOTGUN,%</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> county, state
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> totes_guns <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">10</span>
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>county</th>
+      <th>state</th>
+      <th>totes_guns</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LOS ANGELES</td>
+      <td>CA</td>
+      <td>3452</td>
+    </tr>
+    <tr>
+      <td>LEON</td>
+      <td>FL</td>
+      <td>1934</td>
+    </tr>
+    <tr>
+      <td>FRANKLIN</td>
+      <td>OH</td>
+      <td>1800</td>
+    </tr>
+    <tr>
+      <td>FRANKLIN</td>
+      <td>KY</td>
+      <td>1401</td>
+    </tr>
+    <tr>
+      <td>COOK</td>
+      <td>IL</td>
+      <td>1256</td>
+    </tr>
+    <tr>
+      <td>RAMSEY</td>
+      <td>MN</td>
+      <td>1032</td>
+    </tr>
+    <tr>
+      <td>SACRAMENTO</td>
+      <td>CA</td>
+      <td>802</td>
+    </tr>
+    <tr>
+      <td>PRINCE GEORGES</td>
+      <td>MD</td>
+      <td>777</td>
+    </tr>
+    <tr>
+      <td>HOWARD</td>
+      <td>MD</td>
+      <td>739</td>
+    </tr>
+    <tr>
+      <td>SANGAMON</td>
+      <td>IL</td>
+      <td>670</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="question-4">Question 4</h2>
+<blockquote>
+  <p>Query the database to get the <strong>top 10 counties</strong> ordered by <strong>number of guns acquired per 1,000 people</strong> using the Census's <strong>2013 population estimate</strong>. Again, your answers should look similar (but not exact) <a href="http://www.npr.org/2014/09/02/342494225/mraps-and-bayonets-what-we-know-about-the-pentagons-1033-program">to what NPR found</a>, e.g. 28 guns/1,000 people in Franklin, KY.</p>
+</blockquote>
+
+<p>We build upon the last query, but we join upon the <code>census_quickfacts</code> table, which has a column named <code>PST045213</code> that indicates <a href="http://quickfacts.census.gov/qfd/download/DataDict.txt">"Population, 2013 estimate"</a>. But there's a problem: <code>census_quickfacts</code> only has a FIPS code, and <code>leso</code> has state and county names.</p>
+
+<p>So we need to join a third table – referred to as a "lookup table", in the parlance of our times – <code>county_ansi</code>, which matches <code>fips</code> to county and state names:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>county</th>
+      <th>state</th>
+      <th>totes_guns_per_capita</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FRANKLIN</td>
+      <td>KY</td>
+      <td>28.2187</td>
+    </tr>
+    <tr>
+      <td>HUGHES</td>
+      <td>SD</td>
+      <td>17.7633</td>
+    </tr>
+    <tr>
+      <td>PETROLEUM</td>
+      <td>MT</td>
+      <td>15.8103</td>
+    </tr>
+    <tr>
+      <td>NIOBRARA</td>
+      <td>WY</td>
+      <td>14.1677</td>
+    </tr>
+    <tr>
+      <td>HINSDALE</td>
+      <td>CO</td>
+      <td>11.0701</td>
+    </tr>
+    <tr>
+      <td>CHAUTAUQUA</td>
+      <td>KS</td>
+      <td>9.0090</td>
+    </tr>
+    <tr>
+      <td>CHEYENNE</td>
+      <td>KS</td>
+      <td>8.1663</td>
+    </tr>
+    <tr>
+      <td>WHEELER</td>
+      <td>OR</td>
+      <td>7.9652</td>
+    </tr>
+    <tr>
+      <td>WAHKIAKUM</td>
+      <td>WA</td>
+      <td>7.4221</td>
+    </tr>
+    <tr>
+      <td>JACKSON</td>
+      <td>CO</td>
+      <td>7.3260</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="question-5">Question 5</h2>
+<blockquote>
+  <p>Create a time-series/<a href="http://en.wikipedia.org/wiki/Histogram">histogram</a> showing <em>something you find interesting</em> in the 1033 Program data. Examples: Number of gas masks versus night-goggles distributed by year. Monetary value of pants and trousers versus rifles, by year.</p>
+</blockquote>
+
+<p>(This was an open-ended question, I'll post some of the answers that I liked)</p>
+
+<h2 id="question-6">Question 6</h2>
+<blockquote>
+  <p>Find <strong>all of the counties</strong> that have not acquired a single thing in the <code>leso</code> table, <strong>and then map those counties</strong>. If you order your list by population, the top two counties should be Kings County and Bronx County in New York (for reasons that should make sense if you have lived in New York).</p>
+</blockquote>
+
+<p>This is probably the hardest technical question, as it <a href="/tutorials/database-joins/sql-left-joins">requires an understanding of left joins</a> and their purpose when it comes to finding out facts.</p>
+
+<p>But the query itself isn't any more complicated than the one in question 5:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> county_ansi.county, county_ansi.state, PST045213 
+  <span style="color:#080;font-weight:bold">FROM</span> county_ansi
+  <span style="color:#080;font-weight:bold">LEFT</span> <span style="color:#080;font-weight:bold">JOIN</span> 
+    leso 
+       <span style="color:#080;font-weight:bold">ON</span> county_ansi.county = leso.county
+         <span style="color:#080;font-weight:bold">AND</span> county_ansi.state = leso.state
+   <span style="color:#080;font-weight:bold">JOIN</span>
+     census_quickfacts
+       <span style="color:#080;font-weight:bold">ON</span>
+         county_ansi.fips =   census_quickfacts.fips
+   <span style="color:#080;font-weight:bold">WHERE</span> leso.state <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>   
+   <span style="color:#080;font-weight:bold">group</span> <span style="color:#080;font-weight:bold">by</span> county_ansi.state, county_ansi.county
+      <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> census_quickfacts.PST045213 <span style="color:#088;font-weight:bold">DESC</span>, county_ansi.state, county_ansi.county
+</pre></div>
+</div>
+</div>
+
+<p>The results table should include <strong>614 rows</strong>:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>county</th>
+      <th>state</th>
+      <th>PST045213</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KINGS</td>
+      <td>NY</td>
+      <td>2592149</td>
+    </tr>
+    <tr>
+      <td>BRONX</td>
+      <td>NY</td>
+      <td>1418733</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>NY</td>
+      <td>472621</td>
+    </tr>
+    <tr>
+      <td>SOMERSET</td>
+      <td>NJ</td>
+      <td>330585</td>
+    </tr>
+    <tr>
+      <td>NORTHAMPTON</td>
+      <td>PA</td>
+      <td>299791</td>
+    </tr>
+    <tr>
+      <td>ERIE</td>
+      <td>PA</td>
+      <td>280294</td>
+    </tr>
+    <tr>
+      <td>JACKSON</td>
+      <td>OR</td>
+      <td>208545</td>
+    </tr>
+    <tr>
+      <td>WASHINGTON</td>
+      <td>PA</td>
+      <td>208206</td>
+    </tr>
+    <tr>
+      <td>HAWAII</td>
+      <td>HI</td>
+      <td>190821</td>
+    </tr>
+    <tr>
+      <td>BUTLER</td>
+      <td>PA</td>
+      <td>185476</td>
+    </tr>
+    <tr>
+      <td>MAUI</td>
+      <td>HI</td>
+      <td>160202</td>
+    </tr>
+    <tr>
+      <td>CENTRE</td>
+      <td>PA</td>
+      <td>155403</td>
+    </tr>
+    <tr>
+      <td>SCHENECTADY</td>
+      <td>NY</td>
+      <td>155333</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="question-7">Question 7</h2>
+<blockquote>
+  <p>Find the county that has acquired the most from the 1033 Program in terms of <strong>total acquisition cost</strong> and generate a list of the items that county has acquired.</p>
+</blockquote>
+
+<p>This shouldn't be the 7th question in terms of difficulty. Mostly it tests if you've noticed that there's a <code>Quantity</code> column to be mindful of:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> state, county, 
+    <span style="color:#369;font-weight:bold">SUM</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span> * Quantity) <span style="color:#080;font-weight:bold">as</span> totes_cost
+<span style="color:#080;font-weight:bold">FROM</span> leso 
+<span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> state, county
+<span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> totes_cost <span style="color:#088;font-weight:bold">DESC</span>
+LIMIT <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>state</th>
+      <th>county</th>
+      <th>totes_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FL</td>
+      <td>BREVARD</td>
+      <td>210916922.73</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To get the list of items (with distinct names):</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>,
+  <span style="color:#369;font-weight:bold">SUM</span>(Quantity), <span style="color:#369;font-weight:bold">SUM</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Acquisition Cost</span><span style="color:#710">`</span></span> * Quantity) <span style="color:#080;font-weight:bold">as</span> totes_cost
+<span style="color:#080;font-weight:bold">FROM</span> leso 
+<span style="color:#080;font-weight:bold">WHERE</span> state = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">FL</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">AND</span> county = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">BREVARD</span><span style="color:#710">'</span></span>
+<span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">Item Name</span><span style="color:#710">`</span></span>  
+<span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> totes_cost <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Item Name</th>
+      <th>SUM(Quantity)</th>
+      <th>totes_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AIRCRAFT, ROTARY WING</td>
+      <td>8</td>
+      <td>144000000.00</td>
+    </tr>
+    <tr>
+      <td>HELICOPTER,UTILITY</td>
+      <td>58</td>
+      <td>53491640.00</td>
+    </tr>
+    <tr>
+      <td>AIRCRAFT, FIXED WING</td>
+      <td>8</td>
+      <td>7837067.00</td>
+    </tr>
+    <tr>
+      <td>GAS TURBINES AND JET ENGINES, AIRCRAFT</td>
+      <td>12</td>
+      <td>1800000.00</td>
+    </tr>
+    <tr>
+      <td>CARRIER,PERSONNEL,FULL TRACKED</td>
+      <td>3</td>
+      <td>734532.00</td>
+    </tr>
+    <tr>
+      <td>MINE RESISTANT VEHICLE</td>
+      <td>1</td>
+      <td>658000.00</td>
+    </tr>
+    <tr>
+      <td>FORWARD LOOKING INFRARED IMAGING SYSTEM</td>
+      <td>1</td>
+      <td>544482.44</td>
+    </tr>
+    <tr>
+      <td>HELICOPTER,OBSERVATION</td>
+      <td>4</td>
+      <td>467687.00</td>
+    </tr>
+    <tr>
+      <td>RIFLE,5.56 MILLIMETER</td>
+      <td>370</td>
+      <td>183114.00</td>
+    </tr>
+    <tr>
+      <td>CASE AND VANE ASSEMBLY,FAN,AIRCRAFT GAS TURBINE ENGINE</td>
+      <td>6</td>
+      <td>179772.00</td>
+    </tr>
+    <tr>
+      <td>TENT</td>
+      <td>4</td>
+      <td>113084.26</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="question-8">Question 8</h2>
+<blockquote>
+  <p>Write a <strong>300-word story memo</strong> on an <strong>interesting query (or queries)</strong> of your own. The memo should include examples/results of a data query and why you think said results are <strong>newsworthy</strong> or worth further investigation. Your memo, ideally, would involve some additional research to see if anyone else has found anything related to your inquiry. A chart/graphic is optional.
+Example story ideas:</p>
+
+  <ul>
+    <li>Finding the smallest counties (by population) that have acquired the most heavy equipment despite no obvious need for such equipment. Is that equipment in use, and how? What is the maintenance and training cost of the equipment?
+      <ul>
+        <li>Which counties have acquired a high amount of surplus equipment in earlier years (2006 to 2007) but very little, or none at all, in recent years?</li>
+        <li>What kinds of equipment have only recently been distributed through the 1033 Program, but are currently in seemingly high demand?</li>
+        <li>What are the surplus items that have no acquisition cost? And is the lack of cost consistent across <em>all</em> records of those items (and similar items)? Is the lack of cost because of sloppy data entry? Or because of the type of item?</li>
+      </ul>
+    </li>
+  </ul>
+</blockquote>
+
+<p>(This was an open-ended question, I'll post some of the answers that I liked)</p>
+
+        </div>
+    </section>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

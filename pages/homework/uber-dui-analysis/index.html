@@ -1,0 +1,204 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>What was Uber's effect on DUIs in San Francisco? | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Civic accountability journalism taught at the Stanford University Graduate Journalism Program">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="page">
+    <section class="meta">
+        <div class="container">
+            <h1 class="title">
+                What was Uber's effect on DUIs in San Francisco?
+            </h1>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container"><h2 id="background">Background</h2>
+
+<p>This is one possible solution to the homework assigned for <a href="/2014-09-25">Sept. 25, 2014's lecture</a>: "Investigate Uber's purported impact on SF's DUI reports." The homework is an exercise in basic usage of Pivot Tables, and in strategies of examining strange outliers in data, as demonstrated by the <a href="http://www.baltimoresun.com/news/maryland/crime/blog/bal-city-rape-statistics-archive,0,7495701.special">Baltimore Sun's rape statistics coverage in 2010</a>.</p>
+
+<p>Students were given a dataset that included all SFPD incident reports, from 2003 to 2013, that were categorized as either <code>DRIVING UNDER THE INFLUENCE</code>, <code>DRUNKENNESS</code>, or <code>KIDNAPPING</code>.</p>
+
+<p>The purpose of this exercise was to look at the SFPD data to see if it was reliable enough to be a second source of reference for Uber's analysis.</p>
+
+<p><strong>Note:</strong> The entire SFPD dataset is more than 1.5 million rows. However, since the class is starting to explore pivot tables using an online spreadsheet, I wanted to keep the number of rows small, hence the filtering of the data to 3 categories. On second thought, though, the kind of filtering I did wasn't ideal and limits our conclusions. </p>
+
+<p>So we'll save the full analysis of Uber's claims for homework after we learn basic SQL.</p>
+
+<h3 id="ubers-claim">Uber's claim</h3>
+
+<p>On May 5, 2014, Uber's <a href="http://blog.uber.com/duiratesdecline">data research found that Uber's entrance in Seattle and San Francisco <em>caused</em> a drop in drunk-driving incidents</a>, based on <a href="https://data.seattle.gov/Public-Safety/Seattle-Police-Department-911-Incident-Response/3k2p-39jp">Seattle's 911 Incident Responses database</a> and San Francisco's <a href="https://data.sfgov.org/Public-Safety/SFPD-Reported-Incidents-2003-to-Present/dyj4-n68b">reported incidents</a>.</p>
+
+<p>Note: <a href="https://data.seattle.gov/Public-Safety/Seattle-Police-Department-Police-Report-Incident/7ais-f98f">Seattle has its own reported incidents database</a>.</p>
+
+<blockquote>
+  <p>We estimate that the entrance of Uber in Seattle caused the number of arrests for DUI to decrease by more than 10%. These results are robust and statistically significant. The diagram below illustrates the “Uber effect” relative to the baseline of DUIs. We also included the measured impact of legalizing marijuana (see the Details section below for more on this).</p>
+</blockquote>
+
+<blockquote>
+  <p>…In order to begin studying this important but difficult question, we have assembled drunk driving data from the arrest data made available by the police departments of both San Francisco and Seattle.</p>
+</blockquote>
+
+<h3 id="the-san-francisco-data">The San Francisco data</h3>
+
+<p>Uber's used San Francisco's data to provide the following comparison:</p>
+
+<blockquote>
+  <p>By this approach, Uber is responsible for approximately -.7 DUIs per day, or more than a 10% reduction overall. However, this approach is inherently weakened by the fact that many things could have caused DUI to go down around the time when Uber entered. In order to test the robustness of this estimate, we use San Francisco as a control city in a “differences-in-differences” framework. The result is consistent:</p>
+</blockquote>
+
+<p>On July 10, 2014, <a href="http://www.washingtonpost.com/blogs/wonkblog/wp/2014/07/10/are-uber-and-lyft-responsible-for-reducing-duis/">the Washington Post's Wonkblog revisited the issue</a> by looking specifically at the DUI arrests by month in San Francisco. Using the raw SF incidents data, Wonkblog created this chart of DUI incidents, juxtaposed by the entry of ride-sharing services:</p>
+
+<p>TKIMG</p>
+
+<p>Wonkblog noted these caveats:</p>
+
+<blockquote>
+  <p>Again, caveats are in order. We've simply plotted arrests on a timeline here; we haven't adjusted for changes in the city's population, or bar scene, or the economy. Any number of other things may have changed in the city over the last few years affecting DUI arrests. It's possible police have changed how they conduct DUI stops and arrests, or that public pressure on them to crack down on DUIs has ebbed with time. Other changes in public transit service may have impacted alternative routes that bar-hoppers take home.</p>
+</blockquote>
+
+<blockquote>
+  <p>It's also striking that San Francisco and Philadelphia show a steep and parallel rise in DUIs long before these services ever came to town; on both charts, it looks as if DUI numbers may be returning to an older normal as much as they've been falling. Perhaps these services have arrived on the market just in time to ride the benefits of an improving economy? (More theories on this welcome below as well).</p>
+</blockquote>
+
+<p>Uber <a href="http://blog.uber.com/UberSEAisTHREE">launched on Aug. 12, 2011 in Seattle</a>.</p>
+
+<p>Seattle data:</p>
+
+<blockquote>
+  <p>select year(formatted_date) as yr, month(formatted_date) as mth, <code>Event Clearance Description</code> as description, count(1) as total from <code>911_incidents</code>
+where <code>Event Clearance Description</code> = "DRIVING WHILE UNDER INFLUENCE (DUI)"
+group by yr, mth
+order by yr, mth</p>
+</blockquote>
+
+<h3 id="why-the-2009-spike">Why the 2009 spike?</h3>
+
+<h3 id="did-uber-stop-kidnappings">Did Uber stop kidnappings?</h3>
+
+<h3 id="insufficient-data">Insufficient data</h3>
+
+
+        </div>
+    </section>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
