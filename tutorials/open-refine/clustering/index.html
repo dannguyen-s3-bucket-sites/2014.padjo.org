@@ -1,0 +1,379 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Clustering text facets in OpenRefine | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="OpenRefine gives point-and-click access to a variety of powerful text clustering algorithms.">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#open-refine">Open-refine</a></span> 
+                </h4>
+                <h1 class="title">
+                    Clustering text facets in OpenRefine
+                </h1>
+                <div class="description">
+                    <p>
+                        OpenRefine gives point-and-click access to a variety of powerful text clustering algorithms.
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p><strong>Note:</strong> The dataset for this tutorial will be the Federal Election Commission's list of Iowa individual contributors to the 2008 U.S. Presidential Race, <a href="ftp://ftp.fec.gov/FEC/Presidential_Map/2008/P00000001/P00000001-IA.zip">which you can find as a zipped file here</a>.</p>
+
+<p>Check out the <a href="/tutorials/open-refine/introduction-to-open-refine">previous tutorial for an introduction of how to get around OpenRefine</a>. As we saw with a little exploration, the data on Iowans who contributed to the 2008 presidential elections is riddled with inconsistent labels and typos.</p>
+
+<p>For instance, look at the many ways that <a href="http://www.hy-vee.com/">Hy-Vee, a popular grocery chain</a>, is spelled:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/hy-vee-spellings.png" /></p>
+
+<p>It's simple enough to clean this up on a company-by-company basis. But we really don't know how many companies there are in this dataset, nevermind the many ways the companies might be misspelled.</p>
+
+<p>This is where Refine truly shines as a tool.</p>
+
+<h3 id="duplicating-a-column">Duplicating a column</h3>
+
+<p>The very first step you should do in every cleaning operation is to <strong>duplicate the data</strong> that you intend on cleaning. So let's say we want to clean up the <code>contbr_employer</code> column with all of its Hy-Vee variations. We want to keep the <em>original data</em> so that we have a reference to what it was compared to the cleaned up version.</p>
+
+<p>In Refine, we can duplicate a column by clicking the dropdown and selecting <strong>Edit column &gt; Add column based on this column…</strong></p>
+
+<p>This will bring up a pop-up window. We can do lots of fun things here with a little programming knowledge, but for now, let's just type in a <strong>New column name</strong>, such as <code>cleaned_up_contbr_employer</code>, and hit <strong>OK</strong>:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/cleaned_up_contbr_employer.png" /></p>
+
+<p>Refine will let us know how many rows for which it duplicated the values (except for the blanks, in which case, it didn't have to do anything) and we will see a new column next to the original column: </p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/cleaned-up-note-column.png" /></p>
+
+<h4 id="simple-clustering">Simple clustering</h4>
+
+<p>First, do a <strong>Text facet</strong> of the <code>cleaned_up_contbr_employer</code> column. </p>
+
+<h5 id="troubleshooting-too-many-facets">Troubleshooting too many facets</h5>
+
+<p>Note: If you get an error about there being too many facets, in your browser address bar, visit this address:</p>
+
+<pre><code> http://127.0.0.1:3333/preferences
+</code></pre>
+
+<p>Then, add a new <strong>property</strong> with this name:</p>
+
+<pre><code>ui.browsing.listFacet.limit
+</code></pre>
+
+<p>And give it a value of <strong>10000</strong>:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/refine-preferences-facets.png" /></p>
+
+<hr />
+
+<p>If the clustering works as intended, in the Iowa data, you should see <strong>2999</strong> different employers.</p>
+
+<p>Now click the <strong>Cluster</strong> button to bring up a new pop-up:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/fingerprint-cluster-popup.png" /></p>
+
+<p>The screen will seem a little overwhelming, but what Refine is doing here is showing how all the terms will be <strong>clustered together</strong> given the currently selected clustering algorithms.</p>
+
+<p>By default, the first clustering algorithm is the <strong>strictest</strong>: the <strong>key collision</strong> method named <strong>fingerprint</strong>. And according to Refine, there are <strong>99</strong> clusters found:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/method-key-collision-select.png" /></p>
+
+<p>What exactly is a cluster? Take a look at the first one, which should be <code>ACT, INC</code>:</p>
+
+<ul>
+  <li><code>ACT, INC.</code> (20 rows)</li>
+  <li><code>ACT INC.</code> (14 rows)</li>
+  <li><code>ACT, INC</code> (11 rows)</li>
+  <li><code>ACT INC</code> (2 rows)</li>
+</ul>
+
+<p>Refine is telling us that all of these terms are pretty much the same, minus punctuation and spelling variations. The "(20 rows)" refers to how many rows have that facet.</p>
+
+<p>There are two options we have per cluster:</p>
+
+<ul>
+  <li>Do we want to <strong>merge</strong> the cluster?</li>
+  <li>And if we do merge the cluster, what should be the value used for all variations of this cluster?</li>
+</ul>
+
+<p><img alt="img" src="/files/tutorials/open-refine/act-cluster.png" /></p>
+
+<p>Obviously, if we don't want to merge the cluster, we leave the <strong>Merge?</strong> option unchecked. However, if we check that box, the default value used will be <code>ACT, INC.</code>…it's the default because more rows in this cluster have <code>ACT, INC.</code> (20), versus all other variations, such as <code>ACT INC</code>, which as 2 rows.</p>
+
+<p>Go ahead and click the Merge checkbox. Then at the bottom of the popup, click the <strong>Merge Selected &amp; Close</strong> button.</p>
+
+<p>Then, take a look at the <strong>Facet/Filter</strong> panel. Instead of <strong>2,999</strong> choices for the <code>cleaned_up_contbr_employer</code>, we have <strong>2,996</strong>. In other words, the <strong>4</strong> variations of <code>ACT, INC.</code> were collapsed into a single canonical term.</p>
+
+<p>So in a nutshell, this is how we clean data in Refine: remove as many variations as possible.</p>
+
+<h3 id="really-elaborate-clustering">Really elaborate clustering</h3>
+
+<p>Refine has six algorithms. Here they are in order, from strictest (i.e. the least number of false positives) to loosest (most false positives, and slowest):</p>
+
+<ul>
+  <li>key collision: fingerprint</li>
+  <li>key collision: ngram-fingerprint</li>
+  <li>key collision: metaphone3</li>
+  <li>key collision: cologne-phonetic </li>
+  <li>nearest neighbor: levenshtein</li>
+  <li>nearest neighbor: PPM</li>
+</ul>
+
+<p>Since we just saw how the strictest clustering worked (fingerprint), let's jump right to <strong>nearest neighbor: PPM</strong>. Note. your computer may crash upon trying this:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/ppm-initial.png" /></p>
+
+<p>It's pretty amazing the kinds of variations PPM will cluster together. Everything from <code>UNIVERSITY OF NORTHERN IOWA</code> versus the typo of <code>UNVIERSITY OR NORTHERN IOWA</code> to the similarity of <code>NOT EMPLOYED</code> and <code>NO EMPLOYER</code> – imagine trying to find that variation using simply a spreadsheet or database query.</p>
+
+<p>On the other hand, there's a lot of possible false positives. For example, is <code>WESTERN IOWA TECH COMMUNITY COLLEGE</code> really the same as <code>IOWA WESTERN COMMUNITY COLLEGE</code>?</p>
+
+<h4 id="cluster-browsing">Cluster browsing</h4>
+
+<p>Refine's interface allows us to browse ambiguous clusters. In this example, I hover over the <code>WESTERN IOWA TECH COMMUNITY COLLEGE</code> cluster, which brings up a pop-up action named "<strong>Browse this cluster</strong>". Clicking that brings up what looks like an entirely new instance of the Refine browser, but focused <em>specifically</em> on this single cluster:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/western-iowa-college.png" /></p>
+
+<p>It looks like the two colleges are indeed different, or at least they employ people from entirely different zip codes. It's not entirely unambiguous, but at least Refine gives us a way to quickly scout the situation before turning to Google.</p>
+
+<p>We can close this cluster-browsing-tab to return to our previous clustering operation.</p>
+
+<h3 id="clean-and-export">Clean and export</h3>
+
+<p>Pretend you've done all the clustering and cleaning you need to do. The result is that you should have the original <code>contbr_employer</code> column and the cleaned up version side by side. Now you can export it by clicking the <strong>Export</strong> button in the top right.</p>
+
+<p>Now, you can import into Excel, or a Pivot Table, and group by the cleaned up employer column to get a more accurate total of which company's employees contributed what.</p>
+
+<h3 id="clustering-algorithms">Clustering algorithms</h3>
+
+<p>After you've done some simple fun cleaning in Refine, it's worth examining the <em>algorithms</em> Refine gives us access to, as well as the theory behind those algorithms.</p>
+
+<p><a href="https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth">From the Refine wiki</a>:</p>
+
+<blockquote>
+  <p>In OpenRefine, clustering refers to the operation of "finding groups of different values that might be alternative representations of the same thing". For example, the two strings "New York" and "new york" are very likely to refer to the same concept and just have capitalization differences. Likewise, "Gödel" and "Godel" probably refer to the same person.</p>
+</blockquote>
+
+<p>The <a href="https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth">Refine wiki page</a> has a fuller, more accurate description of the available algorithms, but I'll attempt to summarize them.</p>
+
+<p>There are two classes of clustering methods: <a href="https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth#key-collision-methods">Key collision</a> and <a href="https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth#nearest-neighbor-methods">Nearest Neighbor</a>.</p>
+
+<p>I'll cover the methods in order from strictest to loosest:</p>
+
+<h5 id="key-collision-fingerprint">Key collision: Fingerprint</h5>
+
+<p>Consider these three variations of "John F. Kennedy":</p>
+
+<ul>
+  <li><code>John   F. Kennedy</code></li>
+  <li><code> JOHN F. KENNEDY</code></li>
+  <li><code>JOHN   F    Kennedy</code></li>
+  <li><code>Kennedy, John F.</code></li>
+</ul>
+
+<p>In a given dataset, these terms might reasonably be considered to refer to the same person. What the <strong>fingerprint</strong> method does is normalize the "whitespace" and capitalization, order the white-space-separated terms in alphabetically, and remove the punctuation. So the variations all basically look like this:</p>
+
+<pre><code> f john kennedy
+</code></pre>
+
+<p>And thus, they are <em>clustered</em> together.</p>
+
+<h5 id="key-collision-n-gram-fingerprint">Key collision: N-Gram Fingerprint</h5>
+
+<p>This is a "looser" version of the fingerprint. Whereas the prior method separated by whitespace, this simply removes all whitespace and then creates n-grams of the word. <a href="https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth#n-gram-fingerprint">The explanation from the Wiki</a>:</p>
+
+<blockquote>
+  <p>So, for example, the 2-gram fingerprint of "Paris" is "arispari" and the 1-gram fingerprint is "aiprs".</p>
+</blockquote>
+
+<blockquote>
+  <p>Why is this useful? In practice, using big values for n-grams doesn't yield any advantage over the previous fingerprint method, but using 2-grams and 1-grams, while yielding many false positives, can find clusters that the previous method didn't find even with strings that have small differences, with a very small performance price.</p>
+</blockquote>
+
+<blockquote>
+  <p>For example "Krzysztof", "Kryzysztof" and "Krzystof" have different lengths and different regular fingerprints, but share the same 1-gram fingerprint because they use the same letters.</p>
+</blockquote>
+
+<p>In the John F. Kennedy example, these variations would be considered the same when using the ngram fingerprint:</p>
+
+<ul>
+  <li><code>John F Kennedy</code></li>
+  <li><code>JohnF Kennedy</code></li>
+  <li><code>John John F Kennedy</code></li>
+</ul>
+
+<h5 id="key-collision-phonetic-fingerprint">Key collision: Phonetic Fingerprint</h5>
+
+<p>This fingerprinting method eschews the spelling of a term and attempts to interpret a term <em>as it is pronounced</em>. So, the following variations could be clustered together:</p>
+
+<ul>
+  <li><code>Jon F Kennedy</code></li>
+  <li><code>Jonn F Kennedy</code></li>
+</ul>
+
+<p>However, this being an even <em>looser</em> method, you will get false positives. For example, these are probably not referring to JFK, but might share a similar phonetic fingerprint:</p>
+
+<ul>
+  <li><code>Jawn Eff Kennadee</code></li>
+  <li><code>Jawn F Ken A.D.</code></li>
+</ul>
+
+<h5 id="nearest-neighbor-levenshtein-distance">Nearest neighbor: Levenshtein distance</h5>
+
+<p>The "nearest neighbor" methods are more computationally expensive, but unlike fingerprint methods, can find the kind of variations that aren't simple typos or mispellings.</p>
+
+<p>Levenshtein distance is a measure of <em>how many changes</em> you must make to get from one term to another. For example, there is a "distance" of 1 between <code>John F. Kennedy</code> and <code>John H. Kennedy</code>, because the only change you have to make is converting <code>F</code> to <code>H</code>. And there is a distance of 3 between <code>Jan X. Kennedy</code> and <code>John F. Kennedy</code>: (removing <code>h</code>, changing <code>o</code> to <code>a</code>, and changing <code>F</code> to <code>X</code>). As you can imagine, the possibility of a <strong>false positive</strong> is very high as you increase the Levenshtein distance.</p>
+
+<h5 id="nearest-neighbor-ppm">Nearest neighbor: PPM</h5>
+
+<p>The math involved here is beyond my explanation, so I'll <a href="https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth#ppm">direct to the Wiki's explainer</a>:</p>
+
+<blockquote>
+  <p>The idea is that because text compressors work by estimating the information content of a string, if two strings A and B are identical, compressing A or compressing A+B (concatenating the strings) should yield very little difference (ideally, a single extra bit to indicate the presence of the redundant information). On the other hand, if A and B are very different, compressing A and compressing A+B should yield dramatic differences in length.</p>
+</blockquote>
+
+<p>PPM will almost seem like magic, and I prefer it Levensthein. The kind of variations a PPM can detect without generating too many false positives includes:</p>
+
+<ul>
+  <li><code>John F Kennedy</code></li>
+  <li><code>Jack F Kennedy</code></li>
+  <li><code>John Fitzgerald Kennedy</code></li>
+  <li><code>President John F Kennedy</code> </li>
+</ul>
+
+<p>But PPM will cluster together terms that are of no obvious relation. Refine gives you the option of decreasing the <strong>radius</strong> of the PPM algorithm: I'd advise not going far below 3 or 4.</p>
+
+<h3 id="other-resources">Other resources</h3>
+
+<ul>
+  <li><a href="https://github.com/OpenRefine/OpenRefine/wiki/Screencasts">The official screencasts from OpenRefine</a></li>
+  <li><a href="http://www.propublica.org/nerds/item/using-google-refine-for-data-cleaning">Using Google Refine to Clean Messy Data</a> by me, while I was at ProPublica</li>
+  <li><a href="http://schoolofdata.org/handbook/recipes/cleaning-data-with-refine/">Cleaning Data with Refine</a> by the School of Data</li>
+</ul>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

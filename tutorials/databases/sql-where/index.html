@@ -1,0 +1,790 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Conditional filtering with WHERE | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Starting up a SQL database and finding data">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    Conditional filtering with WHERE
+                </h1>
+                <div class="description">
+                    <p>
+                        Starting up a SQL database and finding data
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>The <code>WHERE</code> clause is where SQL starts to become very interesting for searching large datasets. With <code>WHERE</code>, we can now <em>filter</em> the results according to conditions we explicitly set, such as, "Show all incident reports <strong>where</strong> the <code>Date</code> is before 2009 and the <code>Category</code> is listed as <code>'ASSAULT'</code>"</p>
+
+
+
+<p>The query for that looks like this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">WHERE</span> Category = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ASSAULT</span><span style="color:#710">'</span></span>
+<span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Date</span> &gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2009</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<blockquote class="warning well">
+  <p>Note: For this SQL lesson, I will be using the <strong>Sequel Pro</strong> GUI for the <strong>MySQL</strong> database engine and will be querying the SFPD incident reports categorized as <code>ASSAULT</code></p>
+
+  <p>If you want to see exactly the same results I do, you'll want to download and import the__ MySQL database of 2003 to 2013 assault reports from the SFPD__.</p>
+
+  <p>I've also created the <strong>SQLite</strong> version of that database, which should functionally be the same as the MySQL version. </p>
+
+  <p>For both MySQL and SQLite, I've also created a database of <em>all</em> the SFPD reports from 2003 to 2013. All the queries should work the same, except you can explore all the different categories of crime. The tradeoff is that the database is much bigger, and so will be slower to download, import, and query. If you're completely new to all this, I would just go with the <strong>assaults</strong> database, just so any errors you make don't take even longer to figure out.</p>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sql.zip"><strong>MySQL</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sql.zip"><strong>MySQL</strong> all incident reports: 1,491,764 rows </a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> all incident reports: 1,491,764 rows </a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="where-structure"><code>WHERE</code> structure</h3>
+
+<p>The <code>WHERE</code> clause occurs in conjunction with <code>SELECT</code> and <code>FROM</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">column_1</span><span style="color:#710">`</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">column_2</span><span style="color:#710">`</span></span>
+<span style="color:#080;font-weight:bold">FROM</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">some table</span><span style="color:#710">`</span></span>
+<span style="color:#080;font-weight:bold">WHERE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">`</span><span style="color:#D20">a conditional statement that evaluates to true or false</span><span style="color:#710">`</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>The SQL query will operate on  all rows in which the <code>WHERE</code> clause evaluates to <strong>true</strong>.</p>
+
+<h3 id="simple-conditionals">Simple conditionals</h3>
+
+<p>The simplest example of <code>WHERE</code> using our <code>sfpd_incidents</code> table looks like this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#00D">1</span> = <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<p>Try it out. The results should look <em>exactly</em> as they would if you <em>omitted</em> the <code>WHERE</code> clause. Why is that? Because the statement, <em>"is the number 1 equal to the number 1"</em> is <em>always</em> <strong>true</strong>. So the <code>SELECT</code> statement operates across all rows in the <code>sfpd_incidents</code></p>
+
+<p>Now give the <code>WHERE</code> clause a statement that is <em>always</em> <strong>false</strong>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#00D">1</span> = <span style="color:#00D">2</span>
+</pre></div>
+</div>
+</div>
+
+<p>The result set should be <strong>empty</strong>, as the number 1 is <em>never</em> equal to the number 2.</p>
+
+<h3 id="conditional-filtering">Conditional filtering</h3>
+
+<p>Generally, we're interested in conditional statements that aren't <a href="http://en.wikipedia.org/wiki/Tautology_(rhetoric)">tautologies</a>. For example, in our dataset, we know that the assault reports contain a <code>Descript</code> field which specifies the subcategories of assaults, such as <code>"BATTERY"</code> or <code>"MAYHEM WITH A KNIFE</code></p>
+
+<p>A common form of conditional statement will look like this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>... <span style="color:#080;font-weight:bold">WHERE</span> column_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">SOME VALUE</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>To retrieve only the assault reports that were described as being <code>STALKING</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">STALKING</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h4 id="a-quick-note-about-string-literals">A quick note about string literals</h4>
+
+<p>The <em>value</em> we want to filter for is enclosed in <strong>single-quotes</strong>. Double quotes will also work but single quotes are preferred. The technical description here is that single quotes denote a <strong>string literal</strong>. </p>
+
+<p>In programming languages, a <strong>string</strong> refers to a sequence of text characters, whether it be <code>'a'</code>, <code>'hello world'</code>, or <code>'one plus 2'</code>. </p>
+
+<p>When we refer to <code>STALKING</code> as <code>'STALKING'</code>, we are telling the query interpreter that <em>we are interested in the string, 'STALKING', literally, as it exists in our dataset</em>. Compare this to the keywords <code>WHERE</code>, <code>SELECT</code>, and <code>FROM</code>…we are not interested in those as <em>literal</em> values. Those happen to be <strong>keywords</strong> integral to the SQL language.</p>
+
+<p>And the column name of <code>Descript</code> is <em>not</em> a string literal. It is a word that points to the name of a column.</p>
+
+<p>So to summarize: quote marks are important, pay attention to their usage very carefully, as omitting them will likely be the most frequent source of errors at this point. And if you're new to programming, the concept of a <em>string literal</em> will be strange. Here's an analogous example in English:</p>
+
+<ul>
+  <li><strong>Alice told me my name is "Bob"</strong> – i.e. <strong>My name is "Bob"</strong>, according to someone named Alice.</li>
+  <li><strong>Alice told me, "My name is 'Bob'"</strong> – i.e. Alice told me <strong>that her name is actually "Bob"</strong></li>
+</ul>
+
+<p>In the second example, quotation marks are used to denote the string literal of <em>"My name is 'Bob'"</em>, because I'm <em>quoting</em> a phrase as it was spoken, literally. In the first example, the words "my name is 'Bob'" are an assertion of my identity, rather than what "James" <em>literally</em> told me.</p>
+
+<p>Confused? After writing many more queries (some of them with errors), it'll make more sense.</p>
+
+<p>Read more technical notes [on string literals in SQLite's documentation](https://www.sqlite.org/lang_keywords.html.</p>
+
+<h4 id="a-quicker-note-about-numbers">A quicker note about numbers</h4>
+
+<p>In the given <code>sfpd_incidents</code> datafiles, the <code>X</code> and <code>Y</code> fields (longitude and latitude, respectively), are designated as <strong>numbers</strong> (floating point numbers, to be kind of exact). Unlike literal strings, literal numerical values <strong>do not need</strong> quote marks. In fact, setting off literal numerical values in quotes will probably return an erroneous result.</p>
+
+<p>This is good:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> X, Y 
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> X = <span style="color:#00D">0</span>
+</pre></div>
+</div>
+</div>
+
+<p>As is this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> X, Y 
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> X = <span style="color:#60E">0.0</span>
+</pre></div>
+</div>
+</div>
+
+<p>But this is <strong>not good</strong>. It might actually work, but it depends on your database configuration:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> X, Y 
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> X = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">0</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>We'll cover data types, i.e. the difference between strings, numbers, dates, etc., in a different lesson. If you follow the tutorial with the provided dataset, you should be able to continue in blissful ignorance…for now.</p>
+
+<h3 id="negative-conditions">Negative conditions</h3>
+
+<p>To create a filter in which something is <em>not</em> equal to a given value, we prefix the equals sign with an <strong>exclamation mark</strong>.</p>
+
+<p>To retrieve all the non-<code>STALKING</code> reports:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span>  sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript != <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">STALKING</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>The result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>IncidntNum</th>
+      <th>Category</th>
+      <th>Descript</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>PdDistrict</th>
+      <th>Resolution</th>
+      <th>Location</th>
+      <th>X</th>
+      <th>Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>003032800</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-04-10</td>
+      <td>10:16</td>
+      <td>PARK</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of WOODSIDE AV</td>
+      <td>-122.452194214</td>
+      <td>37.745666504</td>
+    </tr>
+    <tr>
+      <td>030206159</td>
+      <td>ASSAULT</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+      <td>2003-02-19</td>
+      <td>09:30</td>
+      <td>SOUTHERN</td>
+      <td>ARREST, BOOKED</td>
+      <td>400 Block of NATOMA ST</td>
+      <td>-122.406684875</td>
+      <td>37.781009674</td>
+    </tr>
+    <tr>
+      <td>030204181</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-02-18</td>
+      <td>18:15</td>
+      <td>CENTRAL</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of COLUMBUS AV</td>
+      <td>-122.407066345</td>
+      <td>37.798183441</td>
+    </tr>
+    <tr>
+      <td>030204329</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-02-18</td>
+      <td>19:00</td>
+      <td>TENDERLOIN</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of ELLIS ST</td>
+      <td>-122.412330627</td>
+      <td>37.784889221</td>
+    </tr>
+    <tr>
+      <td>030204329</td>
+      <td>ASSAULT</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>2003-02-18</td>
+      <td>19:00</td>
+      <td>TENDERLOIN</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of ELLIS ST</td>
+      <td>-122.412330627</td>
+      <td>37.784889221</td>
+    </tr>
+    <tr>
+      <td>030204711</td>
+      <td>ASSAULT</td>
+      <td>INFLICT INJURY ON COHABITEE</td>
+      <td>2003-02-18</td>
+      <td>20:40</td>
+      <td>BAYVIEW</td>
+      <td>ARREST, BOOKED</td>
+      <td>1900 Block of JENNINGS ST</td>
+      <td>-122.387695312</td>
+      <td>37.728080750</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="the-and-operator">The <code>AND</code> operator</h3>
+
+<p>Using the <code>AND</code> operator, we can specify multiple conditions to filter upon:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">STALKING</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">AND</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>Note how <code>AND</code> is used to join multiple conditional statements, whereas with <code>SELECT</code>, we used commas to refer to multiple columns:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#0a8;font-weight:bold">Date</span>, <span style="color:#0a8;font-weight:bold">Time</span>, Location
+<span style="color:#080;font-weight:bold">FROM</span>  sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">STALKING</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">AND</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>The resulting dataset includes the date, time, and location of all assault reports described as <code>STALKING</code> and were considered to be <code>UNFOUNDED</code>:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2003-09-12</td>
+      <td>18:00</td>
+      <td>700 Block of POST ST</td>
+    </tr>
+    <tr>
+      <td>2004-01-30</td>
+      <td>17:00</td>
+      <td>0 Block of SACRAMENTO ST</td>
+    </tr>
+    <tr>
+      <td>2006-02-06</td>
+      <td>08:40</td>
+      <td>24TH ST / BRYANT ST</td>
+    </tr>
+    <tr>
+      <td>2006-12-16</td>
+      <td>20:50</td>
+      <td>2600.0 Block of MISSION ST</td>
+    </tr>
+    <tr>
+      <td>2007-01-19</td>
+      <td>09:00</td>
+      <td>600.0 Block of MONTGOMERY ST</td>
+    </tr>
+    <tr>
+      <td>2009-04-09</td>
+      <td>09:00</td>
+      <td>24TH ST / MISSION ST</td>
+    </tr>
+    <tr>
+      <td>2010-01-22</td>
+      <td>12:00</td>
+      <td>100.0 Block of WOOD ST</td>
+    </tr>
+    <tr>
+      <td>2010-04-05</td>
+      <td>07:45</td>
+      <td>20TH ST / CAPP ST</td>
+    </tr>
+    <tr>
+      <td>2010-11-09</td>
+      <td>19:15</td>
+      <td>500.0 Block of THE EMBARCADERONORTH ST</td>
+    </tr>
+    <tr>
+      <td>2011-03-13</td>
+      <td>08:39</td>
+      <td>1200.0 Block of STANYAN ST</td>
+    </tr>
+    <tr>
+      <td>2011-09-06</td>
+      <td>12:00</td>
+      <td>200.0 Block of MCALLISTER ST</td>
+    </tr>
+    <tr>
+      <td>2011-12-01</td>
+      <td>00:01</td>
+      <td>300.0 Block of BAY SHORE BL</td>
+    </tr>
+    <tr>
+      <td>2012-12-20</td>
+      <td>09:35</td>
+      <td>800.0 Block of HAMPSHIRE ST</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To find all <code>STALKING</code> reports which were <em>not</em> <code>UNFOUNDED</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#0a8;font-weight:bold">Date</span>, <span style="color:#0a8;font-weight:bold">Time</span>, Location
+<span style="color:#080;font-weight:bold">FROM</span>  sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">STALKING</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">AND</span> Resolution != <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h4 id="mutually-exclusive-and-statements">Mutually-exclusive <code>AND</code> statements</h4>
+
+<p>If a query includes a series of <code>AND</code> statements, then <em>all</em> of them must be true. The following query, for example, would return an empty set:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#00D">1</span> = <span style="color:#00D">1</span> 
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#00D">2</span> = <span style="color:#00D">2</span> 
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#00D">1</span> = <span style="color:#00D">2</span>
+</pre></div>
+</div>
+</div>
+
+<p>In the context of our current dataset, this set of <code>AND</code> statements would also be mutually exclusive:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript =  <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">THREATS AGAINST LIFE</span><span style="color:#710">&quot;</span></span> 
+    <span style="color:#080;font-weight:bold">AND</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">STALKING</span><span style="color:#710">&quot;</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>This will return no results because each row in <code>sfpd_incidents</code> has only one type of <code>Descript</code> value. In other words, no incident report will be described as <em>both</em> <code>THREATS AGAINST LIFE</code> <em>and</em> <code>STALKING</code>.</p>
+
+<h3 id="the-or-operator">The <code>OR</code> operator</h3>
+
+<p>If we do want reports that have <em>either</em> this <em>or</em> that, we use the <code>OR</code> operator:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript =  <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">THREATS AGAINST LIFE</span><span style="color:#710">&quot;</span></span> 
+    <span style="color:#080;font-weight:bold">OR</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">STALKING</span><span style="color:#710">&quot;</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>The following query will return all of the dataset rows even though the first <code>OR</code> statement will always be false and the second one will be true only sometimes. The third <code>OR</code> statement will <em>always</em> be true, thus, the entire conditional test will be <strong>true</strong> for every row:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#00D">1</span> = <span style="color:#00D">2</span>
+    <span style="color:#080;font-weight:bold">OR</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">STALKING</span><span style="color:#710">&quot;</span></span>
+    <span style="color:#080;font-weight:bold">OR</span> <span style="color:#00D">1</span> = <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="precedence-of-or-and-and">Precedence of <code>OR</code> and <code>AND</code></h3>
+
+<p>A common mistake is to combine <code>OR</code> and <code>AND</code> operators in such a way that you get more or less than you actually wanted:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre> <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents
+    <span style="color:#080;font-weight:bold">WHERE</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">&quot;</span></span> 
+      <span style="color:#080;font-weight:bold">AND</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">STALKING</span><span style="color:#710">&quot;</span></span> <span style="color:#080;font-weight:bold">OR</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">THREATS AGAINST LIFE</span><span style="color:#710">&quot;</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>Presumably, the author of the above query is thinking this:</p>
+
+<blockquote>
+  <p>I want all records that involved an <code>UNFOUNDED</code> report of either <code>STALKING</code> <strong>or</strong> <code>THREATS AGAINST LIFE</code></p>
+</blockquote>
+
+<p>However, the query interpreter reads this as:</p>
+
+<blockquote>
+  <p>The user wants all records that are either:</p>
+
+  <ol>
+    <li>an <code>UNFOUNDED</code> report of <code>STALKING</code> </li>
+    <li>a report of <code>THREATS AGAINST LIFE</code></li>
+  </ol>
+</blockquote>
+
+<p>This is because <code>AND</code> has <em>precedence</em> over the <code>OR</code> operator. </p>
+
+<p>This is not dissimilar to <em>order of operations</em> in arithmetic:</p>
+
+<ul>
+  <li><code>10 + 20 * 2 + 10     = 60</code></li>
+  <li><code>(10 + 20) * 2 + 10   = 70</code></li>
+  <li><code>(10 + 20) * (2 + 10) = 360</code></li>
+</ul>
+
+<p>Thus, the original query looks like this to the interpreter:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre> <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents
+    <span style="color:#080;font-weight:bold">WHERE</span> (Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">&quot;</span></span> <span style="color:#080;font-weight:bold">AND</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">STALKING</span><span style="color:#710">&quot;</span></span>) 
+      <span style="color:#080;font-weight:bold">OR</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">THREATS AGAINST LIFE</span><span style="color:#710">&quot;</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>If you run this on the 2003 to 2013 dataset, you'll end up with <strong>27,311 rows</strong>.</p>
+
+<p>When in doubt, don't be afraid to use parentheses to be more explicit about how you want the logic to flow. To fix the original query, one pair of parentheses will do:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre> <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents
+    <span style="color:#080;font-weight:bold">WHERE</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">&quot;</span></span> 
+      <span style="color:#080;font-weight:bold">AND</span> (Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">STALKING</span><span style="color:#710">&quot;</span></span> <span style="color:#080;font-weight:bold">OR</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">THREATS AGAINST LIFE</span><span style="color:#710">&quot;</span></span>)
+</pre></div>
+</div>
+</div>
+
+<p>The result will now only have <strong>185 rows</strong>. In other words, there were relatively few cases of reported stalking or death threats in which the police deemed the complaint to be unfounded.</p>
+
+<h3 id="frequent-mistakes">Frequent mistakes</h3>
+
+<ul>
+  <li>
+    <p>Yes, even I'll muck up the order of the clauses, like: </p>
+
+    <p>~~~sql
+  SELECT Descript, Time, Date 
+    WHERE Descript = "BATTERY" 
+    FROM sfpd_incidents
+  ~~~</p>
+  </li>
+  <li>
+    <p>Not using quotation marks to denote literal strings:</p>
+
+    <p>~~~sql
+  SELECT Descript, Time, Date 
+    FROM sfpd_incidents
+    WHERE Descript = BATTERY
+  ~~~</p>
+  </li>
+  <li>
+    <p>Using quote marks to incorrectly denote things as literal strings:</p>
+
+    <p>~~~sql
+  SELECT Descript, Time, Date
+    FROM sfpd_incidents
+    WHERE 'Descript' = 'BATTERY'
+    AND 'Resolution = NONE'
+  ~~~</p>
+
+    <p>Along the same lines, remember that literal numerical values <em>should not be set off by quote marks</em>. This is not recommended (though it still might work):</p>
+
+    <p>~~~sql
+  SELECT Descript, Time, Date
+    FROM sfpd_incidents
+    WHERE X = '0'
+  ~~~</p>
+
+    <p>This is fine:
+  ~~~sql
+  SELECT Descript, Time, Date
+    FROM sfpd_incidents
+    WHERE X = 0
+  ~~~</p>
+
+    <p>(we'll cover numerical and date datatypes in a later tutorial)</p>
+  </li>
+  <li>
+    <p>Even though SQL syntax is <strong>case-insensitive</strong>, when referring to a literal string value, this is not always the case with <strong>string literals</strong> that you're trying to match:</p>
+
+    <p>The following would work as intended:</p>
+
+    <p>~~~sql
+ select descript, time, date
+   from sfpd_incidents
+   where descript = 'STALKING'
+ ~~~</p>
+
+    <p>Since all <code>Descript</code> values are uppercase in the dataset, the following <em>might not work</em> depending on your database configuration:</p>
+
+    <p>~~~sql
+ select descript, time, date
+   from sfpd_incidents
+   where descript = 'stalking'
+ ~~~</p>
+  </li>
+  <li>
+    <p>Creating logically exclusive (or too-inclusive) statements because you've mussed up how your <code>AND</code> and <code>OR</code> statements should be evaluated:</p>
+
+    <p>This would return no results:
+~~~sql
+SELECT * FROM sfpd_incidents
+WHERE descript = 'STALKING' 
+  AND descript = 'THREATS AGAINST LIFE' 
+~~~</p>
+
+    <p>This would return more results than you likely intended, if you only cared about <code>UNFOUNDED</code> reports:</p>
+
+    <div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">WHERE</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">AND</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">THREATS AGAINST LIFE</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">OR</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">BATTERY</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+    </div>
+  </li>
+  <li>
+    <p>Misplaced parentheses. This is OK:</p>
+
+    <div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> (Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">OR</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">NONE</span><span style="color:#710">'</span></span>)
+    <span style="color:#080;font-weight:bold">AND</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">BATTERY</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+    </div>
+
+    <p>This will result in an error:</p>
+
+    <div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  (<span style="color:#080;font-weight:bold">WHERE</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">OR</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">NONE</span><span style="color:#710">'</span></span>)
+    <span style="color:#080;font-weight:bold">AND</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">BATTERY</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+    </div>
+  </li>
+</ul>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Now we're starting to see a little of the power of SQL. What we've learned is not much different than the kind of filtering you can do in a spreadsheet. But in the next lesson, we'll learn how to do even more flexible filtering with fuzzy matching operators.</p>
+
+<h3 id="exercises">Exercises</h3>
+
+<ol>
+  <li>Produce a list of reports described as <code>"ATTEMPTED SIMPLE ASSAULT"</code> that were either resolved as <code>"ARREST, BOOKED"</code> or <code>"ARREST, CITED"</code></li>
+  <li>Modify the previous query to restrict the results to incidents in the <code>SOUTHERN</code> police district.</li>
+  <li>
+    <p>Produce a list of reports with only the columns <code>Date</code>, <code>Time</code>, <code>PdDistrict</code>, <code>Descript</code>, <code>Resolution</code>, that <em>either</em>: </p>
+
+    <ol>
+      <li>Took place in the <code>"NORTHERN"</code> police district that were resolved as <code>"UNFOUNDED"</code> but <em>not</em> described as <code>"BATTERY"</code> </li>
+      <li><em>Or</em> took place in either the <code>"BAYVIEW"</code> or <code>"RICHMOND"</code> districts that <em>were</em> described as <code>"BATTERY"</code> but in which the resolution was <code>"PSYCHOPATHIC CASE"</code></li>
+    </ol>
+
+    <p>(The result should be <strong>71 rows</strong>, in the 2003 to 2013 dataset)</p>
+  </li>
+  <li>
+    <p>Simplify the following query:</p>
+
+    <pre><code>   SELECT Date, Time, Descript, Resolution
+   FROM sfpd_incidents
+   WHERE (Descript = 'AGGRAVATED ASSAULT WITH A GUN'
+           OR Descript = 'THREATS AGAINST LIFE')
+   AND (Descript != 'AGGRAVATED ASSAULT WITH A GUN' AND Resolution = 'NONE') 
+</code></pre>
+  </li>
+</ol>
+
+<!-- ooh you know how to read HTML comments. Here's the answers:
+
+4.  SELECT Date, Time, PdDistrict, Descript, Resolution 
+  FROM `sfpd_incidents`
+  WHERE 
+    PdDistrict = "NORTHERN" 
+      AND Resolution = 'UNFOUNDED' AND Descript != 'BATTERY'
+  OR
+    (PdDistrict = "BAYVIEW" OR PdDistrict = "RICHMOND")
+    AND Descript = 'BATTERY' AND Resolution = 'PSYCHOPATHIC CASE'
+
+    ___
+
+
+  4.  SELECT Date, Time, Descript, Resolution
+      FROM sfpd_incidents
+      WHERE Descript = 'THREATS AGAINST LIFE'  AND Resolution = 'NONE'
+
+-->
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

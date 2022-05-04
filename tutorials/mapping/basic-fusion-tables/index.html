@@ -1,0 +1,341 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Introduction to Data Mapping with Fusion Tables | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Google's handy tool for publishing interactive maps from large datasets.">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#mapping">Mapping</a></span> 
+                </h4>
+                <h1 class="title">
+                    Introduction to Data Mapping with Fusion Tables
+                </h1>
+                <div class="description">
+                    <p>
+                        Google's handy tool for publishing interactive maps from large datasets.
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>In this tutorial, we cover Google Fusion Tables, a database service that can handle significantly larger datasets than Google Spreadsheets and be used to power data-heavy web applications.</p>
+
+<p>However, we only care about FT's ready-to-go interactive mapping functionality: FT is not the best database software nor the best mapping software, <em>but what it lacks in flexibility it makes up for convenience</em>, especially if you need to quickly produce an interactive map and publish it to the Web.</p>
+
+<p>Fusion Tables is very much like a spreadsheet, though not really designed for quick data entry or fixes. In other words, you want to do most of your data-wrangling and editing in a spreadsheet <strong>before</strong> you import it into Fusion Tables.</p>
+
+<p><strong>Download this dataset as a CSV</strong>: <a href="https://docs.google.com/a/stanford.edu/spreadsheets/d/1tSc2ivROr9Gj6h27wU5THgPmiA3VrcfSPNVD_ravLqE/">SFPD crime incident reports from January to March 2014</a></p>
+
+<h3 id="importing-data">Importing data</h3>
+
+<p>Go to <a href="https://www.google.com/fusiontables/data?dsrcid=implicit">Fusion Tables in your Google Drive</a> (you may first have to Connect it as an App).</p>
+
+<p>In the <strong>Import New Table</strong> dialog, <strong>Choose File</strong> from your computer. Select the <a href="https://docs.google.com/a/stanford.edu/spreadsheets/d/1tSc2ivROr9Gj6h27wU5THgPmiA3VrcfSPNVD_ravLqE/">CSV that you just downloaded</a> then hit the <strong>Next</strong> button. The next dialog box you'll see is a preview of the table. If it looks fine, hit <strong>Next</strong> again. And you can hit <strong>Finish</strong> on the next dialog after customizing your table info.</p>
+
+<h5 id="video">Video</h5>
+
+<video id="fusion-tables-importing-001" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-importing-001.mp4" type="video/mp4" /></video>
+
+<p>It'll take a minute or so to load, and then it will look like this:</p>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/sf-crimes-imported.png" /></p>
+
+<h3 id="mapping-the-data">Mapping the data</h3>
+
+<p>I'll skip over the table-functionality for now, let's get right to making a map.</p>
+
+<p>The first thing we have to do is tell Fusion Tables which <strong>column</strong> to use. If we give it a column that contains text, such as "100 Broadway, San Francisco CA", Fusion Tables will <strong>geocode</strong> that address and place a marker on the map.</p>
+
+<p>The SFPD data already has geocoordinates in the <code>x</code> and <code>y</code> columns. So we just need to tell Fusion Tables to use those columns.</p>
+
+<p>Go to <strong>Edit &gt; Change Column</strong></p>
+
+<p>Select the <code>y</code> column and set its <strong>Type</strong> to <strong>Location</strong></p>
+
+<p>Then click the <strong>Two column location</strong> and set <strong>Latitude</strong> to <code>y</code> and <strong>Longitude</strong> to <code>x</code></p>
+
+<p>Then click the <strong>Save</strong> button.</p>
+
+<p>It'll take a few moments for Fusion Tables to update the schema, i.e. "interpret" the <code>x</code> and <code>y</code> columns as geocoordinates.</p>
+
+<h5 id="video-1">Video</h5>
+
+<video id="fusion-tables-location-002" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-location-002.mp4" type="video/mp4" /></video>
+
+<h4 id="add-a-map-tab">Add a Map tab</h4>
+
+<p>Mapping the data is now as easy as creating a <strong>Map</strong> view, which will show up in the FT interface as a tab. Click the <strong>red <code>+</code> sign</strong> on the menubar and select <strong>Add map</strong>.</p>
+
+<p>In the <strong>Configure map</strong> sidemenu, select <code>y</code> as the column for <strong>Location</strong></p>
+
+<h5 id="video-2">Video</h5>
+
+<video id="fusion-tables-map-made-003" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-map-made-003.mp4" type="video/mp4" /></video>
+
+<p>When you're done, the map of San Francisco will be covered in red dots, each one representing a crime report.</p>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/sf-crimes-map-first-010.png" /></p>
+
+<h3 id="basic-filtering">Basic filtering</h3>
+
+<p>As in every kind of storytelling, getting to the point is important in map making. There's far too many dots on this map, so let's <strong>filter</strong> out the less important ones using FT's built-in filtering capability.</p>
+
+<ol>
+  <li>In the <strong>Map</strong> tab, click on the blue <strong>Filter</strong> button. This will bring up a dropdown menu. Choose the <code>category</code> field.</li>
+  <li>A sidebar will appear on the left side. Check the boxes of crime categories you'd like to see on the map. You can see the map dynamically update with each choice. In my example, I choose the <code>ASSAULT</code> category, which still leaves 2,437 points on the map.</li>
+  <li>Click the <strong>Filter</strong> button again and choose the <code>descript</code> field: this will allow you to filter by subcategories of crime. </li>
+  <li>Clicking the little 3-bar icon in each panel's titlebar will reveal another dropdown, allowing you to filter, well, the filtering choices. For example, selecting"<strong>Values match pattern with % wildcards</strong>" and then doing a <strong>Find</strong> for "<code>AGGR%</code>" will quickly filter the reports to just the <strong>aggravated assaults</strong>. You don't even have to manually check each of those boxes. This filters the list of assaults to 596. </li>
+</ol>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/sf-aggro-assaults.png" /></p>
+
+<h5 id="video-3">Video</h5>
+
+<video id="fusion-tables-filtering-004" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-filtering-004.mp4" type="video/mp4" /></video>
+
+<h3 id="formulaic-work">Formulaic work</h3>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/sf-assaults-red-yellow-map.png" /></p>
+
+<p>I mentioned earlier that you'll want to do all of your data cleaning and manipulation in a spreadsheet <em>before</em> you move it to Fusion Tables, because FT simply is less suited for such work.</p>
+
+<p>It <em>is</em> inconvenient to import/export data back and forth. But as I've said before, there's just no do-it-all data tool. With Fusion Tables, we get some quick-and-easy interactive maps, and the price we pay is less flexibility.</p>
+
+<p>In this section, we'll go through the motions, which are necessary to create a map with differentiated icons.</p>
+
+<h4 id="making-something-notable">Making something notable</h4>
+
+<p>The problem with our aggravated assaults map, which we've filtered to 596 records, is that every dot looks the same. But we might believe that some incidents are more…<em>notable</em>…than others, and it's worth highlighting them in the map.</p>
+
+<p>The most direct way to do this is to specify <em>different icons</em> for certain records. But first things first, what constitutes a more <em>notable</em> aggravated assault? Look at the data again. There's a <code>resolution</code> field, which mentions what the police <em>found or did</em> in response to the call, including making an arrest. </p>
+
+<p>While we're in the Map view with the filters menu open, let's just add the <code>resolution</code> field as another filter so we can get a quick fix of the various ways aggravated assaults were resolved:</p>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/sf-agg-assault-resolution-filter.png" /></p>
+
+<p>It looks like the possible resolutions are split between <code>ARREST, BOOKED</code> (244 cases) and <code>NONE</code> (325 cases), with a smattering of other resolutions (e.g. <code>COMPLAINANT REFUSES TO PROSECUTE</code> and <code>PSYCHOPATHIC CASE</code>).</p>
+
+<p>So let's divide up the map markers into two things: <code>NONE</code>, and everything else (most of which involve arrests), with the opinion that <em>no</em> resolution implies a possible unsettling scenario, such as a stabbing suspect who hasn't been apprehended.</p>
+
+<h4 id="specifying-different-map-markers">Specifying different map markers</h4>
+
+<ol>
+  <li>To customize the map markers, we need to <strong>Change map</strong>, an action that can be found by clicking the dropdown arrow of the <strong>Map</strong> tab. This pop opens the panel titled, <strong>Configure map</strong></li>
+  <li>In that panel, click <strong>Change feature styles</strong>. This will open a new popup window titled, <strong>Change map feature styles</strong>. In the side-list of actions, click <strong>Points &gt; Marker icon</strong>.</li>
+  <li>By default, the map is set to the <strong>Fixed</strong> option, which allows you to choose just one icon for all of the points. Click the <strong>Column</strong> tab, which reveals the option to <strong>Use icon specified in a column</strong></li>
+</ol>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/change-icon-column-submenu.png" /></p>
+
+<p>Problem is, we don't have a column in the way that Fusion Tables wants it. Yes, we know we want to ultimately differentiate icons by <code>resolution</code>, but <a href="https://support.google.com/fusiontables/answer/2679986?hl=en">FT wants a column in which the values are things</a> like <code>large_red</code> or <code>f_blue</code>.</p>
+
+<p>In other words, we need to create a <strong>new column</strong> dedicated to naming the icon we want to use.</p>
+
+<h5 id="if-only-we-had-a-column-for-icons">IF only we had a column for icons</h5>
+
+<p>This is where we need to import/export from FT to Spreadsheets and back to FT again:</p>
+
+<ol>
+  <li>While in the <strong>Map</strong> view with the filtered aggravated assaults, select <strong>File &gt; Download</strong> from the menubar. Choose the options <strong>Filtered rows</strong> and <strong>CSV</strong> – in other words, we don't want to export all the 32,000 original rows, just the 600 assaults we've filtered for.</li>
+  <li>Open <strong>Google Spreadsheets</strong> and re-import the newly downloaded CSV.</li>
+  <li>Create a new column named <code>icon</code>. </li>
+  <li>
+    <p>We will now build a semi-complicated logical formula. First, let's think about what we <strong>want</strong>: We want a <code>icon</code> column that, when the corresponding <code>resolution</code> value is <code>NONE</code>, has a name of one type of icon, e.g. <code>small_red</code>. And for all other <code>resolution</code> values, they should have an <code>icon</code> value of <code>small_yellow</code></p>
+  </li>
+  <li>
+    <p>Now think about this in terms of basic computer functionality: </p>
+
+    <blockquote>
+      <p><strong>If</strong> the value in the <code>resolution</code> column <strong>equals</strong> the text string of  <code>NONE</code>, <strong>then</strong> insert the text string of <code>small_red</code> into the <code>icon</code> column. <strong>Else</strong>, insert <code>small_yellow</code>.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>This calls for the logical <code>IF</code> function. Here's its documentation:</p>
+
+    <pre><code> IF(logical_expression, value_if_true, value_if_false)
+
+ Example:
+ IF(A2 = "foo", "A2 is foo", "A2 is not foo")
+</code></pre>
+
+    <p>And this is what we want for our scenario:</p>
+
+    <pre><code>   =IF(F2 = "NONE", "small_red", "small_yellow")
+</code></pre>
+
+    <p><img alt="img" src="/files/tutorials/fusion-tables/spreadsheet-match-for-none.png" /></p>
+  </li>
+  <li>
+    <p>We have what we need to make differentiated icons on our Fusion Tables map. So now <strong>export</strong> the data out of Spreadsheets and <strong>import</strong> back into Fusion Tables (it's probably easier to create a brand new table). Yes, you'll have to redo that step of specifying the <code>x</code> and <code>y</code> columns as being of the <strong>Location</strong> type. This is why it's better to this data transformation before you ever go into Fusion Tables, but now you've had a hands-on experience with the more pedantic work in data visualization.</p>
+  </li>
+  <li>
+    <p>Finally, follow the steps previously outlined above in the <strong>Specifying different map markers</strong> section. Here's the <strong>video</strong> of those steps, once the re-importing has been done:</p>
+
+    <video id="fusion-tables-icon-column-005" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-icon-column-005.mp4" type="video/mp4" /></video>
+  </li>
+</ol>
+
+<h3 id="publishing-to-the-web">Publishing to the web</h3>
+
+<p>Have you created a <strong>Github Pages repository</strong> yet? <a href="/github/pages-setup">If not, follow this tutorial and get back here</a>.</p>
+
+<p>One of Fusion Tables's most convenient features is that your work not only lives on the web (inside of the FT app hosted on Google), but it can be easily embedded as an interactive into your a webpage of your choice.</p>
+
+<ol>
+  <li>If you're still looking at your Fusion Tables assaults map, select <strong>Tools &gt; Publish</strong> from the menubar.</li>
+  <li>The first thing to do is make the table <strong>publicly viewable</strong>. FT will prompt you to <strong>Change visibility</strong>. Click on that link and set your table's visibility settings so that anyone on the Web can view your table.</li>
+  <li>Back in the <strong>Publish</strong> dialog box, customize the <strong>width</strong> and <strong>height</strong> of the map to your liking. </li>
+  <li>Select the <strong>Get HTML and JavaScript</strong> dropdown, then select all the code and <strong>Copy</strong> it to your clipboard.</li>
+  <li>
+    <p>Go to your <strong>Github Pages repository</strong>, e.g. </p>
+
+    <p><code>https://github.com/USERNAME/USERNAME.github.io</code></p>
+  </li>
+  <li><strong>Create a new file</strong>, name it something like <code>assaults-map.html</code>, and then <strong>Paste</strong> your clipboard into the file. If you know a little HTML, you can edit the file as you like (between the <code>&lt;body&gt;</code> tags at the very bottom of the pasted code). </li>
+  <li><strong>Commit</strong> the file.</li>
+  <li>Visit the page at: <code>http://USERNAME.github.io/assaults-map</code></li>
+</ol>
+
+<h5 id="video-4">Video</h5>
+
+<video id="fusion-tables-publish-006" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-publish-006.mp4" type="video/mp4" /></video>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Fusion Tables is a great way for creating interactive web maps from large (but relatively simple) data tables. Check out the <a href="/tutorials/mapping/fusion-table-shapes">tutorial on creating intensity maps in Fusion Tables</a> to see other ways of linking data to geography inside of FT.</p>
+
+<h5 id="more-info">More info</h5>
+
+<ul>
+  <li><a href="https://support.google.com/fusiontables/answer/184641">Create with Fusion Tables tutorial</a></li>
+  <li><a href="http://www.smalldatajournalism.com/projects/one-offs/mapping-with-fusion-tables/">Intro to Data Mashing and Mapping with Google Fusion Tables</a></li>
+</ul>
+
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

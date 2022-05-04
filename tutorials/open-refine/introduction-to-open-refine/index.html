@@ -1,0 +1,288 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Data Exploration with OpenRefine | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="OpenRefine is a power tool for cleaning data. In this tutorial, we learn basic operations for exploring the data in Refine.">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#open-refine">Open-refine</a></span> 
+                </h4>
+                <h1 class="title">
+                    Data Exploration with OpenRefine
+                </h1>
+                <div class="description">
+                    <p>
+                        OpenRefine is a power tool for cleaning data. In this tutorial, we learn basic operations for exploring the data in Refine.
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>The <a href="http://openrefine.org/">OpenRefine homepage</a>.</p>
+
+<p><a href="http://openrefine.org/download.html">Download it here</a>. This tutorial uses the <strong>2.6 beta</strong>, but the mechanics are largely the same as they are in 2.5.</p>
+
+<p>The dataset for this tutorial will be the Federal Election Commission's list of Iowa individual contributors to the 2008 U.S. Presidential Race, <a href="ftp://ftp.fec.gov/FEC/Presidential_Map/2008/P00000001/P00000001-IA.zip">which you can find as a zipped file here</a>.</p>
+
+<h3 id="about-starting-the-openrefine-application">About starting the OpenRefine application</h3>
+
+<p>One of the nicest things about OpenRefine is that it works from your web browser, which makes it about as intuitive as learning to use Google Spreadsheets. However, it is <strong>not</strong> an <em>Internet application</em>, in the sense that you don't have to be connected to the Internet to use it.</p>
+
+<p>When you open the OpenRefine application, you're starting a background server process (a black Terminal window may pop up for the briefest moment). It won't even seem that anything has been opened because, well, OpenRefine is in the <em>background</em>.</p>
+
+<p>However, if everything is working as expected, you should be able to connect your browser to the address <code>http://127.0.0.1:3333/</code></p>
+
+<p>The address of <code>127.0.0.1</code> is actually <em>your own computer</em>. And that <code>:3333</code> specifies that you're connecting to port <code>3333</code> of your computer, which is what the OpenRefine app is currently running from.</p>
+
+<h3 id="creating-a-new-project">Creating a new project</h3>
+
+<p><em>The dataset for this tutorial will be the Federal Election Commission's list of Iowa individual contributors to the 2008 U.S. Presidential Race, <a href="ftp://ftp.fec.gov/FEC/Presidential_Map/2008/P00000001/P00000001-IA.zip">which you can find as a zipped file here</a>.</em></p>
+
+<p>Upon opening Refine, we are presented with a minimal homepage for managing Refine projects. These projects are stored in a local directory on your computer (again, Refine doesn't need to touch the Internet), and every project you create can be re-opened from here. You can also <strong>import</strong> Refine projects from other computers.</p>
+
+<ol>
+  <li>Select the <strong>Create Project</strong></li>
+  <li>At the "Get data from" prompt, choose <strong>This Computer</strong> </li>
+  <li>
+    <p>Then click the <strong>Choose Files</strong> button</p>
+
+    <p><img alt="img" src="/files/tutorials/open-refine/create-project-choose-files-001.png" /></p>
+  </li>
+  <li>
+    <p>The next screen will let you preview how Refine will <strong>parse</strong> the file. If you're using the Iowa FEC contributors CSV file, you everything should be parsed as expected and you can click the <strong>Create Project »</strong> button in the <strong>top-right</strong> of the screen:</p>
+
+    <p><img alt="img" src="/files/tutorials/open-refine/preview-project-file-002.png" /></p>
+  </li>
+  <li>
+    <p>After a bit of processing, you'll be taken to data, ready to explore and clean:</p>
+
+    <p><img alt="img" src="/files/tutorials/open-refine/initial-data-opening-003.png" /></p>
+  </li>
+</ol>
+
+<h3 id="exploring-the-data-panel">Exploring the data panel</h3>
+
+<p>The screen is divided into two panels. On the left is the <strong>Facet/Filter panel</strong>, which we'll cover in the next section. The wide panel on the right contains a view of the imported data, similar to a spreadsheet:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/data-panel.png" /></p>
+
+<p>One thing should stick out to you: Only 10 rows at a time are shown. This can be changed to show up to <strong>50</strong> rows, but you still have to click through the pagination to all the pages. So, in other words, exploring the data in Refine is not as easy or effortless as it is in a spreadsheet.</p>
+
+<p>That may be a disadvantage, but we'll see soon that scrolling through lots of data rows is <strong>not the intended use case</strong> for Refine (or for the database GUIs we've so far used).</p>
+
+<h4 id="editing-cells">Editing cells</h4>
+
+<p>Changing the value of a cell is pretty straight-forward. Just hover the mouse over the cell until you see the word <strong>Edit</strong> pop-up. Click on that, and a new dialog box will appear:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/edit-cell.png" /></p>
+
+<p>Refine offers us two choices of alteration: Altering just the value of that single cell, or, <strong>Apply to All Identical Cells</strong>. In this case, if we wanted to change <code>UNITED STATES ARMY</code> to <code>U.S. ARMY</code> and selected <strong>Apply to All Identical Cells</strong>, it would be as if we did a Find and Replace All action for the <code>UNITED STATES ARMY</code> value inside the <code>contrib_employer</code> column. Handy!</p>
+
+<h4 id="column-headers">Column headers</h4>
+
+<p><img alt="img" src="/files/tutorials/open-refine/edit-column.png" /></p>
+
+<p>The dropdown menus, which can be accessed by clicking the little down arrow for each column header, is the quickest way to access Refine's most commonly used powerful features. You can also do things such as rename/remove/move columns, but Refine really isn't about rearranging your data columns.</p>
+
+<p>For the purposes of this tutorial (and the next one, about <a href="/tutorials/open-refine/clustering">clustering data</a>), we care about the <strong>Facet</strong> submenu and the <strong>Text filter</strong> command.</p>
+
+<h3 id="the-facet-and-filter-panel">The Facet and Filter panel</h3>
+
+<p>Let's now turn our attention to the left-side panel, which I'll refer to as the <strong>Facet/Filter</strong> panel. Currently it's empty. So in the <strong>data panel</strong>, click on the column dropdown for <code>contrib_city</code> and select <strong>Text filter</strong>:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/column-dropdown-text-filter.png" /></p>
+
+<p>Selecting that will pop open a new subpanel on the Facet/Filter panel:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/facet-contrib-city.panel.png" /></p>
+
+<p>Start typing in a term, such as <code>CEDAR</code>. The <strong>data panel</strong> will dynamically update. Also, note that in the <strong>top-left</strong> of the data_panel, the number of active rows will change. The dataset has 28,553 rows. But when you <strong>filter</strong> the <code>contrib_city</code> by <code>CEDAR</code>, the data panel will show only <strong>2,010</strong> matching rows:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/matching-cedar-rows.png" /></p>
+
+<h5 id="combining-text-filters">Combining text filters</h5>
+
+<p>Let's add another <strong>Text Filter</strong> for the column of <code>contbr_employer</code>. Then type in something like <code>ROCKWELL</code>. The data panel will now show just <strong>91</strong> matching rows, in other words, only 91 rows have a city with the word <code>CEDAR</code> in it <em>and</em> a <code>contrib_emplyer</code> with the word <code>ROCKWELL</code> in it.</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/matching-cedar-rockwell-rows.png" /></p>
+
+<h5 id="clearing-the-filter-subpanels">Clearing the filter subpanels</h5>
+
+<p>If you erase the filter terms, the data panel will update to show the matching rows. You can also click the little X box to remove the filter panels. Removing both panels will result in the data panel showing all 28,553 rows again.</p>
+
+<p>It's important to note that this filtering is <strong>not</strong> destructive. Rows don't get deleted in Refine unless you explicitly delete them – and in general, you should never delete data in Refine…it's always better just to hide/show rows as needed, because undeleting things is a painful process.</p>
+
+<p>Text filters in Refine can be thought of as doing a <code>WHERE</code> statement in SQL with multiple <code>AND</code> conditions, though for small datasets, it's certainly much faster to use Refine's interactive GUI. Sometimes I'll use Refine solely for quick filtering of datasets (note: it will be a bit clunky for datasets of a million rows and larger).</p>
+
+<h4 id="text-facet">Text facet</h4>
+
+<p>Text filters is fun, but where Refine <em>really</em> shines is with its <strong>faceting</strong> capabilities. In the data panel, click the dropdown for <code>contrib_city</code>, then select <strong>Facet &gt; Text facet</strong></p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/refine-text-facet-dropdown.png" /></p>
+
+<p>A new subpanel will show up on the left that contains a list of all <em>unique</em> terms that exist in the city column, along with how many occurrences there are. In SQL, this would be like doing the following aggregation query:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> contrib_city, <span style="color:#369;font-weight:bold">COUNT</span>(*)
+<span style="color:#080;font-weight:bold">FROM</span> contributions
+<span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> contrib_city
+<span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> contrib_city
+</pre></div>
+</div>
+</div>
+
+<p>The panel can be sorted by <strong>count</strong> of the terms, and it will conveniently display the number of unique choices (617). Already we can see how messy that contributions data is: <code>43RD ST NE</code> is probably not the name of a city in Iowa:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/facet-contbr-city.png" /></p>
+
+<p>Click on any one of the <strong>facets</strong>; the data panel will, as it did with <strong>text filters</strong>, immediately refresh to show all rows that have the selected city. You can also include multiple cities; in effect, this is another way of doing a text filter on multiple cities:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/include-multiple-facets.png" /></p>
+
+<h5 id="multiple-text-facets">Multiple text facets</h5>
+
+<p>Click the dropdown for <code>contbr_employer</code> and add a <strong>Text facet</strong>. Just as with filters, we can combine numerous text facets. If you didn't reset the facet for <code>contrib_city</code>, then the facet count for <code>contbr_employer</code> will reflect only the facets that appear in the <strong>matching rows</strong>.</p>
+
+<p>So in the example below, where I've selected <code>IOWA CITY</code> and <code>WEST DES MOINES</code> as the active city facets, there are  <strong>463</strong> different employer names:</p>
+
+<p><img alt="img" src="/files/tutorials/open-refine/facets-for-employer-and-city.png" /></p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>There's a lot more to Refine, but at least we know now how to quickly browse and explore the data. In the lesson on <a href="/tutorials/open-refine/clustering">clustering</a>, we'll see how Refine uses powerful text-manipulation algorithms to help us clean up the messiness of hand-entered data.</p>
+
+<h3 id="other-resources">Other resources</h3>
+
+<ul>
+  <li><a href="https://github.com/OpenRefine/OpenRefine/wiki/Screencasts">The official screencasts from OpenRefine</a></li>
+  <li><a href="http://www.propublica.org/nerds/item/using-google-refine-for-data-cleaning">Using Google Refine to Clean Messy Data</a> by me, while I was at ProPublica</li>
+  <li><a href="http://schoolofdata.org/handbook/recipes/cleaning-data-with-refine/">Cleaning Data with Refine</a> by the School of Data</li>
+</ul>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

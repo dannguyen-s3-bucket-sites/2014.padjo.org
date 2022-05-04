@@ -1,0 +1,785 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Basic SQL Inner joins | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Combining tables efficiently: where the fun in SQL begins">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#database-joins">Database-joins</a></span> 
+                </h4>
+                <h1 class="title">
+                    Basic SQL Inner joins
+                </h1>
+                <div class="description">
+                    <p>
+                        Combining tables efficiently: where the fun in SQL begins
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>Up to now, we've only worked with one data table at a time. Most of the real world's interesting insights are spread across multiple tables. With SQL, we can <strong>join</strong> tables – in essence, creating brand new data sets to perform searches and aggregations across.</p>
+
+<p>This is an incredibly powerful ability, even more useful than being able to crunch all the data rows in a massive, but singular data table. It does add a new layer of syntax to our queries – you'll want to be especially mindful of <strong>column aliasing</strong> and selection. – but not much given how much more expansive it makes our data powers.</p>
+
+<p><em>This tutorial assumes you've completed all of the <a href="/tutorials/#databases">basic SQL tutorials</a></em></p>
+
+<hr />
+
+<blockquote>
+  <p>Note: For this SQL lesson, I will be using MySQL and the Sequel Pro GUI. The queries and concepts should be the same as they are with SQLite. The database we will use consists of five tables:</p>
+
+  <ol>
+    <li><code>members</code> - Current U.S. congressmembers as of October 2014</li>
+    <li><code>terms</code> - The terms served by the current U.S. congressmembers</li>
+    <li><code>social_accounts</code> - social account names for current U.S. congressmembers</li>
+    <li><code>twitter_profiles</code> - Twitter profile data for the accounts in <code>social_accounts</code></li>
+    <li><code>tweets</code> - The most recent 3,200 tweets of each Twitter profile (about 800,000+ tweets altogether)</li>
+  </ol>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sql.zip">MySQL dump of Congress and Twitter data</a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sqlite.zip">SQLite dump of Congress and Twitter data</a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="multiple-tables">Multiple tables</h3>
+
+<p><img alt="img" src="/files/lectures/2014-10-16/congress-db-opening.png" /></p>
+
+<p>After creating a database and importing the dump of Congress-Twitter data, we notice that there are <strong>five</strong> tables to work with:</p>
+
+<ul>
+  <li><code>members</code> - all the sitting members of Congress, as of Oct. 16, 2014, via the <a href="https://github.com/unitedstates/congress">github/unitedstates repo</a></li>
+  <li><code>social_accounts</code> - the <em>known</em> social media accounts for Congressmembers, as of Oct. 16, 2014, also from the <a href="https://github.com/unitedstates/congress">github/unitedstates repo</a>. For the purposes of this tutorial, we care about their Twitter accounts.</li>
+  <li><code>terms</code> - Each term for each of the current Congressmembers, i.e. every time they've served in Congress. Some members may have moved districts or chambers (House to Senate) over their careers</li>
+  <li><code>twitter_profiles</code> - The twitter profile data for each of the Twitter accounts in the <code>social accounts</code> table. The data fields come from the <a href="https://dev.twitter.com/rest/reference/get/users/show">official Twitter API for users/show</a>.</li>
+  <li><code>tweets</code> - The past 3,200 tweets for each of the <code>twitter_profiles</code>. The data fields come from <a href="https://dev.twitter.com/rest/reference/get/statuses/user_timeline">the official Twitter API for statuses/user_timeline</a> </li>
+</ul>
+
+<h3 id="structure-of-a-join">Structure of a join</h3>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>
+<span style="color:#B06;font-weight:bold">SELECT</span> [<span style="color:#339;font-weight:bold">columns</span> <span style="color:#080;font-weight:bold">from</span> table_x, <span style="color:#339;font-weight:bold">columns</span> <span style="color:#080;font-weight:bold">from</span> table_y]
+<span style="color:#080;font-weight:bold">FROM</span> table_x
+<span style="color:#080;font-weight:bold">JOIN</span> table_y
+ <span style="color:#080;font-weight:bold">ON</span> table_x.some_id_field = table_y.some_id_field
+<span style="color:#080;font-weight:bold">WHERE</span> [some conditions]
+
+</pre></div>
+</div>
+</div>
+
+<p>The <code>ON</code> keyword specifies what criteria to use to decide that a row in <code>table_x</code> should be joined with a corresponding row in <code>table_y</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, members.first_name, members.last_name, members.party
+    <span style="color:#080;font-weight:bold">FROM</span> members
+    <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+      <span style="color:#080;font-weight:bold">ON</span> social_accounts.bioguide_id = members.bioguide_id
+    <span style="color:#080;font-weight:bold">WHERE</span> members.state = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">CA</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">AND</span> members.gender = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">F</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> members.last_name
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>twitter_screen_name</th>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>party</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RepKarenBass</td>
+      <td>Karen</td>
+      <td>Bass</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>SenatorBoxer</td>
+      <td>Barbara</td>
+      <td>Boxer</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>JuliaBrownley26</td>
+      <td>Julia</td>
+      <td>Brownley</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepLoisCapps</td>
+      <td>Lois</td>
+      <td>Capps</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepJudyChu</td>
+      <td>Judy</td>
+      <td>Chu</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepSusanDavis</td>
+      <td>Susan</td>
+      <td>Davis</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepAnnaEshoo</td>
+      <td>Anna</td>
+      <td>Eshoo</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>SenFeinstein</td>
+      <td>Dianne</td>
+      <td>Feinstein</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>Rep_JaniceHahn</td>
+      <td>Janice</td>
+      <td>Hahn</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepBarbaraLee</td>
+      <td>Barbara</td>
+      <td>Lee</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepZoeLofgren</td>
+      <td>Zoe</td>
+      <td>Lofgren</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>DorisMatsui</td>
+      <td>Doris</td>
+      <td>Matsui</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>GraceNapolitano</td>
+      <td>Grace</td>
+      <td>Napolitano</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepMcLeod</td>
+      <td>Gloria</td>
+      <td>Negrete McLeod</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>NancyPelosi</td>
+      <td>Nancy</td>
+      <td>Pelosi</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepRoybalAllard</td>
+      <td>Lucille</td>
+      <td>Roybal-Allard</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>LorettaSanchez</td>
+      <td>Loretta</td>
+      <td>Sanchez</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepLindaSanchez</td>
+      <td>Linda</td>
+      <td>Sánchez</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>RepSpeier</td>
+      <td>Jackie</td>
+      <td>Speier</td>
+      <td>Democrat</td>
+    </tr>
+    <tr>
+      <td>MaxineWaters</td>
+      <td>Maxine</td>
+      <td>Waters</td>
+      <td>Democrat</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="data-mash">Data mash</h3>
+
+<p>Let's take this step-by-step.</p>
+
+<p>The <code>members</code> table contains <code>538</code> rows. The <code>social_accounts</code> table contains <code>535</code> rows (apparently, some members do <em>not</em> have any social media presence).</p>
+
+<p>You can visualize what a <code>JOIN</code> does by imagining the two data tables being mashed together, side by side:</p>
+
+<p><img alt="img" src="/files/lectures/2014-10-16/table-mash-sql-join.png" /></p>
+
+<p>But anyone can just smush two spreadsheets together. How does the database know to do it <em>intelligently</em>, i.e. so that the entry for <em>Senator Barbara Boxer</em> in the <code>members</code> table is matched to the corresponding <code>SenatorBoxer</code> <a href="https://twitter.com/SenatorBoxer">Twitter account</a>?</p>
+
+<p>As you've probably noticed by now, the SQL engine doesn't do <em>anything</em> intelligently (at least automatically), from what we can tell. We have to be very explicit with it, even telling it what columns to include via <code>SELECT</code>.</p>
+
+<h3 id="joining-without-the-on-keyword">Joining without the <code>ON</code> keyword</h3>
+
+<p>In the original example, I used the <code>ON</code> keyword after the <code>JOIN</code> statement:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>...
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.bioguide_id = members.bioguide_id
+...
+</pre></div>
+</div>
+</div>
+
+<p>Let's ignore that for now and write a simpler query:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre> <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, members.first_name, members.last_name, members.party
+    <span style="color:#080;font-weight:bold">FROM</span> members
+    <span style="color:#080;font-weight:bold">JOIN</span> social_accounts;
+</pre></div>
+</div>
+</div>
+
+<p>The result will be <strong>287,830</strong> rows that look like this:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>twitter_screen_name</th>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>party</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AaronSchock</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>Republican</td>
+    </tr>
+    <tr>
+      <td>AnderCrenshaw</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>Republican</td>
+    </tr>
+    <tr>
+      <td>AskGeorge</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>Republican</td>
+    </tr>
+    <tr>
+      <td>AustinScottGA08</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>Republican</td>
+    </tr>
+    <tr>
+      <td>BachusAL06</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>Republican</td>
+    </tr>
+    <tr>
+      <td>BennieGThompson</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>Republican</td>
+    </tr>
+    <tr>
+      <td>BettyMcCollum04</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>Republican</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Huh? Why is a random person being associated with a bunch of different twitter handles? Take a look at the result count: <strong>287,830</strong> rows. What is that the product of?</p>
+
+<p><strong>538</strong> <code>members</code> multiplied by <strong>535</strong> <code>social_accounts</code></p>
+
+<p>Apparently, when the <code>JOIN</code> statement is given no other instruction, it will just match <em>every combination</em> of the first table with the second table. Hence, the <strong>287,830</strong> different combinations.</p>
+
+<h3 id="joining-with-the-on-keyword">Joining with the <code>ON</code> keyword</h3>
+
+<p>The <code>JOIN</code> clause is similar to <code>WHERE</code> in that it will take a <em>conditional statement</em>. If – when given a row from <code>table_x</code> and another row from <code>table_y</code> – that conditional statement is <strong>true</strong>, then the database engine will <strong>join</strong> the two rows together.</p>
+
+<p>So to be pedantic: if we supply a statement that is <em>always true</em>, we will have the same <strong>287,830</strong>-row mashup as we did before:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre> <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, members.first_name, members.last_name, members.party
+    <span style="color:#080;font-weight:bold">FROM</span> members
+    <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+      <span style="color:#080;font-weight:bold">ON</span> <span style="color:#00D">1</span> = <span style="color:#00D">1</span>;
+</pre></div>
+</div>
+</div>
+
+<p>So what conditional statement will give us a usable result?</p>
+
+<h3 id="a-shared-field">A shared field</h3>
+
+<p>In both <code>members</code> and <code>social_accounts</code>, there is a field named <code>bioguide_id</code>. Every U.S. congressmember is assigned a unique ID: so whether one table uses "Barb Boxer" and another table uses "Barbara Boxer", we know they both refer to the same senator if they both have the same <code>bioguide_id</code> for her: <a href="http://bioguide.congress.gov/scripts/biodisplay.pl?index=b000711">b000711</a></p>
+
+<p>So we tell the database to join a row from <code>members</code> with a row in <code>social_accounts</code> <em>only if</em> they <em>both have the same</em> <code>bioguide_id</code>
+:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, members.first_name, members.last_name, members.party
+    <span style="color:#080;font-weight:bold">FROM</span> members
+    <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+      <span style="color:#080;font-weight:bold">ON</span> social_accounts.bioguide_id = members.bioguide_id
+</pre></div>
+</div>
+</div>
+
+<p>Here's a crude illustration:</p>
+
+<p><img alt="img" src="/files/lectures/2014-10-16/table-sql-join-with-on.png" /></p>
+
+<h3 id="multiple-tables-1">Multiple tables</h3>
+
+<p>Once we've connected Congressmembers to their Twitter screen names, the next step is to connect the Twitter <em>profile</em> data, so that we can ask these kinds of questions:</p>
+
+<ul>
+  <li>Which Congressmember has the most followers?</li>
+  <li>Which Congressmember has been on Twitter the longest?</li>
+  <li>Which Congressmember tweets the most frequently?</li>
+  <li>(Repeat the above queries, but compare the numbers on a chamber and party level)</li>
+</ul>
+
+<p>Check out the <a href="https://dev.twitter.com/rest/reference/get/users/show">Twitter dev docs to see the data fields associated with each Twitter profile</a>. The <code>twitter_profiles</code> table contains a subset of these fields, notably <code>followers_count</code>, <code>created_at</code>, <code>utc_offset</code> (time zone adjustment), <code>statuses_count</code> (number of tweets), and <code>friends_count</code> (number of users followed).</p>
+
+<h4 id="a-three-way-join">A three-way join</h4>
+
+<p>To connect <a href="http://bioguide.congress.gov/scripts/biodisplay.pl?index=b000711">Senator Barbara Boxer</a> to the <a href="https://twitter.com/SenatorBoxer">Twitter profile of @SenatorBoxer</a>, we maintain the join between <code>members</code> and <code>social_accounts</code>, and join a <em>third</em> table, <code>twitter_profiles</code>.</p>
+
+<p>There is no <code>bioguide_id</code> field in <code>twitter_profiles</code>, so the join is made between <code>social_accounts</code> and <code>twitter_profiles</code>, using the respective <code>twitter_screen_name</code> and <code>screen_name</code> fields.</p>
+
+<p><img alt="img" src="/files/tutorials/database-joins/members-social-accounts-twitter-profiles-joined.png" /></p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, members.first_name, members.last_name, members.party, twitter_profiles.followers_count, twitter_profiles.statuses_count, twitter_profiles.created_at
+
+    <span style="color:#080;font-weight:bold">FROM</span> members
+  
+    <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+      <span style="color:#080;font-weight:bold">ON</span> social_accounts.bioguide_id = members.bioguide_id
+
+    <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+      <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = social_accounts.twitter_screen_name
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>twitter_screen_name</th>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>party</th>
+      <th>followers_count</th>
+      <th>statuses_count</th>
+      <th>created_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AaronSchock</td>
+      <td>Aaron</td>
+      <td>Schock</td>
+      <td>Republican</td>
+      <td>23375</td>
+      <td>2439</td>
+      <td>2009-03-12 14:04:15</td>
+    </tr>
+    <tr>
+      <td>AnderCrenshaw</td>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>7945</td>
+      <td>742</td>
+      <td>2009-02-06 01:48:11</td>
+    </tr>
+    <tr>
+      <td>AskGeorge</td>
+      <td>George</td>
+      <td>Miller</td>
+      <td>Democrat</td>
+      <td>12452</td>
+      <td>2513</td>
+      <td>2007-07-09 22:04:23</td>
+    </tr>
+    <tr>
+      <td>AustinScottGA08</td>
+      <td>Austin</td>
+      <td>Scott</td>
+      <td>Republican</td>
+      <td>7079</td>
+      <td>1343</td>
+      <td>2011-01-06 16:01:46</td>
+    </tr>
+    <tr>
+      <td>BachusAL06</td>
+      <td>Spencer</td>
+      <td>Bachus</td>
+      <td>Republican</td>
+      <td>8351</td>
+      <td>520</td>
+      <td>2009-09-29 22:15:34</td>
+    </tr>
+    <tr>
+      <td>BennieGThompson</td>
+      <td>Bennie</td>
+      <td>Thompson</td>
+      <td>Democrat</td>
+      <td>4250</td>
+      <td>366</td>
+      <td>2009-10-14 20:47:03</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="with-where">With <code>WHERE</code></h4>
+
+<p>The <code>WHERE</code> clause comes <em>after</em> the join statements. Its role is still the same: filter out the result set (whether there are joined tables or not) based on conditionals.</p>
+
+<p>This query limits the result set to Republicans in California:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, members.first_name, members.last_name, members.party, twitter_profiles.followers_count, twitter_profiles.statuses_count, twitter_profiles.created_at
+
+    <span style="color:#080;font-weight:bold">FROM</span> members
+  
+    <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+      <span style="color:#080;font-weight:bold">ON</span> social_accounts.bioguide_id = members.bioguide_id
+
+    <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+      <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = social_accounts.twitter_screen_name
+
+    <span style="color:#080;font-weight:bold">WHERE</span> members.party = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Republican</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">AND</span> members.state = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">CA</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="resolving-ambiguous-columns">Resolving ambiguous columns</h3>
+
+<p>In the previous examples, I've introduced a new convention for specifying fields:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, members.first_name, members.last_name, members.party, twitter_profiles.followers_count, twitter_profiles.statuses_count, twitter_profiles.created_at
+</pre></div>
+</div>
+</div>
+
+<p>The form is: <code>[name of table].[name of field inside table]</code></p>
+
+<p>It makes our queries look ungainly, but now that we're dealing with more than one table, there's the distinct possibility that two tables will use the same name for a column. In that situation, the SQL engine needs direction on which column in which table we're referring to.</p>
+
+<p>As it so happens, the previous <code>SELECT</code> statement refers to fields that are all distinctly named across the three tables, i.e., only the <code>twitter_profiles</code> table contains the <code>followers_count</code> field. So this <code>SELECT</code> statement would work:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>   <span style="color:#B06;font-weight:bold">SELECT</span> twitter_screen_name, first_name, last_name, party, followers_count, statuses_count, created_at
+</pre></div>
+</div>
+</div>
+
+<p>However, the following query, joining <code>members</code> and <code>social_accounts</code>, will fail:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> bioguide_id, first_name, last_name, party
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+</pre></div>
+</div>
+</div>
+
+<p>MySQL will squawk with this error:</p>
+
+<blockquote>
+  <p>ERROR 1052 (23000): Column 'bioguide_id' in field list is ambiguous</p>
+</blockquote>
+
+<p>If you're thinking, <em>Well, who cares if it's ambiguous? The value will be the same across both tables!</em> – well, yes. But this won't <em>always</em> be the case, and when there's ambiguity, remember that we have to be <em>explicit</em> and <em>exact</em> as programmers:</p>
+
+<p>The following <code>SELECT</code> statements would work:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> members.bioguide_id, first_name, last_name, party 
+  ...
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.bioguide_id, first_name, last_name, party 
+  ...
+</pre></div>
+</div>
+</div>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>This wraps up the basic syntax for <code>JOIN</code> clauses. The keywords <code>JOIN</code> and <code>ON</code> will be among the last new query keywords that we'll learn. Most everything from here on out <a href="http://en.wikipedia.org/wiki/Join_(SQL)">will be involve new logical concepts about our data's relationships</a>.</p>
+
+<h4 id="exercises">Exercises</h4>
+
+<ol>
+  <li>Which Congressmember has the most followers?</li>
+  <li>Which Congressmember has been on Twitter the longest?</li>
+  <li>What are the top 5 Texas Congressmembers by tweet count?</li>
+  <li>Which party has the most followers combined?</li>
+  <li>List the state and party averages of number of followers per Congressmember</li>
+</ol>
+
+<h4 id="solutions">Solutions</h4>
+
+<p>1 - </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> state, first_name, last_name, followers_count
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.twitter_screen_name = twitter_profiles.screen_name
+
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> followers_count <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<p>2 - </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> state, first_name, last_name, created_at
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.twitter_screen_name = twitter_profiles.screen_name
+
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> created_at <span style="color:#088;font-weight:bold">ASC</span>
+  LIMIT <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<p>3 - </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> first_name, last_name, statuses_count
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.twitter_screen_name = twitter_profiles.screen_name
+
+  <span style="color:#080;font-weight:bold">WHERE</span> state = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">TX</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> statuses_count <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">5</span>
+</pre></div>
+</div>
+</div>
+
+<p>4 - </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> party, <span style="color:#369;font-weight:bold">SUM</span>(followers_count) <span style="color:#080;font-weight:bold">as</span> sum_followers
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.twitter_screen_name = twitter_profiles.screen_name
+
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> party
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> sum_followers <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>5 - </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> state, party, <span style="color:#369;font-weight:bold">AVG</span>(followers_count) <span style="color:#080;font-weight:bold">as</span> avgf
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.twitter_screen_name = twitter_profiles.screen_name
+
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> state, party
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> state, party
+</pre></div>
+</div>
+</div>
+
+<h4 id="other-resources">Other resources</h4>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part3.textile">A Gentle Introduction to SQL Using SQLite, Part III</a></p>
+  </li>
+  <li>
+    <p><a href="http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/">A Visual Explanation of SQL Joins</a></p>
+  </li>
+</ul>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

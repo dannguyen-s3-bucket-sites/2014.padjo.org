@@ -1,0 +1,325 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Introduction to Data Mapping with TileMill | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="An open-source tool for combining maps with data layers">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#mapping">Mapping</a></span> 
+                </h4>
+                <h1 class="title">
+                    Introduction to Data Mapping with TileMill
+                </h1>
+                <div class="description">
+                    <p>
+                        An open-source tool for combining maps with data layers
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p><a href="https://www.mapbox.com/tilemill/">TileMill</a> is a free, open-source program developed by the <a href="https://www.mapbox.com/">MapBox cartography service</a>. It's substantially more flexible and powerful than <a href="/tutorials/mapping/basic-fusion-tables">Google Fusion Tables</a> in terms of developing and designing maps. The tradeoff is that there's a few more steps and services involved in publishing an interactive map online. </p>
+
+<p>In this tutorial, we'll learn how to setup TileMill and create a styled map of earthquakes. In fact, it will pretty much be a <a href="https://www.mapbox.com/tilemill/docs/crashcourse/introduction/">step-by-step ripoff of the crash course guides</a> found on the MapBox site itself:</p>
+
+<ul>
+  <li><a href="https://www.mapbox.com/tilemill/docs/crashcourse/point-data">Importing data</a></li>
+  <li><a href="https://www.mapbox.com/tilemill/docs/crashcourse/styling">Styling data</a></li>
+</ul>
+
+<h3 id="setup-a-project">Setup a project</h3>
+
+<p>Check out the <a href="https://www.mapbox.com/tilemill/docs/install/">official installation docs from Mapbox</a>. Installing TileMill should be as easy as downloading an installer and running it.</p>
+
+<p>Opening TileMill takes you to the <strong>Projects</strong> screen. Click <strong>+ New Project</strong> and name your project. </p>
+
+<p>By default, TileMill will initialize the project with a layer of <strong>countries</strong>, i.e. the borders of the world's countries.</p>
+
+<h5 id="video">Video</h5>
+
+<p>Watch me create a new TileMill project:</p>
+
+<video id="tilemill-new-project-001" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/tilemill-new-project-001.mp4" type="video/mp4" /></video>
+
+<h3 id="importing-data-and-creating-a-new-layer">Importing data and creating a new layer</h3>
+
+<p><img alt="img" src="/files/tutorials/tilemill/earthquakes-layer.png" /></p>
+
+<p>TileMill can import CSV to create a new <strong>layer</strong> of data. In order for this data to show up as points on a map, there must be <strong>latitude</strong> and <strong>longitude</strong> coordinates, i.e. having just a column of addresses won't work, you'll need to geocode them.</p>
+
+<p>For this exercise, we'll be using a dataset that comes with geo-coordinates: a list of earthquakes <a href="http://earthquake.usgs.gov/earthquakes/feed/v1.0/">as detected by the U.S. Geological Survey</a>. You can build your own dataset via the <a href="http://earthquake.usgs.gov/earthquakes/search/">USGS's archive search</a>. Or you can use the <a href="/tutorials/tilemill/earthquakes-7.0.csv">CSV I've generated</a> from a query that includes all earthquakes since 1950 that had a magnitude of 7.0 or greater.</p>
+
+<p>Here's what that CSV looks like as a spreadsheet:</p>
+
+<p><img alt="img" src="/files/tutorials/tilemill/earthquakes-csv-preview.png" /></p>
+
+<ol>
+  <li>Download <a href="/files/tutorials/tilemill/earthquakes-7.0.csv">the CSV here</a>.</li>
+  <li>Click the <strong>Layers icon</strong> at the bottom left. You'll see that a <strong>#countries</strong> layer already exists. Click <strong>+ Add layer</strong>.</li>
+  <li>In the <strong>Add layer</strong> dialog, select the <strong>Browse</strong> button by the <strong>Datasource</strong> field</li>
+  <li>Find the earthquakes-related <a href="/files/tutorials/tilemill/earthquakes-7.0.csv">CSV that you've downloaded</a>.</li>
+  <li>Click the <strong>Save &amp; Style</strong> button</li>
+  <li>You'll see two changes:
+    <ol>
+      <li>The world map is now full of red dots, one for each earthquake event.</li>
+      <li>The <code>style.mss</code> sheet now contains some code for the <code>#earthquakes7</code> element. We'll be dealing with this in the next section.</li>
+    </ol>
+  </li>
+</ol>
+
+<h5 id="video-1">Video</h5>
+
+<p>Watch me add the layer of earthquakes data:</p>
+
+<video id="tilemill-earthquake-layer-002" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/tilemill-earthquake-layer-002.mp4" type="video/mp4" /></video>
+
+<h3 id="styling-the-map">Styling the map</h3>
+
+<p><img alt="img" src="/files/tutorials/tilemill/pink-orange-map.png" /></p>
+
+<p>How much you enjoy this next section will vary upon your previous experience with <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Getting_started">CSS, the styling language for webpages</a>.</p>
+
+<p>TileMill uses its <a href="https://www.mapbox.com/tilemill/docs/manual/carto/">own kind of style language called CartoCSS</a>, which looks like CSS but contains features specific to TileMill-generated maps.</p>
+
+<p>We can play around with these styles by editing the code found in the right-side panel, which shows the contents of the <code>style.mss</code> file. Let's muck about with the default styles to get a feel for what we can change.</p>
+
+<ol>
+  <li>
+    <p>Let's change the color of the countries' boundaries to <strong>blue</strong>. In the <code>#countries ::outline</code> selector, change the value of the <code>line-color</code> property to <code>blue</code>. If you alter the default code, it will look like this: </p>
+
+    <pre><code>   #countries {
+     ::outline {
+      line-color: blue;
+      line-width: 2;
+      line-join: round;
+    }
+    polygon-fill: #fff;
+   }
+</code></pre>
+  </li>
+  <li>Hit the <code>Save</code> button.</li>
+  <li>
+    <p>Try making these changes:</p>
+
+    <ol>
+      <li>Change the fill color of the countries by changing the value of <code>polygon-fill</code></li>
+      <li>Change the color of the non-country shapes (i.e. the bodies of water) to <code>pink</code>; this value is found in the <code>Map</code> element and its <code>background-color</code> value. </li>
+      <li>
+        <p>Since some of the earthquake events happened on top of each other, let's make their color transparent by adding a <code>marker-fill-opacity</code> property and setting it to <code>0.1</code> (i.e. 10%).</p>
+
+        <pre><code>Map {
+  background-color: pink;
+}
+
+#countries {
+  ::outline {
+    line-color: blue;
+    line-width: 2;
+    line-join: round;
+  }
+  polygon-fill: orange;
+}
+
+#earthquakes7 {
+  marker-width:6;
+  marker-fill:#f45;
+  marker-line-color:#813;
+  marker-allow-overlap:true;
+  marker-fill-opacity: 0.1;
+}
+</code></pre>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<h5 id="video-2">Video</h5>
+
+<p>Watch me make these style changes to the map:</p>
+
+<video id="tilemill-color-styling-003" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/tilemill-color-styling-003.mp4" type="video/mp4" /></video>
+
+<p>Check out Mapbox's <a href="https://github.com/mapbox/carto/blob/master/docs/latest.md">online reference for all the different parameters we can use in CartoCSS</a>.</p>
+
+<h3 id="creating-conditional-styles-based-on-data">Creating conditional styles based on data</h3>
+
+<p><img alt="img" src="/files/tutorials/tilemill/earthquakes-conditional-markers.png" /></p>
+
+<p>CartoCSS becomes even more fun when we use it to make <em>styles</em> <strong>based on the data</strong>. For example, it'd be nice if these dots corresponded to the <em>magnitude</em> of the earthquakes, e.g. the <code>mag</code> field in our original CSV.</p>
+
+<p>This example is based on the <a href="https://www.mapbox.com/tilemill/docs/crashcourse/styling/#conditional-styles">official tutorial, in the section named Conditional Styles</a></p>
+
+<ol>
+  <li>Review the structure of the dataset by going to the <strong>Layers</strong> submenu and clicking the <strong>Features icon</strong> (it looks kind of like a spreadsheet) next to the <code>earthquakes7</code> layer.</li>
+  <li>Scroll to the right of our wide CSV file (if you're on a Mac and the scrollbars aren't showing, just use the <strong>arrow keys</strong>). Note the name of the field, <code>mag</code>, and its range: from <code>7</code> to <code>9.1</code></li>
+  <li>
+    <p>In the <code>styles.mss</code> sheet, we can customize the size of the marker by using the <code>marker-width</code> property and using this kind of boolean notation <em>inside</em> of the <code>#earthquakes7</code> element:</p>
+
+    <pre><code> #earthquakes7 {
+   [mag &gt;= 7]{ marker-width: 4}
+   [mag &gt;= 8]{ marker-width: 20}
+   [mag &gt;= 9]{ marker-width: 100}
+ }
+</code></pre>
+  </li>
+</ol>
+
+<h5 id="video-3">Video</h5>
+
+<p>Watch me type in these conditional styles to customize the size of the dots.</p>
+
+<video id="tilemill-conditional-styling-004" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/tilemill-conditional-styling-004.mp4" type="video/mp4" /></video>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>We'll save other TileMill features, such as adding popups and publishing an interactive map, for another tutorial. Or, <a href="https://www.mapbox.com/tilemill/docs/crashcourse/introduction/">you can check out the official crash course guide at Mapbox</a>.</p>
+
+<p>For now, there's no shame in just exporting the map as a PNG, or even taking a screenshot of the map, and including it as a static image file on a webpage.</p>
+
+<h4 id="other-resources">Other resources</h4>
+
+<ul>
+  <li>
+    <p><a href="https://www.mapbox.com/tilemill/docs/crashcourse/introduction/">Mapbox's Crash Course Guide to TileMill</a></p>
+  </li>
+  <li>
+    <p><a href="http://dataforradicals.com/the-insanely-illustrated-guide-to-your-first-tile-mill-map/">The Insanely Illustrated Guide to Your First Data-Driven TileMill Map</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/mapbox/carto/blob/master/docs/latest.md">CartoCSS reference</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/veltman/learninglunches/tree/master/maps">So you want to make a map</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/veltman/learninglunches/tree/master/leaflet">Making maps with Leaflet: A starter guide</a> (Leaflet is another kind of mapping framework for the web).</p>
+  </li>
+</ul>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

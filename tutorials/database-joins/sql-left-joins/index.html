@@ -1,0 +1,936 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>SQL Left Joins | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Sometimes what's absent is more interesting than what's there.">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#database-joins">Database-joins</a></span> 
+                </h4>
+                <h1 class="title">
+                    SQL Left Joins
+                </h1>
+                <div class="description">
+                    <p>
+                        Sometimes what's absent is more interesting than what's there.
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>The concept of the <code>LEFT JOIN</code> is similar to the <a href="/tutorials/sql-inner-join">join clause we've studied previously</a>. The standard join we've done is an "inner join", combining rows from the two tables in which there is a matching field. We can think of an inner join as including only the rows that are <strong>inside</strong> the <code>JOIN</code> requirement.</p>
+
+<p>A <code>LEFT JOIN</code> includes all of the results from an <em>inner</em> join. However, it also includes rows from the "left"-side table that have <em>no match</em> to the other (or "right"-side) table. So a <code>LEFT JOIN</code> will always have <em>at least</em> as many results as an inner join.</p>
+
+<p>The upshot? With the left join, we can quickly find out which rows exist in the "left" table that don't have a corresponding row in another table. Sometimes what's absent is more interesting than what's there.</p>
+
+<hr />
+
+<blockquote>
+  <p>Note: For this SQL lesson, I will be using MySQL and the Sequel Pro GUI. The queries and concepts should be the same as they are with SQLite. The database we will use consists of five tables:</p>
+
+  <ol>
+    <li><code>members</code> - Current U.S. congressmembers as of October 2014</li>
+    <li><code>terms</code> - The terms served by the current U.S. congressmembers</li>
+    <li><code>social_accounts</code> - social account names for current U.S. congressmembers</li>
+    <li><code>twitter_profiles</code> - Twitter profile data for the accounts in <code>social_accounts</code></li>
+    <li><code>tweets</code> - The most recent 3,200 tweets of each Twitter profile (about 800,000+ tweets altogether)</li>
+  </ol>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sql.zip">MySQL dump of Congress and Twitter data</a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sqlite.zip">SQLite dump of Congress and Twitter data</a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h2 id="the-left-join-versus-an-inner-join">The <code>LEFT JOIN</code> versus an <code>INNER JOIN</code></h2>
+
+<p>For MySQL and SQLite, the use of the <code>JOIN</code> clause is equivalent to what's known as an <strong>inner join</strong>. So these two statements are equivalent:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> table_a
+   <span style="color:#080;font-weight:bold">JOIN</span> table_b
+   ...
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> table_a
+   <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> table_b
+   ...
+</pre></div>
+</div>
+</div>
+
+<p>Quick note: Another name for a <code>LEFT JOIN</code> is <code>LEFT OUTER JOIN</code>, which may help reiterate the difference between a <code>INNER JOIN</code> and <code>LEFT JOIN</code>. However, the keyword <code>OUTER</code> is <em>optional</em>, so I will always refer to it just as a <code>LEFT JOIN</code>.</p>
+
+<h3 id="an-inner-join-of-movie-stars">An inner join of movie stars</h3>
+
+<p>The cast of <a href="http://www.imdb.com/title/tt0268126/">Adaptation</a></p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Birthyear</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="http://www.imdb.com/name/nm0000115/">Nicolas Cage</a></td>
+      <td>1964</td>
+    </tr>
+    <tr>
+      <td><a href="http://www.imdb.com/name/nm0177933/">Chris Cooper</a></td>
+      <td>1951</td>
+    </tr>
+    <tr>
+      <td><a href="http://www.imdb.com/name/nm0004051/">Brian Cox</a></td>
+      <td>1946</td>
+    </tr>
+    <tr>
+      <td><a href="http://www.imdb.com/name/nm0350454/">Maggie Gyllenhaal</a></td>
+      <td>1977</td>
+    </tr>
+    <tr>
+      <td><a href="http://www.imdb.com/name/nm0000658/">Meryl Streep</a></td>
+      <td>1949</td>
+    </tr>
+    <tr>
+      <td><a href="http://www.imdb.com/name/nm0842770/">Tilda Swinton</a></td>
+      <td>1960</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Academy Awards:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Status</th>
+      <th>Year</th>
+      <th>Name</th>
+      <th>Movie</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actor</td>
+      <td>Nom</td>
+      <td>2003</td>
+      <td>Nicolas Cage</td>
+      <td>Adaptation</td>
+    </tr>
+    <tr>
+      <td>Actor</td>
+      <td>Won</td>
+      <td>1996</td>
+      <td>Nicolas Cage</td>
+      <td>Leaving Las Vegas</td>
+    </tr>
+    <tr>
+      <td>Supporting Actor</td>
+      <td>Won</td>
+      <td>2003</td>
+      <td>Chris Cooper</td>
+      <td>Adaptation</td>
+    </tr>
+    <tr>
+      <td>Supporting Actress</td>
+      <td>Nom</td>
+      <td>2010</td>
+      <td>Maggie Gyllenhall</td>
+      <td>Crazy Heart</td>
+    </tr>
+    <tr>
+      <td>Actor</td>
+      <td>Won</td>
+      <td>2008</td>
+      <td>Philip S. Hoffman</td>
+      <td>Capote</td>
+    </tr>
+    <tr>
+      <td>Supporting Actor</td>
+      <td>Nom</td>
+      <td>1994</td>
+      <td>John Malkovich</td>
+      <td>In the Line of Fire</td>
+    </tr>
+    <tr>
+      <td>Supporting Actress</td>
+      <td>Nom</td>
+      <td>2000</td>
+      <td>Catherine Keener</td>
+      <td>Being John Malkovich</td>
+    </tr>
+    <tr>
+      <td>Actress</td>
+      <td>Won</td>
+      <td>1983</td>
+      <td>Meryl Streep</td>
+      <td>Sophie's Choice</td>
+    </tr>
+    <tr>
+      <td>Actress</td>
+      <td>Nom</td>
+      <td>2003</td>
+      <td>Meryl Streep</td>
+      <td>Adaptation</td>
+    </tr>
+    <tr>
+      <td>Supporting Actress</td>
+      <td>Won</td>
+      <td>2008</td>
+      <td>Tilda Swinton</td>
+      <td>Michael Clayton</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>An <code>INNER JOIN</code> on the <code>Name</code> field returns rows in which the same name, e.g. <code>Nicolas Cage</code>, <code>Meryl Streep</code> show up in <em>both</em> tables. </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> actors.name, actors.birthyear, awards.status, awards.year
+      (awards.year - actors.birthyear) <span style="color:#080;font-weight:bold">AS</span> oscar_age
+    <span style="color:#080;font-weight:bold">FROM</span> actors
+    <span style="color:#080;font-weight:bold">JOIN</span> awards 
+      <span style="color:#080;font-weight:bold">ON</span> awards.name = actors.name
+</pre></div>
+</div>
+</div>
+
+<p>The result of this query will effectively show all <em>Adaptation</em> cast members who have been nominated for or won at least one Academy award:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>actors.name</th>
+      <th>actors.birthyear</th>
+      <th>awards.status</th>
+      <th>awards.year</th>
+      <th>oscar_age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nicolas Cage</td>
+      <td>1964</td>
+      <td>Nom</td>
+      <td>2003</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <td>Nicolas Cage</td>
+      <td>1964</td>
+      <td>Won</td>
+      <td>1996</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <td>Chris Cooper</td>
+      <td>1951</td>
+      <td>Won</td>
+      <td>2003</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <td>Maggie Gyllenhall</td>
+      <td>1977</td>
+      <td>Nom</td>
+      <td>2010</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <td>Meryl Streep</td>
+      <td>1949</td>
+      <td>Won</td>
+      <td>1983</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>Meryl Streep</td>
+      <td>1949</td>
+      <td>Nom</td>
+      <td>2003</td>
+      <td>54</td>
+    </tr>
+    <tr>
+      <td>Tilda Swinton</td>
+      <td>1960</td>
+      <td>Won</td>
+      <td>2008</td>
+      <td>48</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="a-left-join-of-movie-stars">A left join of movie stars</h3>
+
+<p>A <code>LEFT JOIN</code> contains everything than a standard <code>JOIN</code> (i.e. an <code>INNER JOIN</code>) contains <em>and in addition, includes</em> the entries from the "left" table – in our case, the <code>actors</code> table – that have <em>no corresponding entry</em> in the "right" table – the <code>awards</code> table:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> actors.name, actors.birthyear, awards.status, awards.year
+      (awards.year - actors.birthyear) <span style="color:#080;font-weight:bold">AS</span> oscar_age    
+    <span style="color:#080;font-weight:bold">FROM</span> actors
+    <span style="color:#080;font-weight:bold">LEFT</span> <span style="color:#080;font-weight:bold">JOIN</span> awards 
+      <span style="color:#080;font-weight:bold">ON</span> awards.name = actors.name
+</pre></div>
+</div>
+</div>
+
+<p>This result set has one additional row for <code>Brian Cox</code>, who has not yet made it to the Oscars. The <code>LEFT JOIN</code> allows him to make one appearance in the results table, though all of the fields relating to <code>awards</code> will be <code>NULL</code></p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>actors.name</th>
+      <th>actors.birthyear</th>
+      <th>awards.status</th>
+      <th>awards.year</th>
+      <th>oscar_age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nicolas Cage</td>
+      <td>1964</td>
+      <td>Nom</td>
+      <td>2003</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <td>Nicolas Cage</td>
+      <td>1964</td>
+      <td>Won</td>
+      <td>1996</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <td>Chris Cooper</td>
+      <td>1951</td>
+      <td>Won</td>
+      <td>2003</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <td>Brian Cox</td>
+      <td>1946</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+    </tr>
+    <tr>
+      <td>Maggie Gyllenhall</td>
+      <td>1977</td>
+      <td>Nom</td>
+      <td>2010</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <td>Meryl Streep</td>
+      <td>1949</td>
+      <td>Won</td>
+      <td>1983</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>Meryl Streep</td>
+      <td>1949</td>
+      <td>Nom</td>
+      <td>2003</td>
+      <td>54</td>
+    </tr>
+    <tr>
+      <td>Tilda Swinton</td>
+      <td>1960</td>
+      <td>Won</td>
+      <td>2008</td>
+      <td>48</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="a-left-join-with-null">A left join with <code>NULL</code></h3>
+
+<p>The nature of the <code>LEFT JOIN</code> makes it easy to figure out who is in the left-side table <em>but not in the right-side table</em>; because the left-side "orphans" will have <code>NULL</code> states for fields that originate from the right-side.</p>
+
+<p>In our example, <code>Brian Cox</code> from the <code>actors</code> table will have <code>NULL</code>
+ for <code>awards.status</code>, <code>awards.year</code>, and <code>oscar_age</code>. Now we just need to filter for these <code>NULL</code> states. </p>
+
+<p>In the following query, I check the state of <code>awards.name</code>, because it should <em>never</em> be <code>NULL</code> if a successful join was made. I'll include <code>awards.name</code> in the <code>SELECT</code> statement just to make it obvious (though it's not necessary):</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> actors.name, actors.birthyear, awards.name, awards.status, awards.year
+      (awards.year - actors.birthyear) <span style="color:#080;font-weight:bold">AS</span> oscar_age    
+    <span style="color:#080;font-weight:bold">FROM</span> actors
+    <span style="color:#080;font-weight:bold">LEFT</span> <span style="color:#080;font-weight:bold">JOIN</span> awards 
+      <span style="color:#080;font-weight:bold">ON</span> awards.name = actors.name
+    <span style="color:#080;font-weight:bold">WHERE</span>
+      awards.name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>;
+</pre></div>
+</div>
+</div>
+
+<p>As expected, only one row in <code>actors</code> meets the <code>WHERE</code> condition:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>actors.name</th>
+      <th>actors.birthyear</th>
+      <th>awards.name</th>
+      <th>awards.status</th>
+      <th>awards.year</th>
+      <th>oscar_age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Brian Cox</td>
+      <td>1946</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Easy brainteaser</strong>: What do you expect to see if we changed the above example queries so that, instead of selecting <strong>from</strong> <code>actors</code> and left-joining it to <code>awards</code>, we selected from <code>awards</code> and left-joined it to <code>actors</code>?</p>
+
+<h3 id="basic-left-join-with-congress-twitter-accounts">Basic left join with Congress twitter accounts</h3>
+
+<p>Back to Twitter and Congress. Not all Congressmembers have Twitter accounts. So to find the number of Congressmembers with no Twitter presence seems pretty straightforward with a standard <em>inner</em> join:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> members.first_name, members.last_name, social_accounts.*
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+  <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">WHERE</span> social_accounts.twitter_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<p>The result is <strong>20</strong> members (note, some of these legislators do have <em>campaign</em> Twitter accounts, but <code>social_accounts</code> <a href="https://github.com/unitedstates/congress-legislators/edit/master/legislators-social-media.yaml">only includes their official legislative accounts</a>:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>bioguide_id</th>
+      <th>twitter_screen_name</th>
+      <th>facebook_id</th>
+      <th>youtube_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Kelly</td>
+      <td>Ayotte</td>
+      <td>A000368</td>
+      <td>NULL</td>
+      <td>123436097729198</td>
+      <td>UCe_jD6bQuBwAo4CxwUm_ztw</td>
+    </tr>
+    <tr>
+      <td>Madeleine</td>
+      <td>Bordallo</td>
+      <td>B001245</td>
+      <td>NULL</td>
+      <td>161729837225622</td>
+      <td>NULL</td>
+    </tr>
+    <tr>
+      <td>Michael</td>
+      <td>Capuano</td>
+      <td>C001037</td>
+      <td>NULL</td>
+      <td>151168844937573</td>
+      <td>UCvzAdbimlJksgZjEMQn0kuw</td>
+    </tr>
+    <tr>
+      <td>Wm.</td>
+      <td>Clay</td>
+      <td>C001049</td>
+      <td>NULL</td>
+      <td>109135405838588</td>
+      <td>UCB3yVQzlxhx3brOwaWtiXoQ</td>
+    </tr>
+    <tr>
+      <td>Bill</td>
+      <td>Cassidy</td>
+      <td>C001075</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>UCUhHeN54q6CtSpOO1AlYHTA</td>
+    </tr>
+    <tr>
+      <td>Charles</td>
+      <td>Dent</td>
+      <td>D000604</td>
+      <td>NULL</td>
+      <td>69862092533</td>
+      <td>UCoC_r0R2M_74UVrH4A44awQ</td>
+    </tr>
+    <tr>
+      <td>Alan</td>
+      <td>Franken</td>
+      <td>F000457</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>UCMFNp5ybWmz6IlSXmPacTOw</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>However, can we be <em>sure</em> this is all of the non-political Twitterers? There are <strong>538</strong> rows in <code>members</code> but only <strong>535</strong> rows in <code>social_accounts</code>, which means that <em><a href="https://github.com/unitedstates/congress-legislators/edit/master/legislators-social-media.yaml">not every member has a corresponding entry for their social accounts</a></em>. This could mean that a member has <em>no</em> accounts whatsoever on record.</p>
+
+<p>To find out who falls under this condition, we need to use a <code>LEFT JOIN</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> members.first_name, members.last_name, social_accounts.*
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">LEFT</span> <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+  <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">WHERE</span> social_accounts.twitter_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<p>The above query returns <strong>24</strong> rows in which a Congressmember has no entry for <code>social_accounts.twitter_screen_name</code>.</p>
+
+<h4 id="looking-for-a-different-null">Looking for a different <code>NULL</code></h4>
+
+<p>Who are these non-sociable politicians? Our previous query includes anyone without a <code>social_accounts.twitter_screen_name</code> entry, which means it will include Congressmembers who <em>do</em> have either a Facebook or Youtube account. </p>
+
+<p>So we need to alter our <code>WHERE</code> clause to look for <code>NULL</code> where it will <em>only</em> be <code>NULL</code> if there isn't a corresponding entry on the right-side table (i.e. <code>social_accounts</code>).</p>
+
+<p>That would be <code>social_accounts.bioguide_id</code>. Think about it; in a successful <em>inner</em> join, <code>members.bioguide_id</code> and <code>social_accounts.bioguide_id</code> will be one and the same. In a <code>LEFT JOIN</code> though, we <em>also</em> include <code>members</code> that have a <code>bioguide_id</code>, but have <em>no entry at all</em> in <code>social_accounts</code>. In such an case, <code>social_accounts.bioguide_id</code> will not exist, i.e. will be <code>NULL</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> members.first_name, members.last_name, social_accounts.*
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">LEFT</span> <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+  <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">WHERE</span> social_accounts.bioguide_id <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<p>The result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>bioguide_id</th>
+      <th>twitter_screen_name</th>
+      <th>facebook_id</th>
+      <th>youtube_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Curtis</td>
+      <td>Clawson</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+    </tr>
+    <tr>
+      <td>Ed</td>
+      <td>Pastor</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+    </tr>
+    <tr>
+      <td>Collin</td>
+      <td>Peterson</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+    </tr>
+    <tr>
+      <td>Dana</td>
+      <td>Rohrabacher</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+      <td>NULL</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="most-retweeted-non-congressmembers">Most retweeted non-Congressmembers</h3>
+
+<p>We know Congress folks like to talk to and about each other. But which Twitter accounts owned by non-Congressmembers do Congressmembers like to retweet and reply to?</p>
+
+<p>To get just the list of most retweeted screen_names:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> retweeted_status_screen_name, <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">AS</span> rts 
+  <span style="color:#080;font-weight:bold">FROM</span> tweets    
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> retweeted_status_screen_name
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> rts <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>retweeted_status_screen_name</th>
+      <th>rts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>speakerboehner</td>
+      <td>2936</td>
+    </tr>
+    <tr>
+      <td>housecommerce</td>
+      <td>1737</td>
+    </tr>
+    <tr>
+      <td>gopleader</td>
+      <td>1288</td>
+    </tr>
+    <tr>
+      <td>gopconference</td>
+      <td>882</td>
+    </tr>
+    <tr>
+      <td>whitehouse</td>
+      <td>882</td>
+    </tr>
+    <tr>
+      <td>waysandmeansgop</td>
+      <td>807</td>
+    </tr>
+    <tr>
+      <td>nancypelosi</td>
+      <td>694</td>
+    </tr>
+    <tr>
+      <td>houseappropsgop</td>
+      <td>693</td>
+    </tr>
+    <tr>
+      <td>gopwhip</td>
+      <td>640</td>
+    </tr>
+    <tr>
+      <td>whiphoyer</td>
+      <td>549</td>
+    </tr>
+    <tr>
+      <td>[35008 total results…]</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To see which of these retweeted accounts are also Congressmembers, we do a standard join with <code>social_accounts</code> – we can skip <code>members</code> since everyone listed in <code>social_accounts</code> is a Congressmember and we don't care about any field in the <code>members</code> table.</p>
+
+<p>The following query will return <strong>502</strong> rows (meaning there's only 502 <code>social_accounts</code> with a <code>twitter_screen_name</code> and who have been retweeted at least once):</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> retweeted_status_screen_name, <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">AS</span> rts 
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts <span style="color:#080;font-weight:bold">ON</span>
+    retweeted_status_screen_name = social_accounts.twitter_screen_name 
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> retweeted_status_screen_name
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> rts <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>Making that <code>JOIN</code> into a <code>LEFT</code> join will return <strong>35,008</strong> rows, i.e. every retweet, whether or not it has a corresponding <code>members.twitter_screen_name</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> retweeted_status_screen_name, <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">AS</span> rts 
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">LEFT</span> <span style="color:#080;font-weight:bold">JOIN</span> social_accounts <span style="color:#080;font-weight:bold">ON</span>
+    retweeted_status_screen_name = social_accounts.twitter_screen_name 
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> retweeted_status_screen_name
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> rts <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>To find <strong>non-Congressmembers</strong>, we add an additional condition to the <code>WHERE</code> clause:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> retweeted_status_screen_name, <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">AS</span> rts 
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">LEFT</span> <span style="color:#080;font-weight:bold">JOIN</span> social_accounts <span style="color:#080;font-weight:bold">ON</span>
+    retweeted_status_screen_name = social_accounts.twitter_screen_name 
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+    <span style="color:#080;font-weight:bold">AND</span> social_accounts.twitter_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> retweeted_status_screen_name
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> rts <span style="color:#088;font-weight:bold">DESC</span>
+</pre></div>
+</div>
+</div>
+
+<p>Nearly all of the top-retweeted accounts are related to the U.S. government, such as <code>WhiteHouse</code> or Congressional committees. Among the top 20, only <a href="//twitter.com/politico">@politico</a> is not part of the U.S. government:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>retweeted_status_screen_name</th>
+      <th>rts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>housecommerce</td>
+      <td>1737</td>
+    </tr>
+    <tr>
+      <td>whitehouse</td>
+      <td>882</td>
+    </tr>
+    <tr>
+      <td>gopconference</td>
+      <td>882</td>
+    </tr>
+    <tr>
+      <td>waysandmeansgop</td>
+      <td>807</td>
+    </tr>
+    <tr>
+      <td>houseappropsgop</td>
+      <td>693</td>
+    </tr>
+    <tr>
+      <td>natresources</td>
+      <td>521</td>
+    </tr>
+    <tr>
+      <td>waysmeanscmte</td>
+      <td>519</td>
+    </tr>
+    <tr>
+      <td>smallbizgop</td>
+      <td>507</td>
+    </tr>
+    <tr>
+      <td>housedemocrats</td>
+      <td>493</td>
+    </tr>
+    <tr>
+      <td>financialcmte</td>
+      <td>487</td>
+    </tr>
+    <tr>
+      <td>oversightdems</td>
+      <td>480</td>
+    </tr>
+    <tr>
+      <td>housegop</td>
+      <td>474</td>
+    </tr>
+    <tr>
+      <td>edworkforce</td>
+      <td>398</td>
+    </tr>
+    <tr>
+      <td>republicanstudy</td>
+      <td>380</td>
+    </tr>
+    <tr>
+      <td>gopoversight</td>
+      <td>378</td>
+    </tr>
+    <tr>
+      <td>househomeland</td>
+      <td>378</td>
+    </tr>
+    <tr>
+      <td>edworkforcedems</td>
+      <td>330</td>
+    </tr>
+    <tr>
+      <td>transport</td>
+      <td>326</td>
+    </tr>
+    <tr>
+      <td>politico</td>
+      <td>308</td>
+    </tr>
+    <tr>
+      <td>officialcbc</td>
+      <td>299</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>As we've seen in the previous tutorials on <em>inner</em> joins, the logic and SQL syntax needed to put together multiple datasets can look quite intimidating, which can be enough to hinder most casual data explorers from seeing how two datasets are related. With just a little more syntax, <code>LEFT JOIN</code> let's us discover the instances where there are <em>missing</em> relationships between tables, which is a whole new alley of investigative inquiry.</p>
+
+<h4 id="other-resources">Other resources</h4>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part3.textile">A Gentle Introduction to SQL Using SQLite, Part III</a></p>
+  </li>
+  <li>
+    <p><a href="http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/">A Visual Explanation of SQL Joins</a></p>
+  </li>
+</ul>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

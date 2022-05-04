@@ -1,0 +1,465 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Getting Started with SQLite and Sequel Pro | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="An introduction to using SQL with a GUI client">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    Getting Started with SQLite and Sequel Pro
+                </h1>
+                <div class="description">
+                    <p>
+                        An introduction to using SQL with a GUI client
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>This is a quick guide to the interface for the <strong>2 graphical user interfaces</strong> recommended for our initial foray into SQL databases. They are by no means the only ones, I recommend them because they work well and are free.</p>
+
+<h3 id="sql-sqlite-and-mysql">SQL, SQLite, and MySQL</h3>
+
+<p>First, some terminology: <a href="http://en.wikipedia.org/wiki/SQL">SQL</a> stands for <strong>Structured Query Language</strong>, which is a type of <strong>programming language</strong> used in working with databases. When you write SQL to do data work, you are <em>programming</em>.</p>
+
+<p><a href="http://www.sqlite.org/">SQLite</a> and <a href="http://www.mysql.com/">MySQL</a> are two different database systems that use two different variants of SQL. For the scope of our work, they will basically be <em>interchangeable</em> because they are both very similar. SQLite and MySQL refer to the <em>database software itself</em>, not the <em>graphical user interfaces</em> that we'll be using to work with the databases (e.g. Sequel Pro for MySQL, and SQLite Manager for SQLite)</p>
+
+<p>A quick technical aside: <strong>Why am I recommending either SQLite or MySQL?</strong> Because both have their tradeoffs in terms of installing it on your computer. Getting SQLite on your computer can be as easy as installing the Firefox Browser, which comes packaged with SQLite. But the <em>graphical user interface</em> for SQLite is not as nice as some of the GUIs available for MySQL. However, with MySQL, you typically have to install MySQL yourself, which is typically not as easy as installing Firefox.</p>
+
+<h3 id="choosing-a-gui">Choosing a GUI</h3>
+
+<p>The graphical user interfaces (i.e. GUIs) mentioned here make it so that working with databases have some of the conveniences of working with spreadsheets.</p>
+
+<p><strong>To sum up the descriptions below:</strong> If you're on <strong>Mac OS X</strong>, try to use <strong>Sequel Pro</strong>, which sits atop the <strong>MySQL</strong> software. Windows and Linux have their own MySQL clients, including <a href="http://www.heidisql.com/">HeidiSQL</a>. But you may have problems installing <strong>MySQL</strong> itself.</p>
+
+<p>If all else fails, install the <strong>Firefox</strong> browser, then the SQLite Manager plugin. The sacrifice you make is having a more spartan of an interface.</p>
+
+<p>More details below:</p>
+
+<h4 id="sequel-pro">Sequel Pro</h4>
+
+<p><img alt="img" src="/files/tutorials/databases/sequel-pro-intro.png" /></p>
+
+<p><a href="http://www.sequelpro.com/">Download Sequel Pro here.</a></p>
+
+<p>If you have a Mac, then the <a href="http://www.sequelpro.com/">Sequel Pro client</a> is hands-down the best client to use when interfacing with a <strong>MySQL</strong> database. It has the nice look-and-feel of a modern, native OS X app because it <em>is</em> one. The main drawback of course is that Sequel Pro is only available for OS X. </p>
+
+<p>Another drawback for novice users is that Sequel Pro uses <strong>MySQL</strong>, which means you'll have to <a href="http://dev.mysql.com/doc/refman/5.0/en/macosx-installation.html">first install the MySQL software </a>yourself…which can be easy or very hard, depending on your situation.</p>
+
+<p>See the <a href="http://dev.mysql.com/doc/refman/5.0/en/macosx-installation.html">official Installing MySQL on Mac OS X instructions here</a>. However, you may have to Google around for independently-written guides on it.</p>
+
+<p>Jump to <a href="#sequel-pro-instructions">Getting Started with Sequel Pro</a></p>
+
+<h4 id="sqlite-manager-for-firefox">SQLite Manager for Firefox</h4>
+
+<p><img alt="img" src="/files/tutorials/databases/sqlite-manager-intro.png" /></p>
+
+<p>Download the <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox Browser here</a>. Then add the <a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">SQLite Manager plugin here</a>.</p>
+
+<p>The upside of <strong><a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">SQLite Manager</a></strong> is that it runs on anything that the Firefox Browser runs on, which is most modern systems. And you don't have to install the SQLite software yourself, because Firefox comes with it. The downside is that the SQLite Manager, while an excellent piece of free software, isn't as user-friendly as Sequel Pro. </p>
+
+<p>Jump to <a href="#sqlite-manager-instructions">Getting Started with SQLite Manager</a></p>
+
+<h4 id="alternative-guis">Alternative GUIs</h4>
+
+<p>Here are a few alternative packages, some of which cost money:</p>
+
+<h5 id="mysql-guis">MySQL GUIs</h5>
+
+<ul>
+  <li><a href="http://www.heidisql.com/">HeidiSQL</a> - a popular and <strong>free</strong> GUI for <strong>MySQL</strong> (and a few other SQL variants). Developed for Windows but can be made to work with OS X.</li>
+  <li><a href="http://www.mysql.com/products/workbench/">MySQL Workbench</a> - a GUI maintained by MySQL's developers. Free and cross-platform</li>
+  <li><a href="http://www.navicat.com/products/navicat-for-mysql">Navicat</a> - a cross-platform commercial GUI. It's functional, and common in the workplace, but it costs money. </li>
+</ul>
+
+<h5 id="sqlite-guis">SQLite GUIs</h5>
+
+<ul>
+  <li><a href="https://github.com/sqlitebrowser/sqlitebrowser">SQLite Browser</a> - a popular and free GUI for SQLite for Windows and OS X.</li>
+  <li><a href="http://menial.co.uk/base/">Base 2</a> - A commercial GUI available only for Mac OS X.</li>
+  <li><a href="http://www.navicat.com/products/navicat-for-sqlite">Navicat</a> - Just like they have commercial cross-platform GUIs for MySQL.</li>
+</ul>
+
+<hr id="sequel-pro-instructions" />
+
+<h2 id="getting-started-with-sequel-pro">Getting started with Sequel Pro</h2>
+
+<p><em>These instructions are for the <strong>Sequel Pro</strong> client for OS X. <a href="#sqlite-manager-instructions">Go here for SQLite Manager instructions</a></em></p>
+
+<p>First, you must install MySQL – this might be a very difficult situation depending on your setup. If that's the case, you might want to <a href="#sqlite-manager-instructions">settle for SQLite Manager</a>. I'm not going to give much guidance on this step <a href="http://dev.mysql.com/doc/refman/5.0/en/macosx-installation.html">except to point to the official instructions</a>. Good luck!</p>
+
+<p>After MySQL is installed, <a href="http://sequelpro.com/">download Sequel Pro</a>.</p>
+
+<h3 id="importing-sql-files">Importing SQL files</h3>
+
+<p>Sequel Pro can import CSV files, but to make things easy, we'll just import SQL files, which contain all the code to build a database with pre-inserted data.</p>
+
+<p>You can download <strong>either one</strong> of these files:</p>
+
+<ul>
+  <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sql.zip">SFPD Incident Reports 2003-2013 (231MB)</a> - All the San Francisco Police Department incident reports, from 2003 to 2013. Roughly 1.5 million records total</li>
+  <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sql.zip">SFPD Assault Reports 2003-2013 (19MB)</a> - Just the SFPD reports categorized as <code>ASSAULT</code>. Roughly 130,000 records.</li>
+</ul>
+
+<p>Obviously, if you have a slower computer, you may want to start off with the smaller file.</p>
+
+<h4 id="creating-a-new-mysql-database">Creating a new MySQL database</h4>
+
+<ol>
+  <li>Open the Sequel Pro app. A <strong>Connection</strong> dialog box should pop up. The <strong>Settings</strong> here will differ depending on how you installed things. Hopefully a <strong>Host</strong> value of 127.0.0.1, <strong>username</strong> of <code>root</code>, and a <strong>Port</strong> of <code>3306</code> will be your default settings. Hit the <strong>Connect</strong> button. If you get error messages at this point, um…look around for help on your machine's setup. Or just use Firefox and <strong>SQLite Manager</strong>.</li>
+  <li>In the menubar, select <strong>Database &gt; Add Database</strong></li>
+  <li>Name it something like <code>sfpd</code> and hit the <strong>Add</strong> button</li>
+  <li>In the menubar, select <strong>File &gt; Import</strong>, then select the SQL file that you downloaded.</li>
+  <li>After the import is done, look at the left sidebar and click on the <code>sfpd_incidents</code> table.</li>
+</ol>
+
+<h5 id="video">Video</h5>
+
+<video id="sequel-pro-open-database-001" class="video-js vjs-default-skin" controls="" preload="false" width="100%"> <source src="/files/videos/databases/sequel-pro-open-database-001.mp4" type="video/mp4" /></video>
+
+<h3 id="sequel-pro-interface">Sequel Pro interface</h3>
+
+<p>The Sequel Pro interface is about as simplified of a database GUI as I've ever seen. Here's an overview of the functions and views we'll be using:</p>
+
+<ul>
+  <li>
+    <p><strong>Structure</strong>: In the rare situations where we add columns via point-and-click, we can do it here.</p>
+
+    <p><img alt="img" src="/files/tutorials/databases/sequel-pro-structure-tab.png" /></p>
+  </li>
+  <li>
+    <p><strong>Content</strong>: In the relatively-rare situations (usually when we're unfamiliar with the database) where we want to browse the data as if it were a spreadsheet, this tab provides limited browsing and editing capability.</p>
+
+    <p><img alt="img" src="/files/tutorials/databases/sequel-pro-content-tab.png" /></p>
+  </li>
+  <li>
+    <p><strong>Query</strong>: This is where we'll spend a majority of our time: writing SQL queries, executing them, and seeing the filtered results.</p>
+
+    <p><img alt="img" src="/files/tutorials/databases/sequel-pro-query-tab.png" /></p>
+  </li>
+</ul>
+
+<p>For the most part, you only have to be familiar with <strong>Query</strong>, as that's where the work gets done.</p>
+
+<h3 id="the-query-tab">The Query tab</h3>
+
+<p>Here's a quick run-through of how to run a basic <code>SELECT</code> query in Sequel Pro. After this, you'll know enough about the Sequel Pro to do some basic work, and you can move on to the <a href="/tutorials/databases/select-and-where">Select and Where tutorial</a></p>
+
+<ol>
+  <li>Click on the <strong>Query</strong> tab</li>
+  <li>
+    <p>Type in a query, such as: </p>
+
+    <p><code>sql
+  SELECT * FROM sfpd_incidents WHERE date &gt; "2012"
+ </code></p>
+  </li>
+  <li>Hit <strong>Run Current</strong>, which will execute the query you've written. You'll see the results of your query in the bottom panel.</li>
+  <li>Optional: You can click the little <strong>Gear button</strong> at the bottom of the results and and <strong>Export Result</strong> as CSV. So in our current scenario, we would produce a CSV of reports from 2012 to 2013.</li>
+</ol>
+
+<h5 id="video-1">Video</h5>
+
+<video id="sequel-pro-execute-query-002" class="video-js vjs-default-skin" controls="" preload="false" width="100%"> <source src="/files/videos/databases/sequel-pro-execute-query-002.mp4" type="video/mp4" /></video>
+
+<p>OK, now you know enough to write and execute SQL. Move on to the <a href="/tutorials/databases/select-and-where">Select and Where tutorial</a>.</p>
+
+<hr id="sqlite-manager-instructions" />
+
+<h2 id="getting-started-with-sqlite-manager">Getting started with SQLite Manager</h2>
+
+<p><em>These instructions are for the <strong>SQLite Manager</strong> client. <a href="#sequel-pro-instructions">Go here for Sequel Pro</a></em></p>
+
+<p>First, install the <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox Browser</a>. Then install the <a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">SQLite Manager plugin</a>.</p>
+
+<h3 id="importing-sqlite-databases">Importing SQLite databases</h3>
+
+<p>The SQLite Manager can import CSV files, but to make things easy, we'll start off with actual SQLite database files.</p>
+
+<p>You can download <strong>either one</strong> of these files:</p>
+
+<ul>
+  <li><a href="http://stash.padjo.org/dumps/sql/sfpd_incident_reports_2003_2013.sqlite.zip">SFPD Incident Reports 2003-2013 (270.3MB)</a> - All the San Francisco Police Department incident reports, from 2003 to 2013. Roughly 1.5 million records total</li>
+  <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sqlite.zip">SFPD Assault Reports 2003-2013 (21.9MB)</a> - Just the SFPD reports categorized as <code>ASSAULT</code>. Roughly 130,000 records.</li>
+</ul>
+
+<p>Obviously, if you have a slower computer, you may want to start off with the smaller file.</p>
+
+<h4 id="opening-a-sqlite-database">Opening a SQLite database</h4>
+
+<ol>
+  <li>Open your Firefox Browser</li>
+  <li>In the menubar, select <strong>Tools &gt; SQLite Manager</strong></li>
+  <li>The menubar will now change context to reflect that you're basically using a different program, i.e. SQLite Manager versus the Firefox Browser. From this new menubar, select <strong>Database &gt; Connect Database</strong></li>
+  <li>Now select the <code>sqlite</code> database you just downloaded.</li>
+  <li>Our database is simple and contains only one <strong>table</strong>. In the left sidebar, click the <strong>Tables</strong> dropdown and then the table label, <code>sfpd_incidents</code> </li>
+</ol>
+
+<h5 id="video-2">Video</h5>
+
+<video id="sqlite-manager-open-database-001" class="video-js vjs-default-skin" controls="" preload="false" width="100%"> <source src="/files/videos/databases/sqlite-manager-open-database-001.mp4" type="video/mp4" /></video>
+
+<h3 id="sqlite-managers-interface">SQLite Manager's interface</h3>
+
+<p>I won't lie, SQLIte Manager's interface can be a bit confusing and cluttered. Here's a quick overview of the 3 SQLite's tab/submenus that we'll end up using:</p>
+
+<ul>
+  <li>
+    <p><strong>Structure</strong>: In the rare situations where we add columns via point-and-click, we can do it here.</p>
+
+    <p><img alt="img" src="/files/tutorials/databases/sqlite-manager-structure-tab.png" /></p>
+  </li>
+  <li>
+    <p><strong>Browse &amp; Search</strong>: In the relatively-rare situations (usually when we're unfamiliar with the database) where we want to browse the data as if it were a spreadsheet, this tab provides limited searching and editing capability.</p>
+
+    <p><img alt="img" src="/files/tutorials/databases/sqlite-manager-browse-tab.png" /></p>
+  </li>
+  <li>
+    <p><strong>Execute SQL</strong>: This is where we'll spend a majority of our time: writing SQL queries, executing them, and seeing the filtered results.</p>
+
+    <p><img alt="img" src="/files/tutorials/databases/sqlite-manager-execute-sql.png" /></p>
+  </li>
+</ul>
+
+<p>For the most part, you only have to be familiar with <strong>Execute SQL</strong>, as that's where the work gets done.</p>
+
+<h3 id="executing-queries">Executing queries</h3>
+
+<p>Here's a quick run-through of how to run a basic <code>SELECT</code> query in the SQLite Manager. After this, you'll know enough about the SQLite Manager to do some basic work, and you can move on to the <a href="/tutorials/databases/select-and-where">Select and Where tutorial</a></p>
+
+<ol>
+  <li>Click on the <strong>Execute SQL</strong> tab</li>
+  <li>
+    <p>Type in a query, such as: </p>
+
+    <p>~~~sql
+  SELECT * FROM sfpd_incidents WHERE date &gt; "2012"
+  ~~~</p>
+  </li>
+  <li>Hit <strong>Run SQL</strong>. You'll see the results of your query in the bottom panel.</li>
+  <li>Optional: You can click the <strong>Actions</strong> dropdown menu and export the results of your query as a CSV file by clicking <strong>Save Result (CSV) to File</strong>  . So in our current scenario, we would produce a CSV of reports just in 2012 to 2013.</li>
+</ol>
+
+<h5 id="video-3">Video</h5>
+
+<video id="sqlite-manager-execute-query-002" class="video-js vjs-default-skin" controls="" preload="false" width="100%"> <source src="/files/videos/databases/sqlite-manager-execute-query-002.mp4" type="video/mp4" /></video>
+
+<h2 id="basic-database-terminology">Basic database terminology</h2>
+
+<p>This class is concerned only with how to query databases. I don't have any intention to teach database administration, but at the same time, it's necessary to understand a little bit of the underlying structure.</p>
+
+<h3 id="databases">Databases</h3>
+
+<p>Think of it as a spreadsheet file, referred to as a __Workbook__in Microsoft Excel, that contains multiple sheets or tabs:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/multiple-tabs-excel.png" /></p>
+
+<p>Typically with database software, you'll be asked to <strong>connect</strong> to a database. This is not much different than just opening a Workbook file in Excel before doing work on it.</p>
+
+<p>In this lesson, the database will be named <code>sfpd</code>.</p>
+
+<h3 id="tables">Tables</h3>
+
+<p>Think of these as the <strong>individual tabs/sheets</strong> of an Excel Workbook. They're all part of the same file, but they contain their own data fields and rows. Most of the fun with databases involves <em>joining</em> different tables together via some common field.</p>
+
+<p>If you're familiar with the <code>VLOOKUP</code> <a href="http://computers.tutsplus.com/tutorials/how-to-extract-data-from-a-spreadsheet-using-vlookup-match-and-index--cms-20641">functionality in a spreadsheet</a>, then you might <a href="http://computers.tutsplus.com/tutorials/how-to-extract-data-from-a-spreadsheet-using-vlookup-match-and-index--cms-20641">have tried to link different tabs/sheets within the same workbook</a>:</p>
+
+<pre><code>=VLOOKUP(something_, table range, column number, [true/false])
+</code></pre>
+
+<p>In this lesson, the table will be named <code>sfpd_incidents</code> because it contains incident reports.</p>
+
+<h3 id="database-engine">Database engine</h3>
+
+<p>This refers to the <strong>software</strong> you're using to work with a database, e.g. <a href="http://www.mysql.com/">MySQL</a> or <a href="http://sqlite.com/index.html">SQLite</a>. It is analogous to Microsoft Excel, Mac OSX Numbers, OpenOffice, or Google Spreadsheets. Each of those are <em>different</em> programs though they all involve manipulating spreadsheets. To work with an Excel spreadsheet inside of Google Spreadsheets, you typically <em>export</em> data from the Excel file and <em>import</em> it into Google Spreadsheets, which has its own spreadsheet file format.</p>
+
+<p>In the same way, you can export data out of SQLite (typically, as a CSV) and import it into MySQL. But you can't just open a SQLite database and work with it directly from MySQL.</p>
+
+<h3 id="database-server">Database server</h3>
+
+<p>This refers to the <em>computer</em> that hosts the database and runs the database software needed to access that database. For the purposes of this lesson, the <strong>database server</strong> will be your own computer, i.e. what you're using to read this right now. In the real world, you often connect to remote databases hosted on other computers – either across the world or perhaps somewhere in your company's offices. </p>
+
+<p>I suppose in spreadsheet-terminology, the computer that you've been using Excel on could be thought of (somewhat inaccurately) as a local "Excel server".</p>
+
+<p>Note: To be really technical about it, a MySQL database server uses a different server process than what you, the <em>client</em> uses. SQLite is <a href="https://www.sqlite.org/serverless.html">a "serverless" database</a>.</p>
+
+<p>The upshot for you, the novice is that installing and using SQLite will be little different than what it takes to install and run Excel. Choosing a "database" means finding where the database file (usually with a <code>sqlite</code> extension) is saved on your computer.</p>
+
+<h4 id="mysql-servers">MySQL servers</h4>
+
+<p>With MySQL, you have to not only install the MySQL "client" software, but your computer will be running a <em>server</em> process in the background to serve up the databases.</p>
+
+<p>So with any MySQL graphical-user-interface you use, you'll typically be asked to choose a <strong>server</strong> to connect to, and <em>then</em> you'll select a <strong>database</strong> to work with.</p>
+
+<p><img alt="img" src="/files/tutorials/databases/sequel-pro-connect-screen.png" /></p>
+
+<p>(If you are having problems getting MySQL to run on your personal computer, often times it will be a server connection type of issue. Hope you don't run into it, because fixing it is beyond the scope of this tutorial…)</p>
+
+<h3 id="database-gui">Database GUI</h3>
+
+<p>This refers to the friendly graphical interface you're using on top of the database software, e.g. <a href="http://sequelpro.com/">Sequel Pro</a> for MySQL and <a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">Firefox's SQLite Manager</a> for SQLite.</p>
+
+<p>There is no direct analogy to the spreadsheet world, because part of the appeal of spreadsheet programs is that the GUI is inseparable from the spreadsheet-software – i.e. Excel is both the spreadsheet-manipulating program and the nice interface for it.</p>
+
+<p>This is what MySQL looks like <em>without a GUI</em></p>
+
+<p><img alt="img" src="/files/tutorials/databases/sql-commandline.png" /></p>
+
+<h5 id="video-4">Video</h5>
+
+<p>Watch me do a <code>SELECT</code> query from the command-line:</p>
+
+<video id="sql-select-command-line-0011" class="video-js vjs-default-skin" controls="" preload="false" width="100%"> <source src="/files/videos/databases/sql-select-command-line-0011.mp4" type="video/mp4" /></video>
+
+<p>Compare that to using the Sequel Pro GUI:</p>
+
+<video id="sql-select-pro-0012" class="video-js vjs-default-skin" controls="" preload="false" width="100%"> <source src="/files/videos/databases/sql-select-sequel-pro-0012.mp4" type="video/mp4" /></video>
+
+<h3 id="all-together">All together</h3>
+
+<p>For the purposes of this lesson, all we care about are <strong>databases</strong> and <strong>tables</strong>. For this <em>specific</em> lesson, we're using a database which has a single table, so it's no different than opening a Workbook in Excel and having just a single tab/sheet.</p>
+
+<p>But when I refer to "open the database", what I mean is:</p>
+
+<ol>
+  <li>Run your <strong>database GUI</strong> (e.g. Sequel Pro or SQLite Manager)</li>
+  <li>Turn on the <strong>database engine</strong> (MySQL or SQLite); the GUI will already to that for you.</li>
+  <li>Connect to the <strong>database server</strong> that's currently running on your computer (If you're using MySQL/Sequel Pro), which is usually set to <code>127.0.0.1</code></li>
+  <li>Select a database (in this lesson, it'll be named <code>sfpd</code>)</li>
+  <li>Query a particular table, e.g. <code>sfpd_incidents</code>.</li>
+</ol>
+
+<hr />
+
+<p>OK, now you know enough to write and execute SQL. Move on to the <a href="/tutorials/databases/select-and-where">Select and Where tutorial</a>.</p>
+
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

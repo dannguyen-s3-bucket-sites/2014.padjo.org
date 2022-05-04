@@ -1,0 +1,287 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Basic Aggregation with Pivot Tables | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Pivot tables are an effective tool for quickly summarizing the facts from a mass of records">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#spreadsheets">Spreadsheets</a></span> 
+                </h4>
+                <h1 class="title">
+                    Basic Aggregation with Pivot Tables
+                </h1>
+                <div class="description">
+                    <p>
+                        Pivot tables are an effective tool for quickly summarizing the facts from a mass of records
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>Welcome to this quick introduction to using pivot tables for data analysis, in which we'll learn how to use Google Spreadsheets to quickly summarize a large, granular dataset.</p>
+
+<p>Download the dataset for this lesson: <a href="https://docs.google.com/a/stanford.edu/spreadsheets/d/1H2vQAZTG8eihyw_yzsI_sJfQBgxRn1fE1dOTV5E_W9M/edit?usp=drive_web">SFPD Incident Reports Categorized as DUIs, Drunkenness, or Kidnappings, from 2003 to 2013</a>.</p>
+
+<p>The above dataset was extracted from <a href="https://data.sfgov.org/Public-Safety/SFPD-Reported-Incidents-2003-to-Present/dyj4-n68b">data.sfgov.org</a>.</p>
+
+<p>This dataset contains more than 15,000 records: it consists of all the San Francisco Police Department crime reports that have a <code>category</code> field of:</p>
+
+<ul>
+  <li><code>DRIVING UNDER THE INFLUENCE</code></li>
+  <li><code>DRUNKENNESS</code></li>
+  <li>and for good measure, <code>KIDNAPPING</code></li>
+</ul>
+
+<p>Here's a screenshot of what it looks like:</p>
+
+<p><img alt="img" src="/files/tutorials/pivot-tables/sfpd-duis-drunkenness-kidnappings-schemas.png" /></p>
+
+<p>15,000 records is good and all, but with the raw data, we aren't able to know some basic characteristics of the data…for example, how many of these 15,000 records involved, say, just <code>KIDNAPPING</code>? And have the number of kidnappings gone down over the years? To know that, we need a way to count these records by <code>category</code> and by year.</p>
+
+<p><strong>This is where Pivot Tables comes in</strong>. It provides an easy point-and-click interface to quickly summarize and explore your very granular data.</p>
+
+<hr />
+
+<h3 id="summarize-by-category">Summarize by category</h3>
+
+<p>So first question: How many crime reports are in each category? This is a <strong>summarization</strong> of the data, specifically, a <strong>counting</strong> of records based on their <code>category</code> value.</p>
+
+<p>Here are the steps to follow:</p>
+
+<ol>
+  <li>
+    <p>Click on <strong>Data -&gt; Pivot table report…</strong>. This creates a new sheet, and you switch back and forth between it and your original data sheet.</p>
+
+    <video id="video1" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-open-001.mp4" type="video/mp4" /> <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p></video>
+  </li>
+  <li>
+    <p>In the <strong>Report Editor</strong>, click <strong>Add field</strong> in the <strong>Rows</strong> section. Choose <code>category</code>; this will <em>group your records</em> by the <code>category</code> field. </p>
+
+    <p>The effect of this is that the pivot table will have <strong>one row</strong> for <em>each</em> value – e.g. "<code>KIDNAPPING</code>" – that exists in <code>category</code>. </p>
+
+    <p>As we expect, there are only three categories, hence, 3 rows.</p>
+
+    <video id="video2" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-rows-002.mp4" type="video/mp4" /> <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p></video>
+  </li>
+  <li>
+    <p>Now we want to <code>COUNT</code> number of crime reports, i.e. the number of rows in our dataset, per <code>category</code>. In the Report Editor, click <strong>Add field</strong> in the <strong>Values</strong> section. For our current purpose, it doesn't matter which field you choose (I'll pick <code>incidntnum</code> to keep it simple). By default, Google Spreadsheets will assume you're trying to SUM the values. But we want to <em>count</em> the values So choose <code>COUNT</code> or <code>COUNTA</code>.</p>
+
+    <video id="video3" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-values-003.mp4" type="video/mp4" /></video>
+  </li>
+  <li>
+    <p>When the data is in this straightforward format, we can easily visualizing it. We don't want to graph the totals, so uncheck the <strong>Show Totals</strong> box. Then in the menubar, select <strong>Insert-&gt;Chart</strong> and browse the visualization types. You can hit <strong>Cancel</strong> rather than actually inserting a chart for now.</p>
+
+    <video id="video4" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-basic-chart-004.mp4" type="video/mp4" /></video>
+  </li>
+</ol>
+
+<hr />
+
+<h4 id="breakdowns">Breakdowns</h4>
+
+<p>Pivot tables makes it easy to group data, and then <em>sub</em>-group it as needed.</p>
+
+<p>For example, if we go back to the original table, we see that there are subcategories, i.e. the <code>descript</code> field…</p>
+
+<p>In our existing pivot table, we can get a count of each <code>descript</code> within each <code>category</code> by adding another field to the Rows: <code>descript</code></p>
+
+<p>We can keep adding new fields to subgroup by, such as <code>resolution</code>, which gives us a breakdown of how each report was handled (e.g. an arrest was made, or it was unfounded).</p>
+
+<p>Here's a video demonstration:</p>
+
+<video id="pivot-table-more-rows-005" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-more-rows-005.mp4" type="video/mp4" /></video>
+
+<hr />
+
+<h4 id="cross-tabulations">Cross tabulations</h4>
+
+<p>As you can see, as we add more fields to group as <strong>Rows</strong>, the table becomes increasingly cluttered.</p>
+
+<p><img alt="img" src="/files/tutorials/pivot-tables/multiple-rows-pivoting.png" /></p>
+
+<p>There's nothing wrong with scouting out the data in this cluttered format, even if it won't be useful for chart-making. Another way to arrange the Pivot Table is to have grouped values for the <em>headers</em>.</p>
+
+<p>We can do this in the <strong>Columns</strong> section of the <strong>Report Editor</strong>.</p>
+
+<ol>
+  <li>Clear up the Report Editor by removing the existing fields in <strong>Rows</strong> and <strong>Values</strong> (i.e. start over)</li>
+  <li>Then add <code>resolution</code> as a field to the <strong>Rows</strong> section.</li>
+  <li>Add a field to <strong>Values</strong>; again, it can be any of the columns, but switch the summarizing function to <code>COUNTA</code></li>
+  <li>In the <strong>Columns</strong> section, add the <code>descript</code> field</li>
+</ol>
+
+<p>The step-by-step video:</p>
+
+<video id="pivot-table-cross-tabs-006.mp4" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-cross-tabs-006.mp4" type="video/mp4" /></video>
+
+<p>Now we have a straightforward table that lets us, at a glance, see how the various subcategories (i.e. <code>descript</code>) of crime incidents are resolved.</p>
+
+<p><img alt="img" src="/files/tutorials/pivot-tables/resolution-descript-cross-tab.png" /></p>
+
+<h3 id="all-together-now">All together now</h3>
+
+<p>What we're really interested in are the chronological trends in the data: for example, are DUIs/kidnappings/etc going down or up over the <em>years</em>?</p>
+
+<p>In the original data sheet, we have a <code>date</code> field. In order to pivot <em>by year</em>, we <strong>create a new column</strong> (let's call it <code>year</code> to keep it simple) and then derive the year from the <code>date</code> field with a formula:</p>
+
+<pre><code>=YEAR(D2)
+</code></pre>
+
+<p>Here's a quick video snippet:</p>
+
+<video id="pivot-table-creating-year-duis-007" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-creating-year-duis-007.mp4" type="video/mp4" /></video>
+
+<h5 id="pivot-by-year">Pivot by year</h5>
+
+<p>Now make a new Pivot Table and:</p>
+
+<ol>
+  <li>Group by <code>year</code>  for the <strong>Rows</strong></li>
+  <li>Group by <code>category</code> for the <strong>Columns</strong></li>
+  <li>Choose any column for <code>Values</code> and do a <code>COUNTA</code></li>
+  <li>Make a chart</li>
+</ol>
+
+<p>Here's a video of the entire process:</p>
+
+<video id="pivot-table-year-category-008" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/pivot-table-year-category-008.mp4" type="video/mp4" /></video>
+
+<p>And here's a chart that can be produced from that pivot table:</p>
+
+<p><img alt="img" src="/files/tutorials/pivot-tables/dui-drunkenness-kidnapping-year-trends.png" /></p>
+
+<hr />
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Generally, we love it when datasets contain very detailed, granular records; e.g. <em>every</em> crime report for every year, rather than a <em>total number of reports</em> by year. </p>
+
+<p>However, when we need to know totals by year (or by month, or by hour, etc.), Pivot Tables are among the fastest ways to produce those summaries and get a high-level overview of what a large dataset actually contains.</p>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

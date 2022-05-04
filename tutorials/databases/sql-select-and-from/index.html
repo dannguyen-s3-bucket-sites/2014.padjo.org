@@ -1,0 +1,470 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>The SELECT statement and FROM clause | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Starting up a SQL database and seeing data">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    The SELECT statement and FROM clause
+                </h1>
+                <div class="description">
+                    <p>
+                        Starting up a SQL database and seeing data
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>This is a lesson on simply how to <em>open</em> a database and <em>show</em> data from a database. If you're thinking, <em>"What the hell? In Excel, I just open a file and there is the data"</em>…</p>
+
+<p>Yep!_ That's correct. The SQL <code>SELECT</code> statement and <code>FROM</code> clause will be a first taste of how <em>explicit</em> SQL is compared to your standard spreadsheet. A spreadsheet will conveniently display all of its contents upon opening. A SQL database will only show you only <em>what you tell it to show you</em>.</p>
+
+
+
+<blockquote class="warning well">
+  <p>Note: For this SQL lesson, I will be using the <strong>Sequel Pro</strong> GUI for the <strong>MySQL</strong> database engine and will be querying the SFPD incident reports categorized as <code>ASSAULT</code></p>
+
+  <p>If you want to see exactly the same results I do, you'll want to download and import the__ MySQL database of 2003 to 2013 assault reports from the SFPD__.</p>
+
+  <p>I've also created the <strong>SQLite</strong> version of that database, which should functionally be the same as the MySQL version. </p>
+
+  <p>For both MySQL and SQLite, I've also created a database of <em>all</em> the SFPD reports from 2003 to 2013. All the queries should work the same, except you can explore all the different categories of crime. The tradeoff is that the database is much bigger, and so will be slower to download, import, and query. If you're completely new to all this, I would just go with the <strong>assaults</strong> database, just so any errors you make don't take even longer to figure out.</p>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sql.zip"><strong>MySQL</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sql.zip"><strong>MySQL</strong> all incident reports: 1,491,764 rows </a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> all incident reports: 1,491,764 rows </a></li>
+  </ul>
+</blockquote>
+
+<p>The SQL interpreter's insistence on being told exactly what to do can be annoying when you just want to see everything by default, which is why most database GUIs let you <em>browse</em> a data table via the <strong>Browse/Content</strong> functionality:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/sequel-pro-content-tab.png" /></p>
+
+<p>But what if you want to see only a few columns, if just to reduce the amount of visual clutter? In a <strong>spreadhseet</strong>, you would have to manually rearrange or hide the columns – or, as some foolish novices do and regret later: <strong>delete</strong> the unwanted columns.</p>
+
+<p>With SQL, you can <strong>select</strong> data fields with a query like this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> Category, Descript, <span style="color:#0a8;font-weight:bold">Date</span>, <span style="color:#0a8;font-weight:bold">Time</span> <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+</pre></div>
+</div>
+</div>
+
+<p><img alt="img" src="/files/tutorials/databases/sql-select-columns.png" /></p>
+
+<h5 id="video">Video</h5>
+
+<p>Watch me execute a <code>SELECT</code> query with Sequel Pro:</p>
+
+<video id="sql-select-gui-0011" class="video-js vjs-default-skin" controls="" preload="false" width="100%"> <source src="/files/videos/databases/sql-select-sequel-pro-0012.mp4" type="video/mp4" /></video>
+
+<p>The typing may seem tedious, but the tradeoff is that by being <em>explicit</em>, you do away with the fumbling click-and-drag-and-button-pushing motions that will inevitably result in embarrassing data mistakes, even for the best of Excel-masters; <a href="http://www.nytimes.com/2013/04/19/opinion/krugman-the-excel-depression.html">ask these Harvard economists about it</a>.</p>
+
+<h2 id="the-select-statement">The <code>SELECT</code> statement</h2>
+
+<p>This expression retrieves columns. Used alone, it will retrieve literal or computed values. It's not particularly interesting until we refer to <strong>tables</strong>, but let's see what the syntax looks like by itself:</p>
+
+<h4 id="select-a-value"><code>SELECT</code> a value</h4>
+
+<p>Executing this basic query:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">hello world</span><span style="color:#710">&quot;</span></span>;
+</pre></div>
+</div>
+</div>
+
+<p>Will return a single column titled <code>"hello world"</code> and a single row with the value of <code>"hello world"</code>. Nothing special here:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/sql-hello-world.png" /></p>
+
+<p>Querying for a <em>computational</em> statement, such as adding two numbers together:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#00D">10</span> + <span style="color:#00D">32</span>;
+</pre></div>
+</div>
+</div>
+
+<p>– will result in this:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>10+32</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>42</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="select-a-series-of-valuescolumns"><code>SELECT</code> a series of values/columns</h4>
+
+<p>Use commas to select multiple fields/values:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">A</span><span style="color:#710">&quot;</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">B</span><span style="color:#710">&quot;</span></span>, <span style="color:#00D">9</span> + <span style="color:#00D">7</span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Hello world</span><span style="color:#710">&quot;</span></span>
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>A</th>
+      <th>B</th>
+      <th>9 + 7</th>
+      <th>Hello world</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>B</td>
+      <td>16</td>
+      <td>Hello world</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="the-from-clause">The <code>FROM</code> clause</h2>
+
+<p>If we think of <code>SELECT</code> as a <em>sentence</em>, then our sentences so far have been very simple. Just as in English, we add complexity to our SQL statements with <em>clauses</em>.</p>
+
+<p>So far, the SQL program hasn't actually touched our database tables. With the <code>FROM</code> clause, we can specify the <em>columns</em> we want to <code>SELECT</code>. The "grammar" goes like this:</p>
+
+<blockquote>
+  <p><strong>SELECT</strong> [a column name] <strong>FROM</strong> [a table name]</p>
+</blockquote>
+
+<p>Written as a SQL statement:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> Location <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+</pre></div>
+</div>
+</div>
+
+<p>The result:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/sql-select-location.png" /></p>
+
+<p>The query will return the value of the <code>Location</code> column for <em>every</em> row. If you're using the database of just the SFPD <em>assaults</em> from 2003 to 2013, the result will contain 130,097 rows.</p>
+
+<p>Just as an exercise, try querying:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">hello world</span><span style="color:#710">&quot;</span></span> <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents;
+</pre></div>
+</div>
+</div>
+
+<p>The result should look like this:</p>
+
+<p>(again, one row) </p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>hello world</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>hello world</td>
+    </tr>
+    <tr>
+      <td>hello world</td>
+    </tr>
+    <tr>
+      <td>hello world</td>
+    </tr>
+    <tr>
+      <td>…(130,097 times)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Note: You'll likely never do something like that, but it's worth just reemphasizing the basics of <code>SELECT</code> here.</p>
+
+<h4 id="selecting-multiple-columns-from-a-table">Selecting multiple columns from a table</h4>
+
+<p>No surprises here:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> Location, X, Y
+<span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Location</th>
+      <th>X</th>
+      <th>Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>300 Block of WOODSIDE AV</td>
+      <td>-122.452194214</td>
+      <td>37.745666504</td>
+    </tr>
+    <tr>
+      <td>400 Block of NATOMA ST</td>
+      <td>-122.406684875</td>
+      <td>37.781009674</td>
+    </tr>
+    <tr>
+      <td>300 Block of COLUMBUS AV</td>
+      <td>-122.407066345</td>
+      <td>37.798183441</td>
+    </tr>
+    <tr>
+      <td>300 Block of ELLIS ST</td>
+      <td>-122.412330627</td>
+      <td>37.784889221</td>
+    </tr>
+    <tr>
+      <td>300 Block of ELLIS ST</td>
+      <td>-122.412330627</td>
+      <td>37.784889221</td>
+    </tr>
+    <tr>
+      <td>1900 Block of JENNINGS ST</td>
+      <td>-122.387695312</td>
+      <td>37.728080750</td>
+    </tr>
+    <tr>
+      <td>1000 Block of SUTTER ST</td>
+      <td>-122.416862488</td>
+      <td>37.788208008</td>
+    </tr>
+    <tr>
+      <td>400 Block of TURK ST</td>
+      <td>-122.416641235</td>
+      <td>37.782432556</td>
+    </tr>
+    <tr>
+      <td>400 Block of TURK ST</td>
+      <td>-122.416641235</td>
+      <td>37.782432556</td>
+    </tr>
+    <tr>
+      <td>1300 Block of NATOMA ST</td>
+      <td>-122.418441772</td>
+      <td>37.767608643</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="selecting-all-the-columns">Selecting all the columns</h4>
+
+<p>Sometimes you just want all the columns in a table. You <em>could</em> do this manually, e.g.</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> 
+  IncidntNum, Category, Descript, DayOfWeek, <span style="color:#0a8;font-weight:bold">Date</span>, <span style="color:#0a8;font-weight:bold">Time</span>, PdDistrict, Resolution, Location, X, Y
+<span style="color:#080;font-weight:bold">FROM</span>
+  sfpd_incidents
+</pre></div>
+</div>
+</div>
+
+<p>However, you can use an <em>asterisk</em> as a shorthand for "<em>all the columns</em>":</p>
+
+<p><code>sql
+SELECT * FROM sfpd_incidents
+</code></p>
+
+<h3 id="frequent-mistakes">Frequent mistakes</h3>
+
+<p>Even today, the most common SQL mistake I make is this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> IncidentNum, Category, Descript
+</pre></div>
+</div>
+</div>
+
+<p>The above statement will return an error because I've omitted what table I want to select these columns <em>from</em>. In the GUI, just because you've selected a table by clicking on it and you've been querying the same table for the past hour, doesn't mean that the SQL interpreter will automatically assume that you're using the same table.</p>
+
+<p>Also, that above query will throw an error because I've spelled 'IncidntNum' as 'Incid__e__ntNum'; database software won't do the guesswork for you when it comes to typos.</p>
+
+<p>Keep this need for being <em>explicit</em> (and repetitive) in mind. That's typical behavior in programming languages.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>What have we learned here? Not much, just the particular SQL syntax needed to list the contents of our data tables. But get this syntax <em>grounded</em>, because our "sentences" will very soon become much more convoluted with different kinds of clauses.</p>
+
+<h4 id="exercises">Exercises</h4>
+
+<ol>
+  <li>Write the query which produces a result table in which all the columns from the <code>sfpd_incidents</code> table, but list them in <em>alphabetical</em> order. Yes, this means typing it out manually.</li>
+  <li>Write the query which produces a result table with a single column which contains the sum of the <code>X</code> and <code>Y</code> columns from <code>sfpd_incidents</code></li>
+</ol>
+
+<h5 id="solution-1">Solution 1</h5>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> 
+  Category, <span style="color:#0a8;font-weight:bold">Date</span>, Descript, IncidntNum, Location, PdDistrict, Resolution, <span style="color:#0a8;font-weight:bold">Time</span>, X, Y
+<span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+</pre></div>
+</div>
+</div>
+
+<h5 id="solution-2">Solution 2</h5>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> X + Y
+<span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+</pre></div>
+</div>
+</div>
+
+<h4 id="other-resources">Other resources:</h4>
+
+<p><a href="https://github.com/veltman/learninglunches/tree/master/databases">SQL: The Prequel (Excel vs. Databases)</a></p>
+
+<p><a href="https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part1.textile">A Gentle Introduction to SQL Using SQLite, Part I</a></p>
+
+<p><a href="http://peteraldhous.com/CAR/Database_SQLite.pdf">Peter Aldhous's SQLite tutorial</a></p>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

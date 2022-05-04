@@ -1,0 +1,858 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Aggregate functions in SQL | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="How to count our grouped results.">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    Aggregate functions in SQL
+                </h1>
+                <div class="description">
+                    <p>
+                        How to count our grouped results.
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>In the <a href="/tutorials/databases/sql-group">previous tutorial</a>, we learned about <code>GROUP BY</code>, a clause that seems terribly benign until you use the aggregate functions we'll learn about in this tutorial. </p>
+
+<p>With <code>COUNT</code>, <code>SUM</code>, <code>AVERAGE</code>, and other functions, SQL will be able to provide <em>most</em> of the analytical functionality we have with Pivot Tables, with considerably more speed and flexibility.</p>
+
+<hr />
+
+
+<blockquote class="warning well">
+  <p>Note: For this SQL lesson, I will be using the <strong>Sequel Pro</strong> GUI for the <strong>MySQL</strong> database engine and will be querying the SFPD incident reports categorized as <code>ASSAULT</code></p>
+
+  <p>If you want to see exactly the same results I do, you'll want to download and import the__ MySQL database of 2003 to 2013 assault reports from the SFPD__.</p>
+
+  <p>I've also created the <strong>SQLite</strong> version of that database, which should functionally be the same as the MySQL version. </p>
+
+  <p>For both MySQL and SQLite, I've also created a database of <em>all</em> the SFPD reports from 2003 to 2013. All the queries should work the same, except you can explore all the different categories of crime. The tradeoff is that the database is much bigger, and so will be slower to download, import, and query. If you're completely new to all this, I would just go with the <strong>assaults</strong> database, just so any errors you make don't take even longer to figure out.</p>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sql.zip"><strong>MySQL</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sql.zip"><strong>MySQL</strong> all incident reports: 1,491,764 rows </a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> all incident reports: 1,491,764 rows </a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="the-count">The <code>COUNT</code></h3>
+
+<p>Let's review a basic use of <code>GROUP BY</code>; the following query will list all the police districts that show up in the <code>sfpd_incidents</code> set:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<p>Which results in this:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If we want to find <strong>the number of incidents per district</strong>, then we use the <strong>aggregate function</strong> <code>COUNT</code>, which we specify in the query as if it were another column to <code>SELECT</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, <span style="color:#369;font-weight:bold">COUNT</span>(*)
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<p>Which results in:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+      <th>COUNT(*)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>833</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>16094</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>11749</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>14711</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>18650</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>14096</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+      <td>5906</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>5504</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>20329</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>9172</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>13053</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Note:</strong> For many variants of SQL, the syntax <code>COUNT(1)</code> <a href="http://stackoverflow.com/questions/1221559/count-vs-count1">is no different</a> than <code>COUNT(*)</code>. I use both interchangeably.</p>
+
+<p>When used with <code>GROUP BY</code>, the <code>COUNT</code> function will provide the number of records that belong to each grouping. Try querying to find the count of incidents per district by <em>subcategory</em> (of assault):</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>)
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript
+</pre></div>
+</div>
+</div>
+
+<p>An excerpt of the results:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+      <th>Descript</th>
+      <th>COUNT(1)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER, SNIPING</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT WITH A DEADLY WEAPON</td>
+      <td>1276</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>THREATS TO SCHOOL TEACHERS</td>
+      <td>43</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>UNLAWFUL DISSUADING/THREATENING OF A WITNESS</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>WILLFUL CRUELTY TO CHILD</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="counting-without-grouping">Counting without grouping</h4>
+
+<p>A quick aside: if <code>COUNT</code> is something that can be <em>selected</em> as a result column, what happens if we use it without <code>GROUP BY</code>?</p>
+
+<p>The value returned by <code>COUNT</code> will be the number of result rows. Here is its simplest form:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#369;font-weight:bold">COUNT</span>(*)
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>COUNT(*)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To find the total number of rows in a given table:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>COUNT(*)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>130097</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>And if we filter the table with <code>WHERE</code>, we can expect the count of results to change:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents <span style="color:#080;font-weight:bold">WHERE</span> PdDistrict=<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">CENTRAL</span><span style="color:#710">'</span></span>;
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>COUNT(*)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>11749</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="sql-vs-pivot-tables">SQL vs Pivot Tables</h4>
+
+<p>This should look familiar to what you've done with pivot tables: creating rows with a grouping by <code>PdDistrict</code> and <code>Descript</code>, and showing the <code>COUNT</code> values of the grouping. </p>
+
+<p>What SQL does not do very well is create a <em>matrix</em>, e.g. <code>PdDistrict</code> as rows, and <code>Descript</code> as headers. To see something like that, you're better off exporting from SQL and into a spreadsheet.</p>
+
+<h4 id="max-min-avg-and-sum"><code>MAX</code>, <code>MIN</code>, <code>AVG</code>, and <code>SUM</code></h4>
+
+<p>Standard SQL includes functions to find the maximum, minimum, average, and summation of numerical columns. In the <code>sfpd_incidents</code> dataset, we don't have much use for these functions as we don't have many numerical columns to aggregate upon. But they would be handy in a dataset like schools and yearly test scores, for example.</p>
+
+<p>These functions take the same form as <code>COUNT</code>, though you will want to provide the name of a column to find the max/min/average/sum <em>of</em>.</p>
+
+<p>The query below will find the average, max, min of each police district's <code>X</code> and <code>Y</code> coordinates (where neither <code>X</code> nor <code>Y</code> are set to <code>0</code>) in their respective incident reports:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, 
+    <span style="color:#369;font-weight:bold">MAX</span>(X), <span style="color:#369;font-weight:bold">AVG</span>(X), <span style="color:#369;font-weight:bold">MIN</span>(X), 
+    <span style="color:#369;font-weight:bold">MAX</span>(Y), <span style="color:#369;font-weight:bold">AVG</span>(Y), <span style="color:#369;font-weight:bold">MIN</span>(Y)
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> X != <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">AND</span> Y != <span style="color:#00D">0</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<p>The result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+      <th>MAX(X)</th>
+      <th>AVG(X)</th>
+      <th>MIN(X)</th>
+      <th>MAX(Y)</th>
+      <th>AVG(Y)</th>
+      <th>MIN(Y)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>-122.365951538</td>
+      <td>-122.3922285986806</td>
+      <td>-122.485420227</td>
+      <td>37.800144196</td>
+      <td>37.7350376174197</td>
+      <td>37.708492279</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>-122.393981934</td>
+      <td>-122.4096411388966</td>
+      <td>-122.434051514</td>
+      <td>37.808952332</td>
+      <td>37.7952143830767</td>
+      <td>37.719173431</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>-122.386100769</td>
+      <td>-122.4270778636550</td>
+      <td>-122.478347778</td>
+      <td>37.779884338</td>
+      <td>37.7247807953804</td>
+      <td>37.708183289</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>-122.387229919</td>
+      <td>-122.4188448716233</td>
+      <td>-122.449745178</td>
+      <td>37.784496307</td>
+      <td>37.7592959154963</td>
+      <td>37.718086243</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>-122.409019470</td>
+      <td>-122.4261278250174</td>
+      <td>-122.483802795</td>
+      <td>37.806621552</td>
+      <td>37.7852240473527</td>
+      <td>37.713249207</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+      <td>-122.374259949</td>
+      <td>-122.4449593595356</td>
+      <td>-122.507118225</td>
+      <td>37.784175873</td>
+      <td>37.7697759331827</td>
+      <td>37.726829529</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>-122.371070862</td>
+      <td>-122.4715122776177</td>
+      <td>-122.513023376</td>
+      <td>37.818073273</td>
+      <td>37.7800756528654</td>
+      <td>37.762172699</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>-122.370742798</td>
+      <td>-122.4057653624662</td>
+      <td>-122.466064453</td>
+      <td>37.817047119</td>
+      <td>37.7801176826130</td>
+      <td>37.735931396</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>-122.419609070</td>
+      <td>-122.4767648852449</td>
+      <td>-122.510337830</td>
+      <td>37.766033173</td>
+      <td>37.7374282305385</td>
+      <td>37.708015442</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>-122.395103455</td>
+      <td>-122.4128075461490</td>
+      <td>-122.471748352</td>
+      <td>37.794548035</td>
+      <td>37.7836961495576</td>
+      <td>37.730335236</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="column-aliases-with-as">Column aliases with <code>AS</code></h3>
+
+<p>You may have noticed that the column headers in a result set reflect what we've supplied to the <code>SELECT</code> statement. For example:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, <span style="color:#369;font-weight:bold">COUNT</span>(*)
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<p>– produces a results table with these headers:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+      <th>COUNT(*)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>833</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>16094</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>11749</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>When exporting SQL results to a different program, it's convenient to format the headers to our liking. Most commonly, this means using more human-readable names, or <strong>aliases</strong>. In SQL, we do this with the <code>AS</code> keyword after the column/value we wish to alias:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> 
+    PdDistrict <span style="color:#080;font-weight:bold">AS</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Police District</span><span style="color:#710">'</span></span>, 
+    <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">AS</span> count_of_incidents
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<p>The resulting headers:</p>
+
+<p class="sql-table">+—————–+——————–+
+| Police District | count_of_incidents |
++—————–+——————–+
+|                 |                833 |
+| BAYVIEW         |              16094 |
+| CENTRAL         |              11749 |
+| INGLESIDE       |              14711 |
+| MISSION         |              18650 |</p>
+
+<p>Besides being a nice way to clean up our data results, aliasing will become very important as we deal with joining data from multiple tables, or if joining a table to <em>itself</em>. Aliases become a way to clarify <em>which</em> thing we're referring to in dependent clauses, such as <code>HAVING</code>.</p>
+
+<h3 id="having">HAVING</h3>
+
+<p>We know how to create a query that will return the number of rows as grouped by district and by subcategory of assault: </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>)
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript
+</pre></div>
+</div>
+</div>
+
+<p>What if we want to <em>filter</em> the result set so that <em>only</em> the groups with <strong>more than 2,000 records</strong> are returned? Of course, we could do this by executing the query above, exporting to a spreadsheet, and then sorting and manually deleting rows.</p>
+
+<p>But sometimes it's necessary to do this inside of SQL. For that, we have the <code>HAVING</code> clause, which works similar to the <code>WHERE</code> clause:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>) <span style="color:#080;font-weight:bold">AS</span> count_of_incidents
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript
+  <span style="color:#080;font-weight:bold">HAVING</span> count_of_incidents &gt; <span style="color:#00D">2000</span>
+</pre></div>
+</div>
+</div>
+
+<p>Note how I <strong>aliased</strong> the <code>COUNT(1)</code> function as <code>count_of_incidents</code> and used that same alias in the <code>HAVING</code> clause. The result of this query:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+      <th>Descript</th>
+      <th>count_of_incidents</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>BATTERY</td>
+      <td>4693</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>INFLICT INJURY ON COHABITEE</td>
+      <td>2240</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>4044</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>BATTERY</td>
+      <td>5462</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>2227</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>BATTERY</td>
+      <td>4512</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>INFLICT INJURY ON COHABITEE</td>
+      <td>2319</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>3387</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>BATTERY</td>
+      <td>7226</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>3502</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>BATTERY</td>
+      <td>5703</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>3007</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+      <td>BATTERY</td>
+      <td>2553</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>BATTERY</td>
+      <td>2196</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>BATTERY</td>
+      <td>9196</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>3741</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>BATTERY</td>
+      <td>3248</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>2282</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>BATTERY</td>
+      <td>5248</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>2476</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="why-not-where">Why not <code>WHERE</code>?</h4>
+
+<p>So, the first question we might have is: if <code>HAVING</code> works similar to <code>WHERE</code>, then why have <code>HAVING</code> when we could just use <code>WHERE</code>? For example:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>) <span style="color:#080;font-weight:bold">AS</span> count_of_incidents
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> count_of_incidents &gt; <span style="color:#00D">2000</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript  
+</pre></div>
+</div>
+</div>
+
+<p>In MySQL, you'll receive this error:</p>
+
+<pre><code>ERROR 1054 (42S22): Unknown column 'count_of_incidents' in 'where clause'
+</code></pre>
+
+<p>Apparently, column aliases aren't yet resolved by the time the <code>WHERE</code> clause does its business, so thus an alias will be "unknown" in the <code>WHERE</code> clause.</p>
+
+<p>OK, no problem. <code>count_of_incidents</code> is merely <code>COUNT(1)</code>, so let's not even use the alias:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>)
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>) &gt; <span style="color:#00D">2000</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript  
+</pre></div>
+</div>
+</div>
+
+<p>This will return an even more opaque error message:</p>
+
+<pre><code>ERROR 1111 (HY000): Invalid use of group function
+</code></pre>
+
+<p>To make sense of this error message, think of where <code>WHERE</code> occurs in the query. It happens <em>before</em> the <code>GROUP BY</code> clause. Without knowing the exact internals of the SQL engine, we might speculate that the <code>COUNT(1)</code> function doesn't get computed until the <code>GROUP BY</code> clause. And so <code>WHERE</code> just can't make sense of the <code>COUNT(1)</code> function.</p>
+
+<p>Also, remember that <code>WHERE</code> is used to filter down a dataset based on columnar values, for example, to retrieve just the records from the <code>CENTRAL</code> and <code>MISSION</code> districts:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>) <span style="color:#080;font-weight:bold">AS</span> count_of_incidents
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> PdDistrict <span style="color:#080;font-weight:bold">IN</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">CENTRAL</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">MISSION</span><span style="color:#710">'</span></span>)
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript  
+</pre></div>
+</div>
+</div>
+
+<p>Presumably, we want the <code>COUNT</code> aggregate of this filtered set, so it makes sense that we have another way to do a conditional statement – i.e. <code>HAVING</code> – and that it should appear <em>after</em> the <code>GROUP BY</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>) <span style="color:#080;font-weight:bold">AS</span> count_of_incidents
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> PdDistrict <span style="color:#080;font-weight:bold">IN</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">CENTRAL</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">MISSION</span><span style="color:#710">'</span></span>)
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript
+  <span style="color:#080;font-weight:bold">HAVING</span> count_of_incidents &gt; <span style="color:#00D">1000</span>
+</pre></div>
+</div>
+</div>
+
+<p>Note: We could place the conditional statements in <code>HAVING</code> and not even have the <code>WHERE</code> clause:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript, <span style="color:#369;font-weight:bold">COUNT</span>(<span style="color:#00D">1</span>) <span style="color:#080;font-weight:bold">AS</span> count_of_incidents
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript
+  <span style="color:#080;font-weight:bold">HAVING</span> count_of_incidents &gt; <span style="color:#00D">1000</span> 
+    <span style="color:#080;font-weight:bold">AND</span> PdDistrict <span style="color:#080;font-weight:bold">IN</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">CENTRAL</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">MISSION</span><span style="color:#710">'</span></span>) 
+</pre></div>
+</div>
+</div>
+
+<p>This technically returns the same result set. There are reasons (some of them related to performance) <em>not</em> to do this, though I'm not an expert on how different flavors of SQL react to it. But please, let <code>HAVING</code> have just the aggregate and aliased values, and leave the rest to <code>WHERE</code>.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>With aggregate functions, we've reached roughly the same ability to summarize a dataset as we did with spreadsheets and pivot tables. But the syntax we've covered is non-trivial, to say the least. Keep practicing, and mind where you have put your <code>WHERE</code> and <code>HAVING </code> clauses.</p>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

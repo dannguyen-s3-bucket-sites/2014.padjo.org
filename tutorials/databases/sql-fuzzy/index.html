@@ -1,0 +1,519 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Fuzzy matching in SQL | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Finding non-exact terms with LIKE, IN, BETWEEN, and other boolean operators">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    Fuzzy matching in SQL
+                </h1>
+                <div class="description">
+                    <p>
+                        Finding non-exact terms with LIKE, IN, BETWEEN, and other boolean operators
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>In this lesson, we'll learn ways to have more flexible, "fuzzier" filters when querying data. At the very least, knowing these keywords will save you from having to write a tedious number of conditional statements just to get variations of a data value.</p>
+
+
+
+<p>For example, instead of this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ARREST, BOOKED</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">OR</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ARREST, CITED</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>We have:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Resolution <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ARREST%</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<hr />
+<blockquote class="warning well">
+  <p>Note: For this SQL lesson, I will be using the <strong>Sequel Pro</strong> GUI for the <strong>MySQL</strong> database engine and will be querying the SFPD incident reports categorized as <code>ASSAULT</code></p>
+
+  <p>If you want to see exactly the same results I do, you'll want to download and import the__ MySQL database of 2003 to 2013 assault reports from the SFPD__.</p>
+
+  <p>I've also created the <strong>SQLite</strong> version of that database, which should functionally be the same as the MySQL version. </p>
+
+  <p>For both MySQL and SQLite, I've also created a database of <em>all</em> the SFPD reports from 2003 to 2013. All the queries should work the same, except you can explore all the different categories of crime. The tradeoff is that the database is much bigger, and so will be slower to download, import, and query. If you're completely new to all this, I would just go with the <strong>assaults</strong> database, just so any errors you make don't take even longer to figure out.</p>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sql.zip"><strong>MySQL</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sql.zip"><strong>MySQL</strong> all incident reports: 1,491,764 rows </a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> all incident reports: 1,491,764 rows </a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="more-comparison-operators">More comparison operators</h3>
+
+<p>So far, we've only looked at when a data field <em>is equal</em> or <em>not equal</em> to a given value, e.g. to find all incident reports in which the location was likely unknown or improperly geocoded:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Y = <span style="color:#00D">0</span>
+</pre></div>
+</div>
+</div>
+
+<p>But we can also look for relative comparisons, e.g. <em>greater than</em>, <em>less than</em>, and their <em>or equal to</em> variants:</p>
+
+<ul>
+  <li>
+    <p>Find all incidents north (i.e. greater than ) of <code>Y</code> coordinate <code>37.78</code>:</p>
+
+    <pre><code>  SELECT * from sfpd_incidents WHERE Y &gt; 37.78
+</code></pre>
+  </li>
+  <li>
+    <p>Find all incidents south (i.e. less than ) of <code>Y</code> coordinate <code>37.75</code>:</p>
+
+    <pre><code>  SELECT * from sfpd_incidents WHERE Y &lt; 37.75
+</code></pre>
+  </li>
+  <li>
+    <p>Find all incidents at or south of <code>Y</code> coordinate <code>37.728080750</code>:</p>
+
+    <pre><code>  SELECT * from sfpd_incidents WHERE Y &lt;= 37.728080750
+</code></pre>
+  </li>
+</ul>
+
+<h4 id="relative-comparisons-of-string-literals">Relative comparisons of string literals</h4>
+
+<p>The greater than/less than operators will also work for <em>string literals</em>. This will effectively select all records that begin with <code>"AGGRAVATED ASSAULT"</code>, including <code>"AGGRAVATED ASSUALT WITH A KNIFE"</code>, but not <code>"BATTERY"</code>, as <code>"B"</code> comes after any term that starts with <code>"A"</code>, when you're sorting by alphabetical order:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents 
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">AGGRAVATED ASSAULT</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">AND</span> Descript &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">AGGRAVATED ASSAULT ZZZZ</span><span style="color:#710">'</span></span> 
+</pre></div>
+</div>
+</div>
+
+<p>This is <em>not</em> the ideal way to do this (we'll soon learn about <code>LIKE</code> and wildcards), but it's worth exploring the concept.</p>
+
+<h4 id="dates-as-hacky-string-literals">Dates as (hacky) string literals</h4>
+
+<p>This is a more of a technical aside: Because MySQL and SQLite have a significant difference in handling date/time operations, for the purposes of this lesson, I will consider them to be just <em>string literals</em>. In other words, we won't be using something like Excel's <code>YEAR(some_cell)</code> to extract just the year from <code>Date</code>.</p>
+
+<p>However, there is a way around this with string literals. To get all the records in the year <code>2004</code>, we can simply define a lower bound, i.e. <code>"2004"</code> and an upper bound <code>"2005"</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#0a8;font-weight:bold">Date</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2004</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Date</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2005</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p><strong>Very important:</strong> This is kind of a hack for date and time values, so it'll seem awkward and finicky. The most important rule here is: <strong>treat the numbers as string literals</strong>. </p>
+
+<ul>
+  <li>This is good: <code>...WHERE Date &gt;= '2012</code></li>
+  <li>This is bad: <code>...WHERE Date &gt;= 2012</code></li>
+</ul>
+
+<p>To find records <strong>by year and month</strong>, such as April 2008, we can do: </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#0a8;font-weight:bold">Date</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2008-04</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Date</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2008-05</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>To find records that happened in 2012 from 9PM to before midnight, we'll throw in the time field:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#0a8;font-weight:bold">Date</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2012</span><span style="color:#710">'</span></span> 
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Date</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2013</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Time</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">21:00</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Time</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">23:59</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>To include the wee hours of the morning, say before 5AM, we can continue with this logic, but it'll start to look ugly:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#0a8;font-weight:bold">Date</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2012</span><span style="color:#710">'</span></span> 
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Date</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2013</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span>( 
+      <span style="color:#0a8;font-weight:bold">Time</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">21:00</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Time</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">23:59</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">OR</span>
+      <span style="color:#0a8;font-weight:bold">Time</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">00:00</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Time</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">05:00</span><span style="color:#710">'</span></span>
+    )
+</pre></div>
+</div>
+</div>
+
+<p>Treating dates and times as just literal strings is an ugly hack for dealing with dates and times. We lose the ability, for example, to easily extract just the <strong>month</strong> from a value of <code>2012-05-12</code> or the <strong>hour</strong> from <code>07:30</code>. This means finding all crimes that happened in December will be very inconvenient using the technique above.</p>
+
+<p>But it will do for now, as this syntax works on both SQLite and MySQL. We can learn more time/date specific syntax later. For this lesson, let's work with what we know for now, which is <em>strings</em> and comparison operators.</p>
+
+<h3 id="the-between-operator">The <code>BETWEEN</code> operator</h3>
+
+<p>If you're not a fan of a forest of less-than and greater-than symbols, both SQLite and MySQL support the <code>BETWEEN</code> keyword:</p>
+
+<p>So the following two queries are equivalent:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Y <span style="color:#080;font-weight:bold">BETWEEN</span> <span style="color:#60E">37.75</span> <span style="color:#080;font-weight:bold">AND</span> <span style="color:#60E">37.78</span>
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Y &gt;= <span style="color:#60E">37.75</span> <span style="color:#080;font-weight:bold">AND</span> Y &lt;= <span style="color:#60E">37.78</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="the-in-operator">The <code>IN</code> operator</h3>
+
+<p>Like <code>BETWEEN</code>, the <code>IN</code> operator can simplify a long series of <code>OR</code> statements. The following two queries are equivalent:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript <span style="color:#080;font-weight:bold">IN</span>( <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">BATTERY OF A POLICE OFFICER</span><span style="color:#710">'</span></span>, 
+    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</span><span style="color:#710">'</span></span>, 
+    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">THREATS TO SCHOOL TEACHERS</span><span style="color:#710">'</span></span>)
+    <span style="color:#080;font-weight:bold">AND</span> Resolution <span style="color:#080;font-weight:bold">IN</span>( <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">NONE</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span>)
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> 
+      ( Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">BATTERY OF A POLICE OFFICER</span><span style="color:#710">'</span></span>
+       <span style="color:#080;font-weight:bold">OR</span> Descript =  <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</span><span style="color:#710">'</span></span>
+       <span style="color:#080;font-weight:bold">OR</span> Descript =  <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">THREATS TO SCHOOL TEACHERS</span><span style="color:#710">'</span></span>)
+    <span style="color:#080;font-weight:bold">AND</span> 
+      (Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">NONE</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">OR</span> Resolution = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">UNFOUNDED</span><span style="color:#710">'</span></span>)
+</pre></div>
+</div>
+</div>
+
+<h3 id="matching-patterns-with-like">Matching patterns with <code>LIKE</code></h3>
+
+<p>The <code>IN</code> operator is nice, but we often won't know all of the possible variations for a value. For example, how many kinds of <code>'AGGRAVATED ASSAULT'</code> are there? The <code>LIKE</code> operator lets us match by <em>patterns</em>.</p>
+
+<h4 id="the--wildcard">The <code>%</code> wildcard</h4>
+
+<p>Using <code>LIKE</code>, we can create a conditional statement like, "Find me all records in which the description begins with the word 'AGGRAVATED ASSAULT'". With <code>LIKE</code>, we can also use the <strong>wildcard</strong> symbol, <code>%</code> (percentage sign), which will match <em>any</em> sequence of characters:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">WHERE</span> Descript <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">AGGRAVATED ASSAULT%</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>This query will return any row in which <code>Descript</code> begins with <code>AGGRAVATED ASSAULT</code>, followed by <em>anything</em>. This will return <strong>26,858</strong> records, with <strong>8</strong> distinct values for <code>Descript</code>:</p>
+
+<pre><code>AGGRAVATED ASSAULT OF POLICE OFFICER, SNIPING
+AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE
+AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN
+AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE
+AGGRAVATED ASSAULT WITH A DEADLY WEAPON
+AGGRAVATED ASSAULT WITH A GUN
+AGGRAVATED ASSAULT WITH A KNIFE
+AGGRAVATED ASSAULT WITH BODILY FORCE
+</code></pre>
+
+<p>(Note: You might be wondering, how do you just list the distinct values of a field? We'll find out in a later lesson on the <code>GROUP BY</code> clause. For now, I'm listing the distinct <code>Descript</code> values for your convenience)</p>
+
+<h4 id="prepending-the--wildcard">Prepending the <code>%</code> wildcard</h4>
+
+<p>The above query for <code>'AGGRAVATED ASSAULT%'</code> will match any record with any variation of words <em>after</em> the string, <code>'AGGRAVATED ASSAULT'</code>. We can look for variations of words <em>before</em> a given string by placing the wildcard symbol accordingly.</p>
+
+<p>For example, to find all records in which <code>Descript</code> ends with <code>'A GUN'</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">WHERE</span> Descript <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%WITH A GUN</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>The different types of <code>Descript</code> in this results set are:</p>
+
+<pre><code>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN
+AGGRAVATED ASSAULT WITH A GUN
+ATTEMPTED HOMICIDE WITH A GUN
+ATTEMPTED MAYHEM WITH A GUN
+MAYHEM WITH A GUN
+</code></pre>
+
+<h4 id="surrounded-by-wildcards">Surrounded by wildcards</h4>
+
+<p>Are there incidents that involved a gun, but that weren't described as "something something WITH A GUN"?</p>
+
+<p>Let's be even more "wild" and use two wildcard symbols:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%GUN%</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>As it turns out, apparently all the assault records (2,507 of them) that have the word <code>"GUN"</code> in them, indeed take the form of, <code>"something something WITH A GUN"</code>.</p>
+
+<p>What about police officer-involved incidents? The term <code>POLICE</code> occurs in the middle of the <code>Descript</code> value <code>'AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN'</code></p>
+
+<p>Querying for all instances of <code>'POLICE'</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%POLICE%</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>– returns <strong>3,171</strong> records, with <strong>7</strong> distinct values for <code>Descript</code>:</p>
+
+<pre><code>AGGRAVATED ASSAULT OF POLICE OFFICER, SNIPING
+AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE
+AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN
+AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE
+ASSAULT BY POLICE OFFICER
+ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON
+BATTERY OF A POLICE OFFICER
+</code></pre>
+
+<p>For our hacky time and date filtering, this would select all records in which the <code>Date</code> took place in May:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">from</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#0a8;font-weight:bold">Date</span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%-05-%</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>This would match values such as:</p>
+
+<pre><code>2012-05-08
+2003-05-30
+</code></pre>
+
+<h4 id="the-underscore-wildcard">The underscore wildcard</h4>
+
+<p>Sometimes we don't need the kind of catch-all power of the <code>%</code> wildcard. The <strong>underscore</strong> character, i.e. <code>_</code>, can act as a stand-in for a single character. For example, to catch all records in which the preposition <code>'OF'</code> or <code>'ON'</code> were used:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">AGGRAVATED ASSAULT O_</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h4 id="not-like"><code>NOT LIKE</code></h4>
+
+<p>Just as <code>=</code> has its opposite, <code>!=</code>, the opposite of <code>LIKE</code> can be expressed with <code>NOT LIKE</code>:</p>
+
+<p><code>sql
+SELECT * FROM sfpd_incidents
+  WHERE Descript NOT LIKE '%BATTERY%'
+</code></p>
+
+<h4 id="whats-not-to-like">What's not to <code>LIKE</code>?</h4>
+
+<p>Being able to search for patterns is very powerful. However, as you can imagine, searching for <code>'BA%'</code> (e.g. everything that starts with the letters <code>'BA'</code>) is going to be more computationally complex than finding an <em>exact</em> match for <code>'BATTERY'</code>.</p>
+
+<p>It's beyond the scope of this lesson to get into SQL performance tweaking. But the general rule is, don't be more flexible than you need to be, or else what could've been a half-second query will turn into a 2-hour query as your computer dutifully and unquestioningly carries out your insanely wide-ranged search.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Fuzzy matching is a powerful feature when working with messily defined data. But nothing is free, and so this more powerful kind of querying will require more time to successfully execute.</p>
+
+<h4 id="exercises">Exercises</h4>
+
+<ol>
+  <li>Find all records that took place between the year 2003 and before April 2005</li>
+  <li>Retrieve all incident reports from the <code>"TENDERLOIN"</code>, <code>"CENTRAL"</code>, and <code>"MISSION"</code> districts that are not described as <code>"AGGRAVATED"</code></li>
+</ol>
+
+<h5 id="solution-1">Solution 1</h5>
+
+<p>Without the <code>BETWEEN</code> operator:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#0a8;font-weight:bold">Date</span> &gt;= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2003</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Date</span> &lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2005-04</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>Using the 'BETWEEN' operator:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> <span style="color:#0a8;font-weight:bold">Date</span> <span style="color:#080;font-weight:bold">BETWEEN</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2003-01-01</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">AND</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2005-03-31</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h5 id="solution-2">Solution 2</h5>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> PdDistrict <span style="color:#080;font-weight:bold">IN</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">TENDERLOIN</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">MISSION</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">CENTRAL</span><span style="color:#710">'</span></span>)
+    <span style="color:#080;font-weight:bold">AND</span> Descript <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%AGGRAVATED%</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h4 id="other-resources">Other resources</h4>
+
+<p><a href="https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part2.textile">A Gentle Introduction to SQL Using SQLite, Part II</a></p>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,378 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Updating, deleting, and creating new data | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Statements for modifying our databases">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    Updating, deleting, and creating new data
+                </h1>
+                <div class="description">
+                    <p>
+                        Statements for modifying our databases
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>So far we've focused exclusively on the <code>SELECT</code> statement, since all we've cared about was searching through a database, not modifying it. But if we do want to modify our data, we have access to <code>UPDATE</code>, <code>DELETE</code>,  and <code>INSERT</code>.</p>
+
+
+
+<hr />
+
+<blockquote>
+  <p>Note: For this SQL lesson, I will be using MySQL and the Sequel Pro GUI. The queries and concepts should be the same as they are with SQLite. The database we will use consists of five tables:</p>
+
+  <ol>
+    <li><code>members</code> - Current U.S. congressmembers as of October 2014</li>
+    <li><code>terms</code> - The terms served by the current U.S. congressmembers</li>
+    <li><code>social_accounts</code> - social account names for current U.S. congressmembers</li>
+    <li><code>twitter_profiles</code> - Twitter profile data for the accounts in <code>social_accounts</code></li>
+    <li><code>tweets</code> - The most recent 3,200 tweets of each Twitter profile (about 800,000+ tweets altogether)</li>
+  </ol>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sql.zip">MySQL dump of Congress and Twitter data</a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sqlite.zip">SQLite dump of Congress and Twitter data</a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<p><strong>Somewhat obvious note:</strong> if you modify the database in this lesson, you should delete the database and reimport it for the other lessons that use it. If you don't want to go through that hassle, you can <strong>duplicate</strong> the tables via the GUI, e.g. right-click on a table name and select <strong>Duplicate table</strong> (Sequel Pro) or <strong>Copy table</strong> (SQLite Manager). Be sure to select the option that also copies the <em>data</em> and not just the structure.</p>
+
+<p><img alt="img" src="/files/tutorials/databases/right-click-copy-table-sqlite.png" /></p>
+
+<h3 id="update"><code>UPDATE</code></h3>
+
+<p>The structure for an <code>UPDATE</code> statement is similar to <code>SELECT</code>, but simpler:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> some_table
+  <span style="color:#B06;font-weight:bold">SET</span> some_field = some_value, 
+    some_other_field = some_other_value
+  <span style="color:#777">/* optional */</span>
+  <span style="color:#080;font-weight:bold">WHERE</span> some_condition_is_true
+</pre></div>
+</div>
+</div>
+
+<p>In the <code>members</code> table, the values for <code>current_role</code> are either <code>"rep"</code> (for "Representative") or <code>"sen"</code> (for "Senator"). To change those to <code>"REP"</code> and <code>"SEN"</code>, respectively, we can execute two <code>UPDATE</code> statements:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> members
+  <span style="color:#B06;font-weight:bold">SET</span> current_role = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">REP</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">WHERE</span> current_role = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">rep</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> members
+  <span style="color:#B06;font-weight:bold">SET</span> current_role = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">SEN</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">WHERE</span> current_role = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">sen</span><span style="color:#710">'</span></span>;
+</pre></div>
+</div>
+</div>
+
+<p>Or, to do both upper-casing updates in one query, use the <code>UPPER</code> function:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> members
+  <span style="color:#B06;font-weight:bold">SET</span> current_role = UPPER(current_role)
+</pre></div>
+</div>
+</div>
+
+<p>What results do these queries return? None. But for the first query (on <code>"rep"</code>) MySQL should tell you something like, <code>No errors; 438 rows affected</code>:</p>
+
+<p><img alt="no rows" src="/files/tutorials/databases/update-no-rows-returned.jpg" /></p>
+
+<h4 id="updating-null-states">Updating <code>NULL</code> states</h4>
+
+<p>If a column is filled with <code>NULL</code> states, the <code>WHERE</code> syntax is the same as it was in <code>SELECT</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">UPDATE</span> members
+    <span style="color:#B06;font-weight:bold">SET</span> middle_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">WHERE</span> middle_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<p>And to change empty/blank values into <code>NULL</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">UPDATE</span> members
+    <span style="color:#B06;font-weight:bold">SET</span> middle_name = <span style="color:#069">NULL</span>
+    <span style="color:#080;font-weight:bold">WHERE</span> middle_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>Note the syntax difference: you <code>SET</code> a field <em>equal</em> to <code>NULL</code>, versus looking for <code>WHERE</code> a field <code>IS NULL</code></p>
+
+<h4 id="updating-multiple-fields">Updating multiple fields</h4>
+
+<p>To update more than one column at a time, you provide a comma-separated list:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">UPDATE</span> members
+    <span style="color:#B06;font-weight:bold">SET</span> 
+      gender = UPPER(GENDER),
+      current_role = UPPER(current_role)
+</pre></div>
+</div>
+</div>
+
+<h4 id="creating-and-populating-a-new-column">Creating and populating a new column</h4>
+
+<p>I won't go into this in detail, but you can <strong>add</strong> a new column to an existing table via your database GUI. Or, for both MySQL and SQLite, you can add a string column (that holds up to 255 characters) named <code>full_name</code> to <code>members</code> with this statement:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">ALTER</span> <span style="color:#339;font-weight:bold">TABLE</span> members 
+  <span style="color:#B06;font-weight:bold">ADD</span> <span style="color:#339;font-weight:bold">COLUMN</span> full_name <span style="color:#0a8;font-weight:bold">VARCHAR</span>(<span style="color:#00D">255</span>)
+</pre></div>
+</div>
+</div>
+
+<p>This new column will be empty. Let's update it with a derived value: <code>full_name</code> should be equal to <code>first_name</code> + <code>middle_name</code> + <code>last_name</code> + <code>suffix</code>.</p>
+
+<p>The command to <strong>concatenate</strong> strings varies between MySQL and SQLite.</p>
+
+<p>For MySQL (<a href="http://dev.mysql.com/doc/refman/4.1/en/string-functions.html#function_concat">check the official documentation here</a>), we can use <code>CONCAT</code>, or even better, <code>CONCAT_WS</code> (<em>concatenate with separator</em>). The first value we pass to <code>CONCAT_WS</code> is what we want to <em>separate</em> each subsequent value by…in this case, a <strong>space character</strong>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> members
+  <span style="color:#B06;font-weight:bold">SET</span> full_name = CONCAT_WS(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span>, first_name, middle_name, last_name, suffix)  
+</pre></div>
+</div>
+</div>
+
+<p>In SQLite, there is no <code>CONCAT</code> function. Instead, values are concatenated via the double-pipe operator: <code>||</code></p>
+
+<p>There is also no <code>CONCAT_WS</code> function, meaning we have to specify the space characters manually:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> members
+  <span style="color:#B06;font-weight:bold">SET</span> full_name = first_name || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || middle_name || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || 
+    last_name || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || suffix
+</pre></div>
+</div>
+</div>
+
+<p>Unfortunately, this will lead to members who have no <code>middle_name</code> having a double-space between <code>first_name</code> and <code>last_name</code>. And those without a <code>suffix</code> will have a <em>trailing</em> space character. However, we can use SQLite's <code>REPLACE</code> functionality to replace double-spaces with a single space, and then <code>TRIM</code> to remove any whitespace surrounding a value. </p>
+
+<p>The order of operations would be:</p>
+
+<ol>
+  <li>Concatenate the name fields together</li>
+  <li><code>REPLACE</code> double-spaces with single-spaces</li>
+  <li><code>TRIM</code> the result</li>
+</ol>
+
+<p>Here's the convoluted statement:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> members
+  <span style="color:#B06;font-weight:bold">SET</span> full_name = TRIM(<span style="color:#B06;font-weight:bold">REPLACE</span>(first_name || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || middle_name || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || 
+    last_name || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span> || suffix, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">  </span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20"> </span><span style="color:#710">'</span></span>))
+</pre></div>
+</div>
+</div>
+
+<h4 id="updating-across-joins">Updating across joins</h4>
+
+<p>In MySQL, joining two tables and then updating values based on the joined conditions is possible, though not a frequent operation. This operation is <strong>not possible</strong> <a href="http://sqlite.org/lang_update.html">in SQLite</a>.</p>
+
+<p><strong>An example in MySQL:</strong> assuming you've created the <code>full_name</code> column on <code>members</code>, here's how to set that column based on a Twitter screen_name in <code>social_accounts</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.bioguide_id = members.bioguide_id
+  <span style="color:#B06;font-weight:bold">SET</span> 
+    members.full_name = social_accounts.twitter_screen_name
+  <span style="color:#080;font-weight:bold">WHERE</span> social_accounts.twitter_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>;
+</pre></div>
+</div>
+</div>
+
+<h3 id="delete"><code>DELETE</code></h3>
+
+<p>Note: Use <code>DELETE</code> very sparingly, as there is no "undo" in database work. The better strategy is to <em>add a new column</em> named something like, <code>should_be_deleted</code>, and then mark it <code>true</code> or <code>false</code>, and then use <code>WHERE</code> clauses to ignore or filter against <code>should_be_deleted</code></p>
+
+<p>But if you truly want to delete rows in a table, the syntax is similar to <code>SELECT</code> except you don't have to specify any fields…because you're deleting entire rows, not columns.</p>
+
+<p>The following query would delete <strong>all</strong> rows from the <code>members</code> table:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">DELETE</span> <span style="color:#080;font-weight:bold">FROM</span> members
+</pre></div>
+</div>
+</div>
+
+<p>You can use <code>WHERE</code> to delete only certain rows:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">DELETE</span> <span style="color:#080;font-weight:bold">FROM</span> members
+    <span style="color:#080;font-weight:bold">WHERE</span> first_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Dan</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="insert-into"><code>INSERT INTO</code></h3>
+
+<p>For our purposes, if you're using a GUI, you're better off figuring out how to add rows via button-clicking. It's not as nice as a spreadsheet, but for bulk data entry, you may have bigger needs than what can be done solely with just the GUI or even queries.</p>
+
+<p>But for reference sake, here's the basic syntax to insert one row:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">INSERT</span> <span style="color:#B06;font-weight:bold">INTO</span> some_table
+  (column_a, column_b)
+  <span style="color:#080;font-weight:bold">VALUES</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Hello</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">World</span><span style="color:#710">'</span></span>);
+</pre></div>
+</div>
+</div>
+
+<p>For our <code>members</code> table:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">INSERT</span> <span style="color:#B06;font-weight:bold">INTO</span> members
+  (first_name, last_name, nickname, gender)
+  <span style="color:#080;font-weight:bold">VALUES</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Milhouse</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Van Houten</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Thrillhouse</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">M</span><span style="color:#710">'</span></span>)
+</pre></div>
+</div>
+</div>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

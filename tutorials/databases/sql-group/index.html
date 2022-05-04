@@ -1,0 +1,949 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Grouping in SQL | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Simple aggregations of results">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    Grouping in SQL
+                </h1>
+                <div class="description">
+                    <p>
+                        Simple aggregations of results
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>At this point, we know how create flexible, fine-tuned filters for our database queries using the <code>WHERE</code> clause and <code>LIKE</code> operators (among many other operators). But we still can't do some of the basic functions that even a Pivot Table newbie can do, such as: get a <strong>count</strong> of incident reports by <em>year</em>, or, listing all the ways a report of <code>THREATS TO SCHOOL TEACHERS</code> is resolved, or, of course, counting all the ways those threats have been resolved, by year, by police district, and so forth.</p>
+
+<p>In this lesson, we learn how to simply <em>group</em> the records. We won't do anything particularly interesting, but as this adds an entirely new clause to our already length SQL queries, it's worth slowing down a bit.</p>
+
+<hr />
+
+
+<blockquote class="warning well">
+  <p>Note: For this SQL lesson, I will be using the <strong>Sequel Pro</strong> GUI for the <strong>MySQL</strong> database engine and will be querying the SFPD incident reports categorized as <code>ASSAULT</code></p>
+
+  <p>If you want to see exactly the same results I do, you'll want to download and import the__ MySQL database of 2003 to 2013 assault reports from the SFPD__.</p>
+
+  <p>I've also created the <strong>SQLite</strong> version of that database, which should functionally be the same as the MySQL version. </p>
+
+  <p>For both MySQL and SQLite, I've also created a database of <em>all</em> the SFPD reports from 2003 to 2013. All the queries should work the same, except you can explore all the different categories of crime. The tradeoff is that the database is much bigger, and so will be slower to download, import, and query. If you're completely new to all this, I would just go with the <strong>assaults</strong> database, just so any errors you make don't take even longer to figure out.</p>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sql.zip"><strong>MySQL</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sql.zip"><strong>MySQL</strong> all incident reports: 1,491,764 rows </a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/sfpd_assault_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> assault reports: 130,097 rows</a> </li>
+    <li><a href="http://stash.padjo.org.s3.amazonaws.com/dumps/sql/sfpd_incident_reports_2003_2013.sqlite.zip"><strong>SQLite</strong> all incident reports: 1,491,764 rows </a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="concept-of-group-by">Concept of <code>GROUP BY</code></h3>
+
+<p>Before we actually look at the syntax of the <code>GROUP BY</code> clause, it's important to understand the concept: it will, well, <em>group</em> together the records that <em>share</em> the same value in a given column.</p>
+
+<p>Let's take a very simple dataset:</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Fruit</th>
+      <th>Season</th>
+      <th>Is_Profitable</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Apples</td>
+      <td>Fall</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Oranges</td>
+      <td>Fall</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Apples</td>
+      <td>Winter</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Oranges</td>
+      <td>Winter</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Apples</td>
+      <td>Spring</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Oranges</td>
+      <td>Spring</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Pineapples</td>
+      <td>Spring</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Apples</td>
+      <td>Summer</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Oranges</td>
+      <td>Summer</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pineapples</td>
+      <td>Summer</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If we were to <code>GROUP BY</code> the <code>Fruit</code>, and simply show the resulting <code>Fruit</code> column, it would look like this, because there are only three values of <code>Fruit</code>:</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Fruit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Apples</td>
+    </tr>
+    <tr>
+      <td>Oranges</td>
+    </tr>
+    <tr>
+      <td>Pineapples</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Similarly, if we were to <code>GROUP BY</code> the <code>Season</code> column, the result would be:</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Season</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Fall</td>
+    </tr>
+    <tr>
+      <td>Winter</td>
+    </tr>
+    <tr>
+      <td>Spring</td>
+    </tr>
+    <tr>
+      <td>Summer</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now, if we were to <code>GROUP BY</code> <strong>two</strong> columns – <code>Fruit</code> and <code>Is_Profitable</code> – and then show the resulting <code>Fruit</code> and <code>Is_Profitable</code> columns, the results would give us every combination of <code>Fruit</code> and <code>Is_Profitable</code> value:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Fruit</th>
+      <th>Is_Profitable</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Apples</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Apples</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Oranges</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Oranges</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Pineapples</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Because there is not a row in which the <code>Fruit</code> is <code>'Pineapples'</code> and the <code>Is_Profitable</code> is equal to <code>'Yes'</code>, only 5 results out of a possible 6 combinations are shown.</p>
+
+<h3 id="syntax-of-group-by">Syntax of <code>GROUP BY</code></h3>
+
+<p>Among the keywords and clauses we've learned so far, <code>GROUP BY</code> comes at the very end. To group the <code>sfpd_incidents</code> by <code>PdDistrict</code> – <em>without</em> a <code>WHERE</code> clause, we write:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<p>Which results in:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>IncidntNum</th>
+      <th>Category</th>
+      <th>Descript</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>PdDistrict</th>
+      <th>Resolution</th>
+      <th>Location</th>
+      <th>X</th>
+      <th>Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>030000161</td>
+      <td>ASSAULT</td>
+      <td>AGGRAVATED ASSAULT WITH A DEADLY WEAPON</td>
+      <td>2003-01-01</td>
+      <td>00:25</td>
+      <td> </td>
+      <td>ARREST, BOOKED</td>
+      <td>UNKNOWN</td>
+      <td>0.000000000</td>
+      <td>0.000000000</td>
+    </tr>
+    <tr>
+      <td>030204711</td>
+      <td>ASSAULT</td>
+      <td>INFLICT INJURY ON COHABITEE</td>
+      <td>2003-02-18</td>
+      <td>20:40</td>
+      <td>BAYVIEW</td>
+      <td>ARREST, BOOKED</td>
+      <td>1900 Block of JENNINGS ST</td>
+      <td>-122.387695312</td>
+      <td>37.728080750</td>
+    </tr>
+    <tr>
+      <td>030204181</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-02-18</td>
+      <td>18:15</td>
+      <td>CENTRAL</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of COLUMBUS AV</td>
+      <td>-122.407066345</td>
+      <td>37.798183441</td>
+    </tr>
+    <tr>
+      <td>030205361</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-02-19</td>
+      <td>01:20</td>
+      <td>INGLESIDE</td>
+      <td>ARREST, CITED</td>
+      <td>5200 Block of DIAMOND HEIGHTS BL</td>
+      <td>-122.437934875</td>
+      <td>37.743717194</td>
+    </tr>
+    <tr>
+      <td>030205117</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-02-10</td>
+      <td>21:44</td>
+      <td>MISSION</td>
+      <td>NONE</td>
+      <td>1300 Block of NATOMA ST</td>
+      <td>-122.418441772</td>
+      <td>37.767608643</td>
+    </tr>
+    <tr>
+      <td>030004947</td>
+      <td>ASSAULT</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>2003-01-01</td>
+      <td>20:45</td>
+      <td>NORTHERN</td>
+      <td>NONE</td>
+      <td>400 Block of IVY ST</td>
+      <td>-122.425025940</td>
+      <td>37.777065277</td>
+    </tr>
+    <tr>
+      <td>003032800</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-04-10</td>
+      <td>10:16</td>
+      <td>PARK</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of WOODSIDE AV</td>
+      <td>-122.452194214</td>
+      <td>37.745666504</td>
+    </tr>
+    <tr>
+      <td>030077950</td>
+      <td>ASSAULT</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>2003-01-19</td>
+      <td>13:30</td>
+      <td>RICHMOND</td>
+      <td>NONE</td>
+      <td>2700 Block of GEARY BL</td>
+      <td>-122.448570251</td>
+      <td>37.782341003</td>
+    </tr>
+    <tr>
+      <td>030206159</td>
+      <td>ASSAULT</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+      <td>2003-02-19</td>
+      <td>09:30</td>
+      <td>SOUTHERN</td>
+      <td>ARREST, BOOKED</td>
+      <td>400 Block of NATOMA ST</td>
+      <td>-122.406684875</td>
+      <td>37.781009674</td>
+    </tr>
+    <tr>
+      <td>030014645</td>
+      <td>ASSAULT</td>
+      <td>THREATS AGAINST LIFE</td>
+      <td>2003-01-04</td>
+      <td>14:40</td>
+      <td>TARAVAL</td>
+      <td>NONE</td>
+      <td>1200 Block of 48TH AV</td>
+      <td>-122.508277893</td>
+      <td>37.763858795</td>
+    </tr>
+    <tr>
+      <td>030204329</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-02-18</td>
+      <td>19:00</td>
+      <td>TENDERLOIN</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of ELLIS ST</td>
+      <td>-122.412330627</td>
+      <td>37.784889221</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Only <strong>11</strong> rows are returned: one for each of the <strong>10</strong> police districts and <strong>1</strong> row to represent records that have an empty <code>PdDistrict</code>.</p>
+
+<p>The first thing to realize is: <strong>none</strong> of the other columns in this table are relevant. For example, this result row corresponding to the <code>'Tenderloin'</code> police district:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>IncidntNum</th>
+      <th>Category</th>
+      <th>Descript</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>PdDistrict</th>
+      <th>Resolution</th>
+      <th>Location</th>
+      <th>X</th>
+      <th>Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>030204329</td>
+      <td>ASSAULT</td>
+      <td>BATTERY</td>
+      <td>2003-02-18</td>
+      <td>19:00</td>
+      <td>TENDERLOIN</td>
+      <td>ARREST, BOOKED</td>
+      <td>300 Block of ELLIS ST</td>
+      <td>-122.412330627</td>
+      <td>37.784889221</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>– happens to have an <code>IncidntNum</code> of <code>030204329</code> and <code>Resolution</code> of <code>'ARREST, BOOKED'</code> probably because incident number <code>030204329</code> is the first incident in our data table that had a <code>PdDistrict</code> of <code>'TENDERLOIN'</code>.</p>
+
+<p>In other words, you should typically just <code>SELECT</code> the columns you're grouping by (and any aggregate calculations you might do, which we'll get to later):</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="grouping-by-multiple-columns">Grouping by multiple columns</h4>
+
+<p>To group by multiple columns, supply a <strong>comma-separated</strong> list of columns. The following query will return a list of every combination of <code>Descript</code> and <code>Resolution</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> Descript, Resolution <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> Descript, Resolution
+</pre></div>
+</div>
+</div>
+
+<p>This will result in <strong>321</strong> result rows. Note that the order of <code>Descript</code> and <code>Resolution</code> in the <code>GROUP BY</code> clause doesn't matter, just as "<code>x</code> <em>times</em> <code>y</code>" is <em>equal to</em> "<code>y</code> <em>times</em> <code>x</code>"</p>
+
+<h4 id="with-where">With <code>WHERE</code></h4>
+
+<p>The <code>WHERE</code> clause comes <em>before</em> the <code>GROUP BY</code> clause, which means that only rows that are accepted by the filter will end up in the grouping fun.</p>
+
+<p>For example, we previously retrieved a list of all police districts with this query:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+<span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now, to get a list of all the police districts that dealt with at least one reported <code>'BATTERY'</code> committed <em>against</em> a police officer: </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript  
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">BATTERY OF A POLICE OFFICER</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict
+</pre></div>
+</div>
+</div>
+
+<p>Note that we only <code>GROUP BY</code> the <code>PdDistrict</code> column because there will only be one <code>Descript</code> value to group against anyway.</p>
+
+<p>The result is <strong>11</strong> rows (so, apparently all of them):</p>
+
+<p class="sql-table">+————+—————————–+
+| PdDistrict | Descript                    |
++————+—————————–+
+|            | BATTERY OF A POLICE OFFICER |
+| BAYVIEW    | BATTERY OF A POLICE OFFICER |
+| CENTRAL    | BATTERY OF A POLICE OFFICER |
+| INGLESIDE  | BATTERY OF A POLICE OFFICER |
+| MISSION    | BATTERY OF A POLICE OFFICER |
+| NORTHERN   | BATTERY OF A POLICE OFFICER |
+| PARK       | BATTERY OF A POLICE OFFICER |
+| RICHMOND   | BATTERY OF A POLICE OFFICER |
+| SOUTHERN   | BATTERY OF A POLICE OFFICER |
+| TARAVAL    | BATTERY OF A POLICE OFFICER |
+| TENDERLOIN | BATTERY OF A POLICE OFFICER |</p>
+
+<p><code>'BATTERY OF A POLICE OFFICER'</code> is only one possible police-officer-involved <code>Descript</code> value. Let's use a wildcard to catch all the variations and <code>GROUP BY</code> two fields: <code>PdDistrict</code> and <code>Descript</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript  
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> Descript <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%POLICE OFFICER%</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>PdDistrict</th>
+      <th>Descript</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER, SNIPING</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>BAYVIEW</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>ASSAULT BY POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>CENTRAL</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>ASSAULT BY POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>INGLESIDE</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER, SNIPING</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>MISSION</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>ASSAULT BY POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>NORTHERN</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>PARK</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>RICHMOND</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>ASSAULT BY POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>SOUTHERN</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>TARAVAL</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>AGGRAVATED ASSAULT OF POLICE OFFICER,BODILY FORCE</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A GUN</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>AGGRAVATED ASSAULT ON POLICE OFFICER WITH A KNIFE</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>ASSAULT ON A POLICE OFFICER WITH A DEADLY WEAPON</td>
+    </tr>
+    <tr>
+      <td>TENDERLOIN</td>
+      <td>BATTERY OF A POLICE OFFICER</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If we wanted to find the number of police districts that had at least one <code>POLICE OFFICER</code> incident in the year 2006, we just add to the <code>WHERE</code> conditions:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> PdDistrict, Descript  
+  <span style="color:#080;font-weight:bold">FROM</span> sfpd_incidents
+  <span style="color:#080;font-weight:bold">WHERE</span> 
+    Descript <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%POLICE OFFICER%</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span> <span style="color:#0a8;font-weight:bold">Date</span> <span style="color:#080;font-weight:bold">LIKE</span> <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">2006%</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> PdDistrict, Descript
+</pre></div>
+</div>
+</div>
+
+<p>Note that again, we don't have to group by (or <code>SELECT</code>) the <code>Date</code> field because the <code>WHERE</code> filter should limit all records to those that happened in <code>2006</code>.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>That's it. If you're wondering, <em>Hey, I don't want to know just if a police district had a certain kind of report. I want to know the count of those reports per district</em> – good idea! We'll cover that in the next lesson on <strong>aggregate functions</strong>.</p>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

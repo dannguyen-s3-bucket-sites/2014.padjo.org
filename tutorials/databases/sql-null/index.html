@@ -1,0 +1,364 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>The null state in databases | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="In databases, there's nothing and then there's NULL">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    The null state in databases
+                </h1>
+                <div class="description">
+                    <p>
+                        In databases, there's nothing and then there's NULL
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>In the <a href="/tutorials/databases/sql-data-types">previous tutorial on datatypes</a>, we learned that there is a difference between <em>strings</em> and <em>numbers</em> and <em>dates</em>, that "101" is not quite the same as <code>101</code> when it comes to SQL queries and functions.</p>
+
+<p>In this brief tutorial, we learn that there's a difference between what we, in non-programmer-terms, think of as <em>nothing</em> – e.g. <code>0</code> and the empty string of <code>""</code> – and what SQL refers to as <code>NULL</code>.</p>
+
+<p><img alt="img" src="/files/tutorials/databases/cool-hand-luke.jpg" /></p>
+
+<blockquote>
+  <p>"Yeah, well, sometimes nothin' can be a real cool hand" – <a href="http://www.imdb.com/title/tt0061512/">Luke</a></p>
+</blockquote>
+
+<p>To use a clumsy cinematic metaphor, <em>a handful of nothing</em> is what Paul Newman holds, colloquially, during a poker game in <a href="http://www.imdb.com/title/tt0061512/"><em>Cool Hand Luke</em></a>. Whereas <code>NULL</code> is what you hold when you <em>are not in the game</em>. </p>
+
+<p>For us SQL programmers, there is one immediate syntactical takeaway: know the difference between:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> fruits 
+    <span style="color:#080;font-weight:bold">WHERE</span> number_sold = <span style="color:#00D">0</span>
+      <span style="color:#080;font-weight:bold">AND</span> name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>– and:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> fruits 
+    <span style="color:#080;font-weight:bold">WHERE</span> number_sold <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+      <span style="color:#080;font-weight:bold">AND</span> name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="what-is-null">What is NULL</h3>
+
+<blockquote>
+  <p>SQL null is a state (unknown) and not a value. – <a href="http://en.wikipedia.org/wiki/Null_(SQL)">Wikipedia</a></p>
+</blockquote>
+
+<p>A tricky concept for non-programmers is the concept of the <code>NULL</code> <a href="http://en.wikipedia.org/wiki/Null_(SQL)">state</a>. In other programming languages, it's sometimes referred to as <code>nil</code>; in Spanish, as <em>nada</em>:</p>
+
+<blockquote>
+  <p>Our nada who art in nada, nada be thy name thy kingdom nada thy will be nada in nada as it is in nada. Give us this nada our daily nada and nada us our nada as we nada our nadas and nada us not into nada but deliver us from nada; pues nada. Hail nothing full of nothing, nothing is with thee.”</p>
+
+  <p>– <a href="http://www.goodreads.com/quotes/124704-our-nada-who-art-in-nada-nada-be-thy-name">Ernest Hemingway, A Clean Well Lighted Place</a></p>
+</blockquote>
+
+<p>Though <code>NULL</code> has connotations of <em>nothingness</em>, it is <em>not</em> the same as a blank value, i.e. an empty string of <code>""</code>, and it is most definitely not the same as the number <em>zero</em>.</p>
+
+<p>Think of a database of <code>people</code> that contains names and <em>yearly income</em>:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>first name</th>
+      <th>middle_name</th>
+      <th>last_name</th>
+      <th>suffix</th>
+      <th>yearly_income</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sara</td>
+      <td>C</td>
+      <td>Smith</td>
+      <td> </td>
+      <td>75000</td>
+    </tr>
+    <tr>
+      <td>Nick</td>
+      <td>R</td>
+      <td>Johnson</td>
+      <td>NULL</td>
+      <td>60000</td>
+    </tr>
+    <tr>
+      <td>Laura</td>
+      <td>NULL</td>
+      <td>Jones</td>
+      <td> </td>
+      <td>55000</td>
+    </tr>
+    <tr>
+      <td>Zach</td>
+      <td>NULL</td>
+      <td>Butler</td>
+      <td>Jr.</td>
+      <td>NULL</td>
+    </tr>
+    <tr>
+      <td>Charles</td>
+      <td>R.</td>
+      <td>Thompson</td>
+      <td>III</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The clearest illustration of the difference between <code>NULL</code> and a value like <code>0</code> or <code>""</code> can be found in the <code>yearly_income</code>. If you wanted to get the <em>average</em> income of the folks in the <code>people</code> table, you might want to exclude people who aren't eligible to receive an income, e.g. a child. Technically, such a person "makes" an income equivalent to $0. But how would differentiate between such a person (in the example table above, <code>Zach Butler Jr.</code>) and someone else who <em>is</em> expected to have an income but still earned $0? (e.g. <code>Charles R. Thompson III</code>)?</p>
+
+<p>If the <code>yearly_income</code> field is set to be a numeric-type of column, then we can't just add a <code>"NONE"</code> for <code>Butler Jr.</code> However, we <em>can</em> set his <code>yearly_income</code> to <code>NULL</code>, to differentiate his situation from someone who makes <code>0</code>.</p>
+
+<p>So a query to find all <code>people</code> who earned <code>0</code> income would look like this:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> people
+  <span style="color:#080;font-weight:bold">WHERE</span> yearly_income = <span style="color:#00D">0</span>
+</pre></div>
+</div>
+</div>
+
+<p>However, the syntax for finding <code>NULL</code> states does <em>not</em> use the <em>equals</em> operator. To find all people with a <code>NULL</code> income:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> people
+    <span style="color:#080;font-weight:bold">WHERE</span> yearly_income <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<p>To find the inverse of that, i.e. people who are eligible to make an income:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#B06;font-weight:bold">SELECT</span> * <span style="color:#080;font-weight:bold">FROM</span> people
+    <span style="color:#080;font-weight:bold">WHERE</span> yearly_income <span style="color:#080;font-weight:bold">IS</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="user-defined-nothingness">User-defined nothingness</h3>
+
+<p>In the example <code>people</code> table, look at the possible values for <code>suffix</code>:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>first name</th>
+      <th>middle_name</th>
+      <th>last_name</th>
+      <th>suffix</th>
+      <th>yearly_income</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sara</td>
+      <td>C</td>
+      <td>Smith</td>
+      <td> </td>
+      <td>75000</td>
+    </tr>
+    <tr>
+      <td>Nick</td>
+      <td>R</td>
+      <td>Johnson</td>
+      <td>NULL</td>
+      <td>60000</td>
+    </tr>
+    <tr>
+      <td>Zach</td>
+      <td>NULL</td>
+      <td>Butler</td>
+      <td>Jr.</td>
+      <td>NULL</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To reiterate: just as <code>0</code> is not equivalent to <code>NULL</code> – an empty string, i.e. <code>""</code> – is also not equivalent to <code>NULL</code>.</p>
+
+<p>So here's where confusion often arises in data: what does <code>NULL</code> and a blank value mean to the <em>maintainer</em> of the data? In the <code>yearly_income</code> case, I posited an explanation: a <code>NULL</code> state means that a person is ineligible to receive an income. <em>However</em>, that's just speculation: it could be that <code>NULL</code> means, "<em>The collector of this data never got around to finding this value</em>".</p>
+
+<p>For <code>suffix</code>, a <code>NULL</code> state could mean just that: "<em>We haven't asked Nick R. Johnson if he is a Jr. or a Sr.</em>" And the blank value for Sara C. Smith could mean, "<em>Sara C. Smith does not have a suffix</em>". Or I could have the meanings switched up here. The point is, from a semantic standpoint, you might not know the difference between <code>NULL</code> and <code>""</code> and <code>0</code>. And to find the difference, you may have to tab-out of your database GUI and make a phone call or visit to the data's originating office.</p>
+
+<p>If <em>you</em> happen to be a creator of data, being aware of <code>NULL</code> and blank values <em>may</em> be important, <em>especially</em> if you're starting data collection from a spreadsheet or text file, and then importing into a database. Sometimes the import process may interpret a blank value as <code>NULL</code>; other times, just as an actual blank value or <code>0</code>. And spreadsheets typically don't have a native way of designating a <code>NULL</code> state.</p>
+
+<p>The <a href="http://en.wikipedia.org/wiki/Null_(SQL)">Wikipedia entry on <code>NULL</code> in SQL</a> has a nice summary of the controversy among programmers:</p>
+
+<blockquote>
+  <p>Null has been the focus of controversy and a source of debate because of its associated three-valued logic (3VL), special requirements for its use in SQL joins, and the special handling required by aggregate functions and SQL grouping operators…</p>
+
+  <p>For people new to the subject, a good way to remember what null means is to remember that in terms of information, "lack of a value" is not the same thing as "a value of zero"; similarly, "lack of an answer" is not the same thing as "an answer of no". For example, consider the question "How many books does Juan own?" The answer may be "zero" (we know that he owns none) or "null" (we do not know how many he owns, or doesn't own). </p>
+
+  <p>In a database table, the column reporting this answer would start out with a value of null, and it would not be updated with "zero" until we have ascertained that Juan owns no books.</p>
+</blockquote>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>The main point of this brief lesson was to make you <strong>aware</strong> of the existence of <code>NULL</code> – some of the datasets I've imported into MySQL via Sequel Pro have treated blank values as blank. And in SQLite, the import process has treated the values as <code>NULL</code> states.</p>
+
+<p>At left is a table in MySQL/Sequel Pro that came in from a CSV file. Apparently, Sequel Pro considered blank values to be blank. At right, SQLite Manager treated the blank values as <code>NULL</code>, which is signified as pink-colored cells:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/null-in-sequel-pro-sqlite.png" /></p>
+
+<p>As a result, the following query will <em>not</em> return the same results across the two datasets:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> first_name, middle_name, last_name
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">WHERE</span> middle_name != <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p><img alt="img" src="/files/tutorials/databases/empty-is-not-null-query.png" /></p>
+
+<p>So, on an immediate, practical level, you will want to know the <code>NULL</code> syntax in order to make valid queries, and you may have to check the table structure yourself to see what's going on. And if you are importing datasets on your own, now you have one more data-integrity issue to be mindful of.</p>
+
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

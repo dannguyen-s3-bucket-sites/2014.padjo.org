@@ -1,0 +1,1505 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Joining on a many-to-one relationship | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="When one record has many child records">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#database-joins">Database-joins</a></span> 
+                </h4>
+                <h1 class="title">
+                    Joining on a many-to-one relationship
+                </h1>
+                <div class="description">
+                    <p>
+                        When one record has many child records
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>In the <a href="/tutorials/database-joins/sql-many-to-one">previous tutorial</a>, we learned the basics of the <code>JOIN</code> syntax and how to join one record from a table to one record from another table, e.g. a Congressmember to his/her Twitter account.</p>
+
+<p>Not everything has a one-to-one relationship. For example, a Twitter account, and by extension, a Congressmember, has <em>many</em> tweets. We refer to this as a <em>many-to-one</em> relationship.</p>
+
+<p>The syntax of <code>JOIN</code> is no different from before, so this will be more of a refresher on aggregate queries.</p>
+
+<p><em>This tutorial assumes you've completed all of the <a href="/tutorials/#databases">basic SQL tutorials</a></em></p>
+
+<hr />
+
+<blockquote>
+  <p>Note: For this SQL lesson, I will be using MySQL and the Sequel Pro GUI. The queries and concepts should be the same as they are with SQLite. The database we will use consists of five tables:</p>
+
+  <ol>
+    <li><code>members</code> - Current U.S. congressmembers as of October 2014</li>
+    <li><code>terms</code> - The terms served by the current U.S. congressmembers</li>
+    <li><code>social_accounts</code> - social account names for current U.S. congressmembers</li>
+    <li><code>twitter_profiles</code> - Twitter profile data for the accounts in <code>social_accounts</code></li>
+    <li><code>tweets</code> - The most recent 3,200 tweets of each Twitter profile (about 800,000+ tweets altogether)</li>
+  </ol>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sql.zip">MySQL dump of Congress and Twitter data</a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sqlite.zip">SQLite dump of Congress and Twitter data</a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="important-note-about-inconsistencies">Important note about inconsistencies</h3>
+
+<p>The next two sub-sections deal with <strong>inconsistencies</strong> that may exist in the two database files I've provided. </p>
+
+<p>If you're getting unexpected results, please read the following notes. You <a href="/tutorials/databases/sql/update-and-delete">might also want to consult the quick tutorial</a> on using <code>UPDATE</code> statements.</p>
+
+<h4 id="about-case-sensitivity">About case-sensitivity</h4>
+<p>Depending on your database setup, you may run into issues of <em>case-sensitivity</em>. This is a particular problem in this lesson's context, because Twitter screen names are <strong>case-insensitive</strong>. That is, the following URLs will go to the same page:</p>
+
+<ul>
+  <li><a href="https://twitter.com/AaronSchock">https://twitter.com/AaronSchock</a></li>
+  <li><a href="https://twitter.com/aaronschock">https://twitter.com/aaronschock</a></li>
+  <li><a href="https://twitter.com/AARONSCHOCK">https://twitter.com/AARONSCHOCK</a></li>
+</ul>
+
+<p>The upshot for us is that in the provided database files, the <code>twitter.screen_name</code> in <code>social_accounts</code> may <strong>be of a different capitalization</strong> than the ones in <code>twitter_profiles.screen_name</code> and <code>tweets.screen_name</code> and <code>tweets.</code> If your database config happens to be also <em>case-insensitive</em>, the following query will bring up results as expected:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, tweets.screen_name, <span style="color:#0a8;font-weight:bold">text</span> 
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.twitter_screen_name = tweets.screen_name  
+  LIMIT <span style="color:#00D">5</span>
+</pre></div>
+</div>
+</div>
+
+<p>Notice how <code>social_accounts.twitter_screen_name</code> is <code>AaronSchock</code> and <code>tweets.screen_name</code> is <code>aaronschock</code>:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>twitter_screen_name</th>
+      <th>screen_name</th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AaronSchock</td>
+      <td>aaronschock</td>
+      <td>Celebrating the Illinois College Homecoming Day Parade #GoBlueboys http://t.co/AUN8ED4F8J</td>
+    </tr>
+    <tr>
+      <td>AaronSchock</td>
+      <td>aaronschock</td>
+      <td>RT @sotexmum: @aaronschock @BruceRauner I am in #Texas. Want to move home #Illinois. Sure hope #Rauner is elected so I can pack my bags! #H…</td>
+    </tr>
+    <tr>
+      <td>AaronSchock</td>
+      <td>aaronschock</td>
+      <td>Post Gov Debate in Peoria with Illinois' next Governor @BruceRauner  #BringBackIL #stoptheinsanity http://t.co/duuAypi6bs</td>
+    </tr>
+    <tr>
+      <td>AaronSchock</td>
+      <td>aaronschock</td>
+      <td>With Evan Jenkins in West Virginia, David Rouzer and Mark Walker in North Carolina - 3 great soon to… http://t.co/cmihOBI0N6</td>
+    </tr>
+    <tr>
+      <td>AaronSchock</td>
+      <td>aaronschock</td>
+      <td>With my colleague and good friend Dave Joyce in Cleveland, OH and candidate Alex Mooney who's running… http://t.co/xyizMblDe2</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>However, this query will <em>not</em> be the same for SQLite (and MySQL, if it's configured to be <strong>case-sensitive</strong>). </p>
+
+<p>Sometimes using <code>LIKE</code> instead of <code>=</code> will be case-insensitive, but again, it <a href="http://stackoverflow.com/questions/15480319/case-sensitive-and-insensitive-like-in-sqlite">depends on your database configuration</a>. To be <em>absolutely</em> sure, you can use either the <code>LOWER</code> or <code>UPPER</code> <a href="http://stackoverflow.com/questions/341338/sql-changing-a-value-to-upper-or-lower-case">functions to transform text strings</a> before they are compared:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> social_accounts.twitter_screen_name, tweets.screen_name, <span style="color:#0a8;font-weight:bold">text</span> 
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> LOWER(social_accounts.twitter_screen_name) = LOWER(tweets.screen_name)  
+  LIMIT <span style="color:#00D">5</span>
+</pre></div>
+</div>
+</div>
+
+<p>To avoid confusion in this tutorial, I will be using the <code>LOWER</code> function to explicitly make an apples-to-apples comparison in the example queries.</p>
+
+<h4 id="about-null">About <code>NULL</code></h4>
+
+<p>In this lesson, I'll be making queries that look for either an <em>empty</em> or <code>NULL</code> value:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> *
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+  LIMIT <span style="color:#00D">10</span>
+</pre></div>
+</div>
+</div>
+
+<p>As we've <a href="/tutorials/databases/sql-null">learned from the tutorial on null values</a>, the above query is <em>not</em> the same as this one:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> *
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#710">&quot;</span></span>
+  LIMIT <span style="color:#00D">10</span>
+</pre></div>
+</div>
+</div>
+
+<p>Why do we care? Because I realize that the import process for SQLite Manager and Sequel Pro have handled blank values in different ways, i.e. what's <code>NULL</code> in the SQLite version may be an <strong>empty string</strong> in the SQL version. As in the case-insensitivity caveat above, your queries will have to adjust for this. Nothing too hard, just check the contents of the data to see if blank fields are marked as <code>NULL</code> (in Sequel Pro) or highlighted in pink (in SQLite Manager), then you'll use this version of the conditional: </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<p>However, if blank fields are just <em>blank</em>, then you will be using this conditional: </p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#710">&quot;</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>If you really don't know what to use, you can always be verbose about it:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#710">&quot;</span></span> <span style="color:#080;font-weight:bold">OR</span> retweeted_screen_name <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+</pre></div>
+</div>
+</div>
+
+<h4 id="alter-and-optimize-the-database-recommended">Alter and optimize the database (recommended)</h4>
+
+<p>(Note: if you've downloaded the databases <em>after</em> <strong>Oct. 20, 2014</strong>, your versions may have these alterations already made for you (by me). Lucky you!)</p>
+
+<p>The workarounds mentioned above <em>work</em>, but they may be <em>very</em> slow. So instead of running transformation functions like <code>LOWER</code> and using broad conditional statements, we can update the contents of the data.</p>
+
+<p>For example, turn all <em>empty</em> <code>tweets.retweeted_status_id</code> into <code>NULL</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> tweets
+  <span style="color:#B06;font-weight:bold">SET</span> retweeted_status_id = <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_id = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>And lowercase all of the <code>tweets.screen_name</code> values:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">UPDATE</span> tweets
+  <span style="color:#B06;font-weight:bold">SET</span> screen_name = LOWER(screen_name);
+</pre></div>
+</div>
+</div>
+
+<p>For your convenience, you can copy and run all of these SQL statements to get your data in a more uniform state:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#777">/* normalize social_accounts */</span>
+<span style="color:#B06;font-weight:bold">UPDATE</span> social_accounts
+  <span style="color:#B06;font-weight:bold">SET</span> twitter_screen_name = LOWER(twitter_screen_name);
+<span style="color:#B06;font-weight:bold">UPDATE</span> social_accounts
+  <span style="color:#B06;font-weight:bold">SET</span> twitter_screen_name = <span style="color:#069">NULL</span> 
+  <span style="color:#080;font-weight:bold">WHERE</span> twitter_screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>;
+<span style="color:#B06;font-weight:bold">UPDATE</span> social_accounts
+  <span style="color:#B06;font-weight:bold">SET</span> facebook_id = <span style="color:#069">NULL</span> 
+  <span style="color:#080;font-weight:bold">WHERE</span> facebook_id = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>;  
+<span style="color:#B06;font-weight:bold">UPDATE</span> social_accounts
+  <span style="color:#B06;font-weight:bold">SET</span> youtube_id = <span style="color:#069">NULL</span> 
+  <span style="color:#080;font-weight:bold">WHERE</span> youtube_id = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>;  
+
+<span style="color:#777">/* normalize twitter_profiles */</span>
+<span style="color:#B06;font-weight:bold">UPDATE</span> twitter_profiles
+  <span style="color:#B06;font-weight:bold">SET</span> screen_name = LOWER(screen_name);
+<span style="color:#777">/* normalize tweets */</span>
+<span style="color:#B06;font-weight:bold">UPDATE</span> tweets
+  <span style="color:#B06;font-weight:bold">SET</span> screen_name = LOWER(screen_name),
+  retweeted_status_screen_name = LOWER(retweeted_status_screen_name),
+  in_reply_to_screen_name = LOWER(in_reply_to_screen_name);
+<span style="color:#B06;font-weight:bold">UPDATE</span> tweets
+  <span style="color:#B06;font-weight:bold">SET</span> retweeted_status_id = <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_id = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">OR</span> retweeted_status_id = <span style="color:#00D">0</span>;
+<span style="color:#B06;font-weight:bold">UPDATE</span> tweets
+  <span style="color:#B06;font-weight:bold">SET</span> retweeted_status_screen_name = <span style="color:#069">NULL</span>, retweeted_status_user_id = <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_id <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>;
+<span style="color:#B06;font-weight:bold">UPDATE</span> tweets
+  <span style="color:#B06;font-weight:bold">SET</span> in_reply_to_status_id = <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">WHERE</span> in_reply_to_status_id = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">OR</span> in_reply_to_status_id = <span style="color:#00D">0</span>; 
+<span style="color:#B06;font-weight:bold">UPDATE</span> tweets 
+  <span style="color:#B06;font-weight:bold">SET</span> in_reply_to_screen_name = <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">WHERE</span> in_reply_to_status_id <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>;
+
+<span style="color:#777">/* lower case all kinds of screen_names */</span>
+
+</pre></div>
+</div>
+</div>
+
+<p>All of the above data-cleaning work is routine in the real world. And also, if you're wondering why some systems use <em>numerical identifiers</em>, hopefully this discussion on case-sensitivity makes clear why such decisions are made.</p>
+
+<h3 id="the-terms-table">The <code>terms</code> table</h3>
+
+<p>Let's turn our attention from Twitter data tojust the Congressional data. The <code>terms</code> table contains the history of appointed/elected positions for every current Congressmember. </p>
+
+<p>We can join <code>terms</code> to <code>members</code> via the <code>bioguide_id</code> field. For every <code>member</code> row in which there's a matching <code>term</code> row, the results table will contain a row that smushes the two together:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> members.bioguide_id, members.first_name, members.last_name,        
+       terms.role, terms.state, terms.start, terms.end
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> terms
+    <span style="color:#080;font-weight:bold">ON</span> terms.bioguide_id = members.bioguide_id
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> members.bioguide_id    
+  LIMIT <span style="color:#00D">20</span>
+</pre></div>
+</div>
+</div>
+
+<p>As you can see, Rep. Robert Aderholt has 9 rows for himself, whereas first-term senator Kelly Ayotte has just one result row:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>bioguide_id</th>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>role</th>
+      <th>state</th>
+      <th>start</th>
+      <th>end</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>1997-01-07</td>
+      <td>1998-12-19</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>1999-01-06</td>
+      <td>2000-12-15</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>2001-01-03</td>
+      <td>2002-11-22</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>2003-01-07</td>
+      <td>2004-12-09</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>2005-01-04</td>
+      <td>2006-12-09</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>2007-01-04</td>
+      <td>2009-01-03</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>2009-01-06</td>
+      <td>2010-12-22</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>2011-01-05</td>
+      <td>2013-01-03</td>
+    </tr>
+    <tr>
+      <td>A000055</td>
+      <td>Robert</td>
+      <td>Aderholt</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>2013-01-03</td>
+      <td>2015-01-03</td>
+    </tr>
+    <tr>
+      <td>A000360</td>
+      <td>Lamar</td>
+      <td>Alexander</td>
+      <td>sen</td>
+      <td>TN</td>
+      <td>2003-01-07</td>
+      <td>2009-01-03</td>
+    </tr>
+    <tr>
+      <td>A000360</td>
+      <td>Lamar</td>
+      <td>Alexander</td>
+      <td>sen</td>
+      <td>TN</td>
+      <td>2009-01-06</td>
+      <td>2015-01-03</td>
+    </tr>
+    <tr>
+      <td>A000367</td>
+      <td>Justin</td>
+      <td>Amash</td>
+      <td>rep</td>
+      <td>MI</td>
+      <td>2011-01-05</td>
+      <td>2013-01-03</td>
+    </tr>
+    <tr>
+      <td>A000367</td>
+      <td>Justin</td>
+      <td>Amash</td>
+      <td>rep</td>
+      <td>MI</td>
+      <td>2013-01-03</td>
+      <td>2015-01-03</td>
+    </tr>
+    <tr>
+      <td>A000368</td>
+      <td>Kelly</td>
+      <td>Ayotte</td>
+      <td>sen</td>
+      <td>NH</td>
+      <td>2011-01-05</td>
+      <td>2017-01-03</td>
+    </tr>
+    <tr>
+      <td>A000369</td>
+      <td>Mark</td>
+      <td>Amodei</td>
+      <td>rep</td>
+      <td>NV</td>
+      <td>2011-09-13</td>
+      <td>2013-01-03</td>
+    </tr>
+    <tr>
+      <td>A000369</td>
+      <td>Mark</td>
+      <td>Amodei</td>
+      <td>rep</td>
+      <td>NV</td>
+      <td>2013-01-03</td>
+      <td>2015-01-03</td>
+    </tr>
+    <tr>
+      <td>B000013</td>
+      <td>Spencer</td>
+      <td>Bachus</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>1993-01-05</td>
+      <td>1994-12-01</td>
+    </tr>
+    <tr>
+      <td>B000013</td>
+      <td>Spencer</td>
+      <td>Bachus</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>1995-01-04</td>
+      <td>1996-10-04</td>
+    </tr>
+    <tr>
+      <td>B000013</td>
+      <td>Spencer</td>
+      <td>Bachus</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>1997-01-07</td>
+      <td>1998-12-19</td>
+    </tr>
+    <tr>
+      <td>B000013</td>
+      <td>Spencer</td>
+      <td>Bachus</td>
+      <td>rep</td>
+      <td>AL</td>
+      <td>1999-01-06</td>
+      <td>2000-12-15</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To find all Congressmembers currently serving their first term:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> first_name, last_name, terms.role, terms.state, terms.district, 
+      <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">AS</span> term_count
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> terms
+    <span style="color:#080;font-weight:bold">ON</span> terms.bioguide_id = members.bioguide_id 
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> terms.bioguide_id
+  <span style="color:#080;font-weight:bold">HAVING</span> term_count = <span style="color:#00D">1</span>; 
+</pre></div>
+</div>
+</div>
+
+<p>And to find the Congressmembers with the most terms under their belts:
+~~~sql
+SELECT first_name, last_name, terms.role, terms.state, terms.district, 
+      COUNT(*) AS term_count
+  FROM members
+  INNER JOIN terms
+    ON terms.bioguide_id = members.bioguide_id 
+  GROUP BY terms.bioguide_id
+  ORDER BY term_count DESC
+  LIMIT 5
+~~~</p>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>role</th>
+      <th>state</th>
+      <th>district</th>
+      <th>term_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>John</td>
+      <td>Dingell</td>
+      <td>rep</td>
+      <td>MI</td>
+      <td>15</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>John</td>
+      <td>Conyers</td>
+      <td>rep</td>
+      <td>MI</td>
+      <td>1</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>Charles</td>
+      <td>Rangel</td>
+      <td>rep</td>
+      <td>NY</td>
+      <td>18</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <td>Don</td>
+      <td>Young</td>
+      <td>rep</td>
+      <td>AK</td>
+      <td>0</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <td>Edward</td>
+      <td>Markey</td>
+      <td>rep</td>
+      <td>MA</td>
+      <td>7</td>
+      <td>21</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="party-switchers">Party-switchers</h4>
+
+<p>If you peruse the structure of the <code>terms</code> table, you'll see that there's fields for <code>state</code>, <code>district</code>, <code>role</code>, and <code>party</code>. For most Congressmembers, these values are constant because they've been in the same elected position throughout their career. In <code>members</code>, there are fields for <code>current_role</code>, <code>state</code>, <code>district</code>, and <code>party</code>, which reflect their elective status as of October 2014.</p>
+
+<p>So finding all <code>terms</code> in which the <code>party</code> is <strong>not equal to</strong> the corresponding <code>members.party</code> column will identify all Congressmembers who, at one point, switched parties:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span>  members.first_name, members.last_name,  
+        members.party <span style="color:#080;font-weight:bold">AS</span> current_party, terms.party <span style="color:#080;font-weight:bold">AS</span> former_party,   
+        terms.state, terms.start
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> terms
+  <span style="color:#080;font-weight:bold">WHERE</span> 
+    members.bioguide_id = terms.bioguide_id 
+      <span style="color:#080;font-weight:bold">AND</span>
+    members.party != terms.party
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>current_party</th>
+      <th>former_party</th>
+      <th>state</th>
+      <th>start</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>Republican</td>
+      <td>FL</td>
+      <td>2003-01-07</td>
+    </tr>
+    <tr>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>Republican</td>
+      <td>FL</td>
+      <td>2005-01-04</td>
+    </tr>
+    <tr>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>Republican</td>
+      <td>FL</td>
+      <td>2007-01-04</td>
+    </tr>
+    <tr>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>Republican</td>
+      <td>FL</td>
+      <td>2009-01-06</td>
+    </tr>
+    <tr>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>Republican</td>
+      <td>FL</td>
+      <td>2011-01-05</td>
+    </tr>
+    <tr>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>Republican</td>
+      <td>FL</td>
+      <td>2013-01-03</td>
+    </tr>
+    <tr>
+      <td>Ralph</td>
+      <td>Hall</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>TX</td>
+      <td>2003-01-07</td>
+    </tr>
+    <tr>
+      <td>Ralph</td>
+      <td>Hall</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>TX</td>
+      <td>2005-01-04</td>
+    </tr>
+    <tr>
+      <td>Ralph</td>
+      <td>Hall</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>TX</td>
+      <td>2007-01-04</td>
+    </tr>
+    <tr>
+      <td>Ralph</td>
+      <td>Hall</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>TX</td>
+      <td>2009-01-06</td>
+    </tr>
+    <tr>
+      <td>Ralph</td>
+      <td>Hall</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>TX</td>
+      <td>2011-01-05</td>
+    </tr>
+    <tr>
+      <td>Ralph</td>
+      <td>Hall</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>TX</td>
+      <td>2013-01-03</td>
+    </tr>
+    <tr>
+      <td>Richard</td>
+      <td>Shelby</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>AL</td>
+      <td>1993-01-05</td>
+    </tr>
+    <tr>
+      <td>Richard</td>
+      <td>Shelby</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>AL</td>
+      <td>1999-01-06</td>
+    </tr>
+    <tr>
+      <td>Richard</td>
+      <td>Shelby</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>AL</td>
+      <td>2005-01-04</td>
+    </tr>
+    <tr>
+      <td>Richard</td>
+      <td>Shelby</td>
+      <td>Democrat</td>
+      <td>Republican</td>
+      <td>AL</td>
+      <td>2011-01-05</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Another way to think about this is to query for every member who has <em>at least one</em> term in which the <code>terms.party</code> is different from <code>members.party</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span>  members.first_name, members.last_name,  
+        members.party <span style="color:#080;font-weight:bold">AS</span> current_party, <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">as</span> diff_term_count 
+        <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> terms
+  <span style="color:#080;font-weight:bold">WHERE</span> 
+    members.bioguide_id = terms.bioguide_id 
+      <span style="color:#080;font-weight:bold">AND</span>
+    members.party != terms.party
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> 
+    members.bioguide_id
+  <span style="color:#080;font-weight:bold">HAVING</span> diff_term_count &gt;= <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>current_party</th>
+      <th>diff_term_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ander</td>
+      <td>Crenshaw</td>
+      <td>Independent</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Ralph</td>
+      <td>Hall</td>
+      <td>Democrat</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Richard</td>
+      <td>Shelby</td>
+      <td>Democrat</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Similarly, to find all current Congressmembers who are <em>now</em> senators but had been representatives:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span>  members.first_name, members.last_name,  
+        members.current_role, <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">as</span> diff_term_count 
+        <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> terms
+  <span style="color:#080;font-weight:bold">WHERE</span> 
+    members.bioguide_id = terms.bioguide_id 
+      <span style="color:#080;font-weight:bold">AND</span>
+    members.current_role != terms.role
+      <span style="color:#080;font-weight:bold">AND</span>
+    members.current_role = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">sen</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> 
+    members.bioguide_id
+  <span style="color:#080;font-weight:bold">HAVING</span> diff_term_count &gt;= <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<p>And vice versa:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span>  members.first_name, members.last_name,  
+        members.current_role, <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">as</span> diff_term_count 
+        <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> terms
+  <span style="color:#080;font-weight:bold">WHERE</span> 
+    members.bioguide_id = terms.bioguide_id 
+      <span style="color:#080;font-weight:bold">AND</span>
+    members.current_role != terms.role
+      <span style="color:#080;font-weight:bold">AND</span>
+    members.current_role = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">rep</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> 
+    members.bioguide_id
+  <span style="color:#080;font-weight:bold">HAVING</span> diff_term_count &gt;= <span style="color:#00D">1</span>
+</pre></div>
+</div>
+</div>
+
+<p>(Apparently, no one who is currently a representative was formerly a senator)</p>
+
+<h3 id="the-tweets-data">The tweets data</h3>
+
+<p>The Twitter API documentation has a description of the <a href="https://dev.twitter.com/rest/reference/get/statuses/user_timeline">data fields for tweets</a>. The script I use to collect the tweets (and "flatten" their data structure for easy importing) can be found in my <a href="https://github.com/datajanitor/diaries/tree/master/congress_twitter">datajanitor/diaries Github repo</a>.</p>
+
+<p>One important limitation of this database: Twitter's API only allows the retrieval of the <strong>most recent 3,200</strong> tweets of any given user. For users who have tweeted more than 3,200 times, the <code>tweets</code> table will represent only a fraction of their total tweet activity.</p>
+
+<h3 id="tweets-per-twitter-account">Tweets per Twitter account</h3>
+
+<p>Let's ignore the Congress-specific tables and just join <code>twitter_profiles</code> to <code>tweets</code>. Both tables have a <code>screen_name</code> field.</p>
+
+<p>To find all the stored tweets for a single Twitter account:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> name, followers_count, statuses_count, tweets.text, tweets.created_at
+  <span style="color:#080;font-weight:bold">FROM</span> twitter_profiles
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> tweets
+    <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = tweets.screen_name
+  <span style="color:#080;font-weight:bold">WHERE</span>
+    twitter_profiles.screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">darrellissa</span><span style="color:#710">'</span></span>
+  LIMIT <span style="color:#00D">5</span>;
+</pre></div>
+</div>
+</div>
+
+<p>Results:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>followers_count</th>
+      <th>statuses_count</th>
+      <th>text</th>
+      <th>created_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Darrell Issa</td>
+      <td>173608</td>
+      <td>18725</td>
+      <td>Issa, Vitter Investigate Natural Resources Defense Council Influence on EPA Carbon Rule http://t.co/kh6TrvC5aV</td>
+      <td>2014-10-14 16:34:36</td>
+    </tr>
+    <tr>
+      <td>Darrell Issa</td>
+      <td>173608</td>
+      <td>18725</td>
+      <td>@TriciaEdwards2 Big thanks to your dad for his service! @USNavy</td>
+      <td>2014-10-13 12:17:34</td>
+    </tr>
+    <tr>
+      <td>Darrell Issa</td>
+      <td>173608</td>
+      <td>18725</td>
+      <td>Since 1775, America’s Navy has answered the call. Happy Birthday to the @USNavy! http://t.co/pj0sHFoiZM</td>
+      <td>2014-10-13 12:05:15</td>
+    </tr>
+    <tr>
+      <td>Darrell Issa</td>
+      <td>173608</td>
+      <td>18725</td>
+      <td>Oh hey. Frieda is so excited for the weekend that she's about to jump for joy. HAPPY FRIDAY! #fridaypuppy http://t.co/ybjSQQH6hp</td>
+      <td>2014-10-10 21:56:30</td>
+    </tr>
+    <tr>
+      <td>Darrell Issa</td>
+      <td>173608</td>
+      <td>18725</td>
+      <td>.@GOPoversight request from November 2012 to investigate evidence of inappropriate behavior by the White House team: http://t.co/XX21JkQyyq</td>
+      <td>2014-10-09 16:36:06</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Note: The order of the tables in the <code>JOIN</code> doesn't have an impact here. Instead of <code>SELECT</code>-ing <code>FROM</code> <code>twitter_profiles</code> and <code>JOIN</code>-ing <code>tweets</code>, we could switch it around and the result will be the same:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> name, followers_count, statuses_count, tweets.text, tweets.created_at
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = tweets.screen_name
+  <span style="color:#080;font-weight:bold">WHERE</span>
+    twitter_profiles.screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">darrellissa</span><span style="color:#710">'</span></span>
+  LIMIT <span style="color:#00D">5</span>;
+</pre></div>
+</div>
+</div>
+
+<h3 id="aggregate-functions">Aggregate functions</h3>
+
+<p>Once the <code>JOIN</code> has been made, for all intents and purposes, we've created a "new" table. And on this new table, the aggregate functions work no differently than they did before.</p>
+
+<p>To get the sum of retweets of one user's tweets:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> name, twitter_profiles.screen_name, <span style="color:#369;font-weight:bold">SUM</span>(tweets.retweet_count)
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = tweets.screen_name
+  <span style="color:#080;font-weight:bold">WHERE</span>
+    twitter_profiles.screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">darrellissa</span><span style="color:#710">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>screen_name</th>
+      <th>SUM(tweets.retweet_count)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Darrell Issa</td>
+      <td>DarrellIssa</td>
+      <td>177490</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="group-aggregate">Group aggregate</h4>
+
+<p>To find out which Congressmember has the most retweets in the <code>tweets</code> data, we leave out the <code>WHERE</code> clause:</p>
+
+<p>(Warning: this query might take some time)</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> name, twitter_profiles.screen_name, 
+    <span style="color:#369;font-weight:bold">SUM</span>(tweets.retweet_count) <span style="color:#080;font-weight:bold">AS</span> sum_retweets
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = tweets.screen_name
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> twitter_profiles.screen_name
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> sum_retweets <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">10</span>;
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>screen_name</th>
+      <th>sum_retweets</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mark Takano</td>
+      <td>RepMarkTakano</td>
+      <td>3498440</td>
+    </tr>
+    <tr>
+      <td>Ann McLane Kuster</td>
+      <td>RepAnnieKuster</td>
+      <td>3385417</td>
+    </tr>
+    <tr>
+      <td>Senator Ted Cruz</td>
+      <td>SenTedCruz</td>
+      <td>1324676</td>
+    </tr>
+    <tr>
+      <td>Senator Rand Paul</td>
+      <td>SenRandPaul</td>
+      <td>535365</td>
+    </tr>
+    <tr>
+      <td>Nancy Pelosi</td>
+      <td>NancyPelosi</td>
+      <td>467228</td>
+    </tr>
+    <tr>
+      <td>Ileana Ros-Lehtinen</td>
+      <td>RosLehtinen</td>
+      <td>436623</td>
+    </tr>
+    <tr>
+      <td>Rep. Steve Stockman</td>
+      <td>SteveWorks4You</td>
+      <td>384281</td>
+    </tr>
+    <tr>
+      <td>Justin Amash</td>
+      <td>repjustinamash</td>
+      <td>292893</td>
+    </tr>
+    <tr>
+      <td>Janice Hahn</td>
+      <td>Rep_JaniceHahn</td>
+      <td>277282</td>
+    </tr>
+    <tr>
+      <td>Senator Harry Reid</td>
+      <td>SenatorReid</td>
+      <td>269700</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Since more tweeting will conceivably lead to more retweets, let's find the average of retweets per tweet made. I'll throw in a <code>ROUND</code> function to make the results easier to read:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> name, twitter_profiles.screen_name, 
+    ROUND(<span style="color:#369;font-weight:bold">AVG</span>(tweets.retweet_count)) <span style="color:#080;font-weight:bold">AS</span> avg_retweets
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = tweets.screen_name
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> twitter_profiles.screen_name
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> avg_retweets <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">10</span>;
+</pre></div>
+</div>
+</div>
+
+<p>Result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>screen_name</th>
+      <th>avg_retweets</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mark Takano</td>
+      <td>RepMarkTakano</td>
+      <td>3746</td>
+    </tr>
+    <tr>
+      <td>Ann McLane Kuster</td>
+      <td>RepAnnieKuster</td>
+      <td>3191</td>
+    </tr>
+    <tr>
+      <td>Gary G. Miller</td>
+      <td>RepGaryMiller</td>
+      <td>672</td>
+    </tr>
+    <tr>
+      <td>Rep. Danny Davis</td>
+      <td>RepDannyDavis</td>
+      <td>587</td>
+    </tr>
+    <tr>
+      <td>Senator Ted Cruz</td>
+      <td>SenTedCruz</td>
+      <td>455</td>
+    </tr>
+    <tr>
+      <td>Elizabeth Warren</td>
+      <td>SenWarren</td>
+      <td>405</td>
+    </tr>
+    <tr>
+      <td>Senator Rand Paul</td>
+      <td>SenRandPaul</td>
+      <td>203</td>
+    </tr>
+    <tr>
+      <td>Nancy Pelosi</td>
+      <td>NancyPelosi</td>
+      <td>177</td>
+    </tr>
+    <tr>
+      <td>John Barrow</td>
+      <td>repjohnbarrow</td>
+      <td>147</td>
+    </tr>
+    <tr>
+      <td>Janice Hahn</td>
+      <td>Rep_JaniceHahn</td>
+      <td>143</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="filtering-retweets">Filtering retweets</h3>
+
+<p>Hmmm…why is it that Rep. Mark Takano and Rep. Annie Kuster have an average of retweets an order of one magnitude higher than the rest of Congress?</p>
+
+<p>Not all tweets are <em>original</em> retweets. For example, Rep. Takano retweeted this <a href="https://twitter.com/BarackObama/status/392342632526934016">@BarackObama tweet</a>. In the <code>tweets</code> table, this counts as tweet activity from Rep. Takano, and so the 12,800+ retweets for @BarackObama's tweets ends up being counted as rewteets for Rep. Takano's "tweet". </p>
+
+<p>How do we know which tweets are actually <strong>retweets</strong>? We look at the <code>retweeted_status_id</code> field; if it has a value – i.e. the ID of the original tweet – then it is a <strong>retweet</strong>. So to get Rep. Takano's retweets, we filter for his tweets in which <code>retweeted_status_id IS NOT NULL</code> (or <code>retweeted_status_id = ""</code>, depending on your version of the data):</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> id, <span style="color:#0a8;font-weight:bold">text</span>, retweeted_status_screen_name, retweet_count <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">WHERE</span> screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">repmarktakano</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span> retweeted_status_id <span style="color:#080;font-weight:bold">IS</span> <span style="color:#080;font-weight:bold">NOT</span> <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> retweet_count <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">10</span>
+</pre></div>
+</div>
+</div>
+
+<p>Note: We could also look at the <code>retweeted_status_user_id</code> or <code>retweeted_status_screen_name</code> fields.</p>
+
+<p>The result:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>text</th>
+      <th>retweeted_status_screen_name</th>
+      <th>retweet_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>440323150195462145</td>
+      <td>RT @TheEllenShow: If only Bradley's arm was longer. Best photo ever. #oscars http://t.co/C9U5NOtGap</td>
+      <td>TheEllenShow</td>
+      <td>3381305</td>
+    </tr>
+    <tr>
+      <td>482195295502336000</td>
+      <td>RT @TimHowardGK: I  I believe   I believe that   I believe that we will win  I believe that we will win  I believe that we will win  #LetsD…</td>
+      <td>TimHowardGK</td>
+      <td>39429</td>
+    </tr>
+    <tr>
+      <td>410781748717694976</td>
+      <td>RT @TIME: Pope Francis is TIME’s Person of the Year for 2013 http://t.co/AXKIlnqqjr #TIMEPOY http://t.co/xO9K2lDxxf</td>
+      <td>TIME</td>
+      <td>17229</td>
+    </tr>
+    <tr>
+      <td>392342759614730240</td>
+      <td>RT @BarackObama: Congrats, New Jersey. #LoveIsLove http://t.co/cqIdeTbZk7</td>
+      <td>BarackObama</td>
+      <td>12821</td>
+    </tr>
+    <tr>
+      <td>505833279443173376</td>
+      <td>RT @MichaelSamNFL: The most worthwhile things in life rarely come easy, this is a lesson I've always known. The journey continues.</td>
+      <td>MichaelSamNFL</td>
+      <td>7400</td>
+    </tr>
+    <tr>
+      <td>378545565866668032</td>
+      <td>RT @NancyPelosi: Hopefully, when Pres. #Putin says "we must not forget that God created us equal" he includes gays and lesbians in Russia.</td>
+      <td>NancyPelosi</td>
+      <td>2970</td>
+    </tr>
+    <tr>
+      <td>403565034942787584</td>
+      <td>RT @SenatorReid: 168 filibusters of nominees in our history. HALF of them have occurred during Obama years! http://t.co/xbQfsftLGm</td>
+      <td>SenatorReid</td>
+      <td>2641</td>
+    </tr>
+    <tr>
+      <td>432256605930127360</td>
+      <td>RT @cnnbrk: Attorney general to extend U.S. recognition of same-sex marriages even in 34 states that don't consider it legal. http://t.co/A…</td>
+      <td>cnnbrk</td>
+      <td>2501</td>
+    </tr>
+    <tr>
+      <td>461211502079643648</td>
+      <td>RT @jasoncollins34: Commissioner of the @NBA just showed us how he drops the hammer on ignorance. #lifetimeban for Donald Sterling. The ult…</td>
+      <td>jasoncollins34</td>
+      <td>2222</td>
+    </tr>
+    <tr>
+      <td>350279222218072066</td>
+      <td>RT @jonesinforjason: A friend just asked me what DOMA stood for. I said, 'nothing'.</td>
+      <td>jonesinforjason</td>
+      <td>1722</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Ah, now we see the reason for <code>RepMarkTakano</code>'s high average of retweets. He's <a href="https://twitter.com/repmarktakano/status/440323150195462145">hanging off of the coattails of Academy-nominated movie stars</a>:</p>
+
+<p><img alt="ellen retweet" src="/files/tutorials/databases/ellen-retweet.jpg" /></p>
+
+<p>Let's tweak the query to show the most retweeted tweets that <em>originated</em> from <code>RepMarkTakano</code>, rather than being <em>retweets from</em> <code>RepMarkTakano</code></p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> id, <span style="color:#0a8;font-weight:bold">text</span>, retweeted_status_screen_name, retweet_count <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">WHERE</span> screen_name = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">repmarktakano</span><span style="color:#710">'</span></span>
+    <span style="color:#080;font-weight:bold">AND</span> retweeted_status_id <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> retweet_count <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">5</span>
+</pre></div>
+</div>
+</div>
+
+<p>Still a respectable number of retweets-per-tweet, but not in the 3+ million range:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>text</th>
+      <th>retweeted_status_screen_name</th>
+      <th>retweet_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>364158957771702272</td>
+      <td>Happy Birthday, Mr. President! http://t.co/5VjIeFELCP</td>
+      <td> </td>
+      <td>1817</td>
+    </tr>
+    <tr>
+      <td>382599378940067840</td>
+      <td>Ted Cruz, Ima let you finish but… http://t.co/zDSNK8HrAX</td>
+      <td> </td>
+      <td>1258</td>
+    </tr>
+    <tr>
+      <td>355338868146450433</td>
+      <td>I edited a draft letter by GOP members to Boehner that is looking for cosigners. Not signing it. #Immigration http://t.co/xhLYSYi3lx</td>
+      <td> </td>
+      <td>991</td>
+    </tr>
+    <tr>
+      <td>483663281643855872</td>
+      <td>RT if you believe the male justices would have ruled differently if #HobbyLobby case was about Viagra or Cialis.</td>
+      <td> </td>
+      <td>612</td>
+    </tr>
+    <tr>
+      <td>483751915013279744</td>
+      <td>RT if you believe the male justices would have ruled differently if #HobbyLobby case was about Viagra or Cialis. #SCOTUS</td>
+      <td> </td>
+      <td>409</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="highest-average-retweeted-original-tweets">Highest average retweeted original tweets</h4>
+
+<p>Let's now look again at the entirety of Congress to find the highest average of retweets when filtering for <em>original</em> retweets:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> name, twitter_profiles.screen_name, 
+    ROUND(<span style="color:#369;font-weight:bold">AVG</span>(tweets.retweet_count)) <span style="color:#080;font-weight:bold">AS</span> avg_retweets
+  <span style="color:#080;font-weight:bold">FROM</span> tweets
+  <span style="color:#080;font-weight:bold">INNER</span> <span style="color:#080;font-weight:bold">JOIN</span> twitter_profiles
+    <span style="color:#080;font-weight:bold">ON</span> twitter_profiles.screen_name = tweets.screen_name
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_id <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span> 
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> twitter_profiles.screen_name
+  <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> avg_retweets <span style="color:#088;font-weight:bold">DESC</span>
+  LIMIT <span style="color:#00D">10</span>;
+</pre></div>
+</div>
+</div>
+
+<p>The top original retweeted Twitterers:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>screen_name</th>
+      <th>avg_retweets</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Senator Ted Cruz</td>
+      <td>sentedcruz</td>
+      <td>442</td>
+    </tr>
+    <tr>
+      <td>Senator Rand Paul</td>
+      <td>senrandpaul</td>
+      <td>215</td>
+    </tr>
+    <tr>
+      <td>Nancy Pelosi</td>
+      <td>nancypelosi</td>
+      <td>150</td>
+    </tr>
+    <tr>
+      <td>Elizabeth Warren</td>
+      <td>senwarren</td>
+      <td>149</td>
+    </tr>
+    <tr>
+      <td>John Lewis</td>
+      <td>repjohnlewis</td>
+      <td>138</td>
+    </tr>
+    <tr>
+      <td>Jim Bridenstine</td>
+      <td>repjbridenstine</td>
+      <td>122</td>
+    </tr>
+    <tr>
+      <td>Bernie Sanders</td>
+      <td>sensanders</td>
+      <td>84</td>
+    </tr>
+    <tr>
+      <td>Senator Harry Reid</td>
+      <td>senatorreid</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <td>Ileana Ros-Lehtinen</td>
+      <td>roslehtinen</td>
+      <td>76</td>
+    </tr>
+    <tr>
+      <td>Justin Amash</td>
+      <td>repjustinamash</td>
+      <td>66</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="retweets-by-party">Retweets by party</h4>
+
+<p>In the previous examples, we've only been joining Twitter data: <code>tweets</code> and <code>twitter_profiles</code>. Let's get partisan again and list the political parties by average retweets and favorites by <em>original</em> tweet. We can ignore the <code>twitter_profiles</code> table for now since <code>social_accounts</code> has the <code>twitter_screen_name</code> field for connecting to <code>tweets</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> members.party, <span style="color:#369;font-weight:bold">AVG</span>(tweets.retweet_count), <span style="color:#369;font-weight:bold">AVG</span>(tweets.favorite_count)
+  <span style="color:#080;font-weight:bold">FROM</span> members
+  <span style="color:#080;font-weight:bold">JOIN</span> social_accounts
+    <span style="color:#080;font-weight:bold">ON</span> members.bioguide_id = social_accounts.bioguide_id
+  <span style="color:#080;font-weight:bold">JOIN</span> tweets
+    <span style="color:#080;font-weight:bold">ON</span> social_accounts.twitter_screen_name = tweets.screen_name
+  <span style="color:#080;font-weight:bold">WHERE</span> retweeted_status_id <span style="color:#080;font-weight:bold">IS</span> <span style="color:#069">NULL</span>
+  <span style="color:#080;font-weight:bold">GROUP</span> <span style="color:#080;font-weight:bold">BY</span> members.party;
+</pre></div>
+</div>
+</div>
+
+<p>Check out the Internet-savviness of our Independents:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>party</th>
+      <th>AVG(tweets.retweet_count)</th>
+      <th>AVG(tweets.favorite_count)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Democrat</td>
+      <td>7.7235</td>
+      <td>3.0442</td>
+    </tr>
+    <tr>
+      <td>Independent</td>
+      <td>55.8788</td>
+      <td>26.5008</td>
+    </tr>
+    <tr>
+      <td>Republican</td>
+      <td>12.2547</td>
+      <td>4.2624</td>
+    </tr>
+  </tbody>
+</table>
+
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

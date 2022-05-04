@@ -1,0 +1,332 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Fusion Tables Intensity Maps with Custom Shapes | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="Use geographic shape data to fill in political and physical boundaries">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#mapping">Mapping</a></span> 
+                </h4>
+                <h1 class="title">
+                    Fusion Tables Intensity Maps with Custom Shapes
+                </h1>
+                <div class="description">
+                    <p>
+                        Use geographic shape data to fill in political and physical boundaries
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>In the <a href="/tutorials/mapping/basic-fusion-tables">previous Fusion Tables tutorial</a>, we saw how to add data points to a map, using latitude and longitude coordinates.</p>
+
+<p>In this tutorial, we'll be adding <strong>polygons</strong> to a map. We'll also use a few other of Fusion Tables's mapping options, which let us use "buckets" of numerical data to determine the color of a shape (you can use buckets for points too, to determine which icon is used).</p>
+
+<p>We'll also be practicing a bit of data-organization using Spreadsheets. Unlike <a href="/tutorials/mapping/basic-fusion-tables">the previous tutorial</a>, we'll be doing this <em>before</em> we go into Fusion Tables.</p>
+
+<p>At the end of this tutorial, we'll <a href="https://www.google.com/fusiontables/DataSource?docid=1MdfSp2JWg2mQ6PfsBN991P5xTzExDfBC0P9xLemu#map:id=5">create a map of the United States showing the results</a> of the 2012 presidential election:</p>
+
+<iframe width="750" height="400" scrolling="no" frameborder="no" src="https://www.google.com/fusiontables/embedviz?q=select+col2+from+1MdfSp2JWg2mQ6PfsBN991P5xTzExDfBC0P9xLemu&amp;viz=MAP&amp;h=false&amp;lat=38.65334037888649&amp;lng=-96.92932299999995&amp;t=1&amp;z=4&amp;l=col2&amp;y=4&amp;tmplt=5&amp;hml=KML"></iframe>
+
+<h3 id="about-kml">About KML</h3>
+
+<p>https://support.google.com/fusiontables/answer/171181?hl=en#kml</p>
+
+<p>KML stands for <strong>Keyhole Markup Language</strong> and is one of the shapefile formats that Fusion Tables understands. It contains a series of latitude and longitude coordinate pairs, each representing a part of the overall shape or boundary.</p>
+
+<p>Here's what the KML for Washington DC looks like:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#070;font-weight:bold">&lt;Polygon&gt;</span>
+  <span style="color:#070;font-weight:bold">&lt;outerBoundaryIs&gt;</span>
+    <span style="color:#070;font-weight:bold">&lt;LinearRing&gt;</span>
+      <span style="color:#070;font-weight:bold">&lt;coordinates&gt;</span>
+        -77.007931,38.966667,0.0 
+        -76.910905,38.8901,0.0 
+        -77.045147,38.788234,0.0 
+        -77.034947,38.814029,0.0 
+        -77.044888,38.829478,0.0 
+        -77.040104,38.838526,0.0 
+        -77.038777,38.862543,0.0 
+        -77.067586,38.886213,0.0 
+        -77.078649,38.915711,0.0 
+        -77.122328,38.932171,0.0 
+        -77.042088,38.993541,0.0 
+        -77.007931,38.966667,0.0
+      <span style="color:#070;font-weight:bold">&lt;/coordinates&gt;</span>
+    <span style="color:#070;font-weight:bold">&lt;/LinearRing&gt;</span>
+  <span style="color:#070;font-weight:bold">&lt;/outerBoundaryIs&gt;</span>
+<span style="color:#070;font-weight:bold">&lt;/Polygon&gt;</span>
+</pre></div>
+</div>
+</div>
+
+<p>If you're wondering, <em>how do I make such shapes myself?</em> The answer is: it's kind of complicated. The shape data can come from any number of official sources (such as the U.S. Census). Then it's a bit of work to get it into a KML file, nevermind into a simplified spreadsheet. For our purposes, this KML data is just stuffed into a field called "<code>Geometry</code>". We leave it to Fusion Tables to parse that data and draw it on an interactive map.</p>
+
+<p>I <a href="https://www.google.com/fusiontables/DataSource?docid=1kQadVj5Dapm_Ypas_xczzQ32DwcFCRGD-r8406GC#rows:id=1">downloaded the KML data from this public Fusion Table</a>, though I had to vastly simplify the coordinates of Alaska to make it compatible with Google Spreadsheets (there is a limit to how many characters you can stuff into a single cell: 50,000 characters).</p>
+
+<p>So this is not a lesson about finding geodata, it's merely a demonstration of how to incorporate it into Fusion Tables.</p>
+
+<h2 id="gathering-and-cleaning-via-spreadsheet">Gathering and cleaning via spreadsheet</h2>
+
+<p>The first steps involve working inside of the spreadsheet to prepare the data for Fusion Tables.</p>
+
+<h3 id="election-results-data">Election results data</h3>
+
+<p>I gathered the <a href="http://en.wikipedia.org/wiki/United_States_presidential_election,_2012">2012 U.S. Presidential Election</a> data by simply copying and pasting the <a href="http://en.wikipedia.org/wiki/United_States_presidential_election,_2012#Votes_by_Electoral_College">table of electoral college votes from Wikipedia</a> into a spreadsheet.</p>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/wikipedia-election-data.png" /></p>
+
+<p>Since we only care about Obama and Romney, we can cut out all the third-party candidate columns. We can also remove the <strong>Electoral method</strong> column and subsequently, all rows that <em>aren't</em> "Winner Take All (WTA)". If we sort by state name, we can basically align this table with the <a href="https://www.google.com/fusiontables/DataSource?docid=1kQadVj5Dapm_Ypas_xczzQ32DwcFCRGD-r8406GC#rows:id=1">KML table found here</a>.</p>
+
+<p>Rather than making you go through that copy-and-paste operation, you can just <a href="https://docs.google.com/a/stanford.edu/spreadsheets/d/18YaI4CDDOnhBHtX1vykmhwukfMeYqN9qdDggcnSfHFo/edit#gid=764026114">copy the resulting spreadsheet here</a>.</p>
+
+<h3 id="deriving-color-columns">Deriving color columns</h3>
+
+<p>If you recall from the <a href="/tutorials/mapping/basic-fusion-tables">previous Fusion Tables tutorial</a>, FT let us define icons for every point using a designated column. For shapes, we can designate a column to be used for the border and fill color.</p>
+
+<p>Let's just do that now <a href="https://docs.google.com/a/stanford.edu/spreadsheets/d/18YaI4CDDOnhBHtX1vykmhwukfMeYqN9qdDggcnSfHFo/edit#gid=764026114">while we're working with the spreadsheet</a>:</p>
+
+<ol>
+  <li>
+    <p>We are interested in the <strong>difference</strong> between Obama's percentage of the vote and Romney's percentage of the vote. So create a column named <code>diff pct</code> and fill it with the formula <code>=E3-H3</code> (if <code>E</code> contains Obama's vote pct and Romney's vote pct respectively). Some of the columns will have a <em>negative</em> percentage, and that corresponds to states in which Romney beat out Obama:</p>
+
+    <p><img alt="img" src="/files/tutorials/fusion-tables/diff-pct-column.png" /></p>
+  </li>
+  <li>
+    <p>Let's create a second column derived from this <code>diff pct</code> and name it simply <code>victory_color</code>. If <code>diff pct</code> is positive, then <code>victory_color</code> will have a value of <code>#0000FF</code> (blue). Else, the value is <code>#FF0000</code> (red). </p>
+
+    <p>This is the formula: <code>=IF(J2 &gt; 0, "#0000FF", "#FF0000")</code></p>
+
+    <p><img alt="img" src="/files/tutorials/fusion-tables/victory_color_column.png" /></p>
+  </li>
+</ol>
+
+<p>OK, we're done with working in this spreadsheet. Go ahead and export it as CSV so that you can re-import it into a new Fusion Table. The takeaway here is that we're <em>preparing</em> the data, i.e. <em>reshaping</em> it, so that it meets FT's requirements for mapping and coloring.</p>
+
+<h2 id="mapping-shapes-with-fusion-tables">Mapping shapes with Fusion Tables</h2>
+
+<p>If you've skipped all the steps above and just want to see the Fusion Table, <a href="https://www.google.com/fusiontables/DataSource?docid=1MdfSp2JWg2mQ6PfsBN991P5xTzExDfBC0P9xLemu#rows:id=1">here it is</a></p>
+
+<p>FT will use the <code>Polygon</code> column, in which we've stored the KML data, as the default column to map.</p>
+
+<p>We will now be working inside the <strong>Change map feature styles</strong> menu. In the <a href="/tutorials/mapping/basic-fusion-tables">previous tutorial</a>), we configured the <strong>Points &gt; Marker icon</strong> setting. Now, we will work with <strong>Lines</strong> and <strong>Polygons</strong>.</p>
+
+<h3 id="coloring-borders">Coloring borders</h3>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/borders-colored.png" /></p>
+
+<ol>
+  <li>Click on the <strong>Map 1</strong> tab. You should see the shapes and borders of the states drawn already.</li>
+  <li>Click the dropdown menu of the tab and select <strong>Change Map</strong>, which should open up the <strong>Configure map</strong> left-panel if it isn't already open.</li>
+  <li>Under <strong>Feature map</strong>, click the <strong>Change feature styles…</strong></li>
+  <li>Select <strong>Lines &gt; Line color</strong></li>
+  <li>Select the <strong>Column</strong> tab and the <strong>Use color specified in a column</strong></li>
+  <li>In that dropdown menu, select <code>victory_color</code> (or whatever you named the column)</li>
+  <li>Hit <strong>Save</strong></li>
+</ol>
+
+<p>The borders of each state should now be colored according to the candidate who received the most votes. If your state shapes are all <em>filled</em> in with red, you can go back to the <strong>Change map feature styles</strong> and, under <strong>Polygons &gt; Fill color</strong>, change the fill color to gray to make the borders more evident.</p>
+
+<h5 id="video">Video</h5>
+
+<p>Watch me make the borders colorful:</p>
+
+<video id="fusion-tables-shapes-borders-001" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-shapes-borders-001.mp4" type="video/mp4" /></video>
+
+<h3 id="using-buckets">Using buckets</h3>
+
+<p>Changing the <strong>fill</strong> of the state shapes can be done as easily as we changed the lines. However, this time, we'll use the <strong>Buckets</strong> tab. This allows us to define color based on the <em>numerical</em> value of a column.</p>
+
+<ol>
+  <li>Re-open the <strong>Change map feature styles</strong> menu</li>
+  <li>Select <strong>Polygons &gt; Fill color</strong></li>
+  <li>Select the <strong>Buckets</strong> tab</li>
+  <li>Select <strong>Divide into Custom buckets</strong></li>
+  <li>Change the data column to <code>diff pct</code> (or whatever you named it). This should give you the range of values (<code>-0.48 - 0.836</code>). Select <code>use this range</code></li>
+  <li>
+    <p>Configure a couple buckets, making <strong>negative</strong> numbers correspond to <strong>red</strong>, and <strong>positive</strong> numbers correspond to <strong>blue</strong>:</p>
+
+    <p><img alt="img" src="/files/tutorials/fusion-tables/two-color-buckets.png" /></p>
+  </li>
+  <li>
+    <p>Hit <strong>Save</strong> and check out the map:</p>
+
+    <p><img alt="img" src="/files/tutorials/fusion-tables/two-color-gradient.png" /></p>
+  </li>
+</ol>
+
+<h5 id="video-1">Video</h5>
+
+<p>Watch me make the states red and blue:</p>
+
+<video id="fusion-tables-shapes-two-color-gradient-0015" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-shapes-two-color-gradient-0015.mp4" type="video/mp4" /></video>
+
+<h4 id="thinking-about-bucket-size">Thinking about bucket size</h4>
+
+<p>There's a certain art and methodology to defining the "buckets". In the example above, we defined only two buckets: red for Romney states and blue for Obama states.</p>
+
+<p>But our <code>diff pct</code> column contains more than just a binary value, it contains <em>margin of victory</em>. And by adding more buckets, our map can illustrate the <em>intensity</em> of the popular vote victories by state.</p>
+
+<p>Here's a sample configuration for five color buckets:</p>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/five-color-buckets.png" /></p>
+
+<p>Here's the resulting map:</p>
+
+<p><img alt="img" src="/files/tutorials/fusion-tables/five-color-gradient.png" /></p>
+
+<h5 id="video-2">Video</h5>
+
+<p>Watch me refine the political-color map by adding more buckets:</p>
+
+<video id="fusion-tables-shapes-fills-002" class="video-js vjs-default-skin" controls="" preload="auto" width="100%"> <source src="/files/videos/mapping/fusion-tables-shapes-fills-002.mp4" type="video/mp4" /></video>
+
+<h4 id="bucket-judgment">Bucket judgment</h4>
+
+<p>Play around with the values. Add more buckets, change the ranges, etc. One thing that is hopefully evident is how easy it is to change the message of the map by altering the bucket size and intensity of the color. Note how the map is subtly different if you decide that <code>+/-10%</code> margin of victory is the cutoff between pink/red and light-blue/darkblue, versus changing that cutoff to <code>+/-20</code> margin of victory.</p>
+
+<p>In the <strong>Change map feature styles</strong> menu, you can also define the intensity by using the <strong>Gradient</strong> option, which will vary the color proportionate to the numerical values, using a smooth gradient for the <strong>continuous</strong> scale of values, rather than you <strong>defining</strong> the buckets by hand.</p>
+
+<p>This is more "scientific", perhaps, but not always "better." In a given race, a 10% margin may be quite significant and worth highlighting, depending on how tight that race was believed to be. In the 2012 election data we have at hand, the margin of Obama victory goes up to <strong>83%</strong>, which skews the continuum, but that margin of victory only occurs in the District of Columbia.</p>
+
+<p>This concept of thresholds is a nuanced one. Read <a href="http://spatialityblog.com/2012/07/27/nyc-stop-frisk-cartographic-observations/">Steven Romalewski's critique of a heat map related to NYC's stop-and-frisks</a> to see how changing the thresholds (i.e. the buckets) can drastically impact the message of a map.</p>
+
+<h3 id="other-resources">Other resources</h3>
+
+<ul>
+  <li>
+    <p><a href="http://guides.library.upenn.edu/intensitymaps">Penn Libraries guide to intensity maps with Fusion Tables</a></p>
+  </li>
+  <li>
+    <p><a href="https://support.google.com/fusiontables/answer/1032332?hl=en">Official FT docs: Create an intensity map with custom boundaries</a></p>
+  </li>
+</ul>
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

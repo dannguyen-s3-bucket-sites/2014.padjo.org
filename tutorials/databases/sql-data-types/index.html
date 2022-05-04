@@ -1,0 +1,633 @@
+<html lang="en" class="no-js">
+    <head>
+        <title>Datatypes in SQL databases | Public Affairs Data Journalism at Stanford University</title>
+        <meta name="description" content="The differences between a number, a string, and a date">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+        <meta name="author" content="Daniel Nguyen">
+        <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+        <link href="/assets/stylesheets/application.css" rel="stylesheet" type="text/css" /><script src="/assets/javascripts/application.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="//use.typekit.net/deu1taf.js"></script>
+        <script>
+            try{Typekit.load();}catch(e){}
+        </script>
+        <script>
+            videojs.options.flash.swf = "/assets/misc/video-js.swf";
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+             ga('create', 'UA-55019978-1', 'auto');
+             ga('send', 'pageview');
+            
+             (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+               e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+            
+            _st('install','u_zeqrQcz16KLaiR6m3p');
+        </script>
+    </head>
+</html>
+<body class="woz scrollspy">
+    <header class="woz">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <h2 class="title">
+                        <a href="/">Public Affairs Data Journalism at Stanford</a>
+                    </h2>
+                </div>
+                <div></div>
+                <div id="st-results-container">
+                    <script>
+                        var Swiftype = window.Swiftype || {};
+                         (function() {
+                          Swiftype.key = 'u_zeqrQcz16KLaiR6m3p';
+                          Swiftype.inputElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.attachElement = 'form[action="/search"] input[type="text"]';
+                          Swiftype.renderStyle = "overlay";
+                        
+                          /** DO NOT EDIT BELOW THIS LINE **/
+                          var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                          script.src = "//s.swiftypecdn.com/embed.js";
+                          var entry = document.getElementsByTagName('script')[0];
+                          entry.parentNode.insertBefore(script, entry);
+                        }());
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="woz-content"><article class="tutorial">
+    <div class="container">
+        <section class="top-matter">
+            <section class="top-meta">
+                <h4 class="crumb">
+                    <span><a href="/tutorials">Tutorials</a></span> <span>></span> <span><a class="ref" href="/tutorials#databases">Databases</a></span> 
+                </h4>
+                <h1 class="title">
+                    Datatypes in SQL databases
+                </h1>
+                <div class="description">
+                    <p>
+                        The differences between a number, a string, and a date
+                    </p>
+                    
+                </div>
+            </section>
+        </section>
+        <section class="content"><p>As we've seen in previous tutorials, working with SQL databases requires us to be very specific. We have to tell the SQL interpreter what columns to show, for example, and in what order, and if we're joining two tables on the same named-field, we have to specify what seems to be pretty obvious, i.e. <code>JOIN users ON users.name = people.name</code>.</p>
+
+<p>So it should be no surprise that we have to specify the <em>kind</em> of data we're working with. Just because a column contains <code>"Jan. 5, 2009"</code> doesn't mean that the database will treat it like an actual date. Hell, a database won't even treat <em>numbers</em> like numbers without some nudging.</p>
+
+<p>In this tutorial, we'll get an overview of how to specify data types in SQL databases. This can get most complicated when dealing with <strong>dates</strong> and with the <code>NULL</code> state; in fact, <a href="/tutorials/databases/sql-null">there's a whole separate tutorial on <code>NULL</code> which you'll want to read</a>.</p>
+
+<hr />
+
+<blockquote>
+  <p>Note: For this SQL lesson, I will be using MySQL and the Sequel Pro GUI. The queries and concepts should be the same as they are with SQLite. The database we will use consists of five tables:</p>
+
+  <ol>
+    <li><code>members</code> - Current U.S. congressmembers as of October 2014</li>
+    <li><code>terms</code> - The terms served by the current U.S. congressmembers</li>
+    <li><code>social_accounts</code> - social account names for current U.S. congressmembers</li>
+    <li><code>twitter_profiles</code> - Twitter profile data for the accounts in <code>social_accounts</code></li>
+    <li><code>tweets</code> - The most recent 3,200 tweets of each Twitter profile (about 800,000+ tweets altogether)</li>
+  </ol>
+
+  <ul>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sql.zip">MySQL dump of Congress and Twitter data</a></li>
+    <li><a href="http://stash.padjo.org/dumps/sql/congress_twitter.sqlite.zip">SQLite dump of Congress and Twitter data</a></li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="excel-auto-conversion">Excel auto-conversion</h3>
+
+<p>If you've used Excel (or any other modern spreadsheet), you've probably noticed that when you type something that <em>looks</em> like a date:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/excel-date-conversion.png" /></p>
+
+<p>It will magically guess that you are specifying a date. And in the above example, where I write <code>"January 9"</code>, Excel will helpfully assume that I must mean <code>January 9, 2014</code>, and then convert it to the American shorthand for dates: <code>1/9/14</code></p>
+
+<p><img alt="img" src="/files/tutorials/databases/excel-date-conversion-presto.png" /></p>
+
+<p>If I really did mean <code>"January 4, 2014"</code>, then this is a nice convenience. Because it allows me to use Excel's date-based functions, such as <code>YEAR</code>.</p>
+
+<p>However, if I <em>don't</em> mean an exact date, e.g. I'm using that column to specify annual holidays and occasions that happen every year, well, Excel's auto-conversion can be a bit annoying.</p>
+
+<p>An egregious example of this occurs with <em>numbers</em>. <a href="http://www.state.nj.us/infobank/njzips.htm">New Jersey's zip codes</a> are 5-digits, like every other U.S. state. However, they start with <code>0</code>, e.g. <code>08400</code> for Atlantic City and <code>07030</code> for Hoboken. But to Excel, <code>07030</code> looks like <code>7030</code> with a useless <code>0</code>, and it will be happy to make an unsolicited conversion for you:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/nj-zips-excel.png" /></p>
+
+<p>In databases, this can result in some possible problems when trying to join different tables in which <code>07030</code> is <code>07030</code> in one table, and <code>7030</code> in another. So when importing data into a new table, we have to be specific about the datatypes of each column.</p>
+
+<h3 id="the-structure-tab-for-guis">The Structure tab for GUIs</h3>
+
+<p>Both SQLite Manager and Sequel Pro have a <strong>Structure</strong> tab which let you edit the <strong>Type</strong> of data for each column.</p>
+
+<p>Here's what the Structure tab for <strong>SQLite Manager</strong> looks like for the <code>tweets</code> table:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/sqlite-manager-structure-tab.png" /></p>
+
+<p>And this is Sequel Pro:</p>
+
+<p><img alt="img" src="/files/tutorials/databases/sequel-pro-structure-tab.png" /></p>
+
+<h3 id="data-types">Data types</h3>
+
+<p>Both SQLite and MySQL (Sequel Pro) share similar terminology for data types. Here's some of the column definitions for <code>tweets</code> in SQLite:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>INTEGER</td>
+    </tr>
+    <tr>
+      <td>user_id</td>
+      <td>INTEGER</td>
+    </tr>
+    <tr>
+      <td>screen_name</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <td>source</td>
+      <td>CHAR</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>DATETIME</td>
+    </tr>
+    <tr>
+      <td>retweet_count</td>
+      <td>INTEGER</td>
+    </tr>
+    <tr>
+      <td>favorite_count</td>
+      <td>INTEGER</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>And in MySQL (Sequel Pro):</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th>Length</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>BIGINT</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>user_id</td>
+      <td>BIGINT</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>screen_name</td>
+      <td>VARCHAR</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>source</td>
+      <td>VARCHAR</td>
+      <td>255</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>DATETIME</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>retweet_count</td>
+      <td>INT</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>favorite_count</td>
+      <td>INT</td>
+      <td>11</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="data-type-definitions">Data type definitions</h4>
+
+<p>Covering everything about data types is outside the scope of this tutorial. Check the <a href="http://dev.mysql.com/doc/refman/5.7/en/data-type-overview.html">MySQL</a> and <a href="https://www.sqlite.org/datatype3.html">SQLite</a> reference docs for better coverage. But here's the Cliff Notes version:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>INTEGER or INT</td>
+      <td>A whole number</td>
+      <td>-2, 128, 99999</td>
+    </tr>
+    <tr>
+      <td>CHAR or VARCHAR</td>
+      <td>Strings of characters</td>
+      <td>"J.F.K", "John Malkovich", "042"</td>
+    </tr>
+    <tr>
+      <td>FLOAT or REAL (SQLite)</td>
+      <td>Numbers with decimal points</td>
+      <td>42.2, 90.0, -0.5</td>
+    </tr>
+    <tr>
+      <td>DATETIME or DATE</td>
+      <td>Dates/times represented by the <a href="http://www.iso.org/iso/home/standards/iso8601.htm">ISO standard</a></td>
+      <td>2009-11-04, 1999-03-30 16:20:59</td>
+    </tr>
+    <tr>
+      <td>TEXT or BLOB</td>
+      <td>This seems like it'd be the same as CHAR or VARCHAR. But TEXT fields are reserved for <strong>very large</strong> fields of text. Thousands, millions, or even billions of characters.</td>
+      <td>[Imagine me pasting the entire works of Shakespeare into this column]</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="the-length-of-data-types">The length of data types</h4>
+
+<p>MySQL specifies the <em>size</em> of a column. For a column of type <code>CHAR</code> or <code>VARCHAR</code>, i.e. text strings, a <strong>length</strong> of <code>10</code> would mean that the column can hold <code>10</code> characters.</p>
+
+<p>Why not make the data columns as big (or <em>long</em>) as possible? For storage and performance reasons. For most of what we cover in this course, though, that is not a real issue. It <em>becomes</em> an issue if you ever decide to be a full-time data developer, or, more likely, you try to work with <em>someone else's database</em>, in which case you might get errors when trying to import data that's too big for a certain field. So file this under the "nice to know, check Google when it causes trouble" folder.</p>
+
+<h3 id="dates">Dates</h3>
+
+<p>Numbers and string fields are pretty straightforward. But dates and timestamps may cause you considerable grief.</p>
+
+<p>Let's start off easy, with the <code>tweets</code> table in which <code>created_at</code> is conveniently defined for you as a <strong>type</strong> of <code>DATETIME</code>. All the values follow the <a href="http://www.iso.org/iso/home/standards/iso8601.htm">ISO 8601 standard</a>. </p>
+
+<p>Therefore, a <code>created_at</code> value of this:</p>
+
+<pre><code>2014-10-02 14:40:34
+</code></pre>
+
+<p>– is equivalent to: <em>October 2nd, 2014 at 2:40 P.M.</em> The ISO standard is used because each country/locale has a different way of specifying the time – e.g. <code>7/1/2012</code> can mean a very different date to an American than to a European, nevermind non-Western cultures.</p>
+
+<p>One nice convenience of the ISO standard is that even if there were no <code>DATETIME</code> type, doing a standard sort on ISO-timestamps will sort them chronologically:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>created_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2010-09-12 12:00:00</td>
+    </tr>
+    <tr>
+      <td>2013-04-13 12:00:00</td>
+    </tr>
+    <tr>
+      <td>2013-04-13 21:00:00</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Whereas sorting out the dates written out in English will not work, because the database will attempt to do so alphabetically:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>created_at_in_english</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>April 13, 2013 at Nine PM</td>
+    </tr>
+    <tr>
+      <td>April 13, 2013 at Twelve PM</td>
+    </tr>
+    <tr>
+      <td>January 10, 2010 at Twelve PM</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="datetime-functions-in-mysql">Datetime functions in MySQL</h4>
+
+<p>The main reason to specify a column as <code>DATETIME</code> is to have access to a bunch of useful functions. MySQL's functions are similar to Excel's:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> created_at, 
+      <span style="color:#0a8;font-weight:bold">YEAR</span>(created_at) <span style="color:#080;font-weight:bold">AS</span> c_year,
+      MONTH(created_at) <span style="color:#080;font-weight:bold">AS</span> c_month,
+      DAY(created_at) <span style="color:#080;font-weight:bold">AS</span> c_day,
+      WEEKDAY(created_at) <span style="color:#080;font-weight:bold">AS</span> c_weekday,
+      HOUR(created_at) <span style="color:#080;font-weight:bold">AS</span> c_hour
+      <span style="color:#080;font-weight:bold">FROM</span> tweets
+      <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> retweet_count <span style="color:#088;font-weight:bold">DESC</span>
+      LIMIT <span style="color:#00D">10</span>
+
+</pre></div>
+</div>
+</div>
+
+<p>The aliases aren't necessary, but I provide them as an example. And I <code>ORDER BY</code> a totally unrelated field, <code>retweet_count</code>, just to get a mix of dates.</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>created_at</th>
+      <th>c_year</th>
+      <th>c_month</th>
+      <th>c_day</th>
+      <th>c_weekday</th>
+      <th>c_hour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2014-03-03 03:24:27</td>
+      <td>2014</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>2014-03-03 03:09:54</td>
+      <td>2014</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>2013-04-20 01:20:32</td>
+      <td>2013</td>
+      <td>4</td>
+      <td>20</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2013-04-20 01:13:57</td>
+      <td>2013</td>
+      <td>4</td>
+      <td>20</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2013-04-20 01:21:37</td>
+      <td>2013</td>
+      <td>4</td>
+      <td>20</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2013-04-20 01:16:19</td>
+      <td>2013</td>
+      <td>4</td>
+      <td>20</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2013-04-20 01:41:03</td>
+      <td>2013</td>
+      <td>4</td>
+      <td>20</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2013-04-20 01:06:50</td>
+      <td>2013</td>
+      <td>4</td>
+      <td>20</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2013-04-20 01:01:48</td>
+      <td>2013</td>
+      <td>4</td>
+      <td>20</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2014-05-28 14:55:55</td>
+      <td>2014</td>
+      <td>5</td>
+      <td>28</td>
+      <td>2</td>
+      <td>14</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The <code>WEEKDAY</code> function is a little strange at first (<a href="http://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_weekday">see the documentation here</a>). It returns a number from <code>0</code> to <code>6</code>, where <code>0</code> corresponds to <strong>Monday</strong> and <code>6</code> corresponds to <strong>Sunday</strong></p>
+
+<p>Thus, to get a count of only the tweets that occurred on a weekend:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">from</span> tweets
+  <span style="color:#080;font-weight:bold">WHERE</span> WEEKDAY(created_at) &gt;= <span style="color:#00D">5</span>
+</pre></div>
+</div>
+</div>
+
+<p>FYI, in the given <code>tweets</code> table, there are roughly 63,000 weekend tweets versus 790,000 weekday tweets. The total number of tweets divided by 7 (days) is about 120,000 tweets, so our Congressmembers do not spend much of their weekends tweeting, apparently.</p>
+
+<h4 id="datetime-functions-in-sqlite">Datetime functions in SQLite</h4>
+
+<p>So this is one of the places where SQLite is not quite as convenient as MySQL. Yes, there is a <code>DATETIME</code> column type, but we don't have access to the convenient <code>YEAR</code>, <code>HOUR</code>, etc. functions.</p>
+
+<p>Instead, <a href="https://www.sqlite.org/lang_datefunc.html">we have to master the <code>strftime</code> function</a>, which I like to think of as short for "formatting a string from a time value", or, "string from time" . The good news is that <code>strftime</code> is a function in many other programming languages, including Ruby, PHP, Python, etc. The bad news is, it involves memorizing a long list of <strong>format strings</strong>. </p>
+
+<p>You can find a list of format strings in the <a href="https://www.sqlite.org/lang_datefunc.html">SQLite documentation</a>. Here's some of the key ones:</p>
+
+<table class="sql-table">
+  <thead>
+    <tr>
+      <th>format string</th>
+      <th>description</th>
+      <th>example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>'%Y'</td>
+      <td>The four-digit year</td>
+      <td>2012</td>
+    </tr>
+    <tr>
+      <td>'%m'</td>
+      <td>The two-digit month</td>
+      <td>07</td>
+    </tr>
+    <tr>
+      <td>'%d'</td>
+      <td>The two-digit day of month</td>
+      <td>31</td>
+    </tr>
+    <tr>
+      <td>'%H'</td>
+      <td>The two-digit hour</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>'%M'</td>
+      <td>The two-digit minute</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <td>'%S'</td>
+      <td>The two-digit second</td>
+      <td>05</td>
+    </tr>
+    <tr>
+      <td>'%w'</td>
+      <td>The day of week, with Sunday starting at 0, Saturday at 6</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The way <code>strftime</code> works is that you pass in two things:</p>
+
+<ol>
+  <li>A specified <strong>format</strong>; think of this as telling SQLite, "I want you to show me the month and year"</li>
+  <li>The date string, e.g. a column name like <code>created_at</code>, or a literal string like <code>'2012-03-12 04:12:32 PM'</code></li>
+</ol>
+
+<p>So to redo the MySQL example in SQLite:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> created_at, 
+      strftime(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%Y</span><span style="color:#710">'</span></span>, created_at) <span style="color:#080;font-weight:bold">AS</span> c_year,
+      strftime(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%m</span><span style="color:#710">'</span></span>, created_at) <span style="color:#080;font-weight:bold">AS</span> c_month,
+      strftime(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%d</span><span style="color:#710">'</span></span>, created_at) <span style="color:#080;font-weight:bold">AS</span> c_day,
+      strftime(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%w</span><span style="color:#710">'</span></span>, created_at) <span style="color:#080;font-weight:bold">AS</span> c_weekday,
+      strftime(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%H</span><span style="color:#710">'</span></span>, created_at) <span style="color:#080;font-weight:bold">AS</span> c_hour
+      <span style="color:#080;font-weight:bold">FROM</span> tweets
+      <span style="color:#080;font-weight:bold">ORDER</span> <span style="color:#080;font-weight:bold">BY</span> retweet_count <span style="color:#088;font-weight:bold">DESC</span>
+      LIMIT <span style="color:#00D">10</span>
+</pre></div>
+</div>
+</div>
+
+<p>There are slight differences from MySQL besides the syntax. For example, <code>c_month</code> will return the string <code>"04"</code> instead of the number <code>4</code> because, well, we're using the <code>strftime</code> function, i.e. we're creating a <em>string</em>, not a <em>number</em>, from a <em>time</em> value.</p>
+
+<p>Another key difference, whereas MySQL's <code>WEEKDAY()</code> function designates <code>0</code>, i.e. the beginning of the week, as <strong>Monday</strong>, SQLite's <code>strftime('%w', ...)</code> has <code>0</code> for <strong>Sunday</strong>. Also, again, <code>strftime</code> returns a <strong>string</strong>. Therefore, your conditional has to match <code>'0'</code>, not the number <code>0</code> </p>
+
+<p>Thus, to count up the tweets that happened on a weekend with SQLite:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span style="color:#B06;font-weight:bold">SELECT</span> <span style="color:#369;font-weight:bold">COUNT</span>(*) <span style="color:#080;font-weight:bold">from</span> tweets
+  <span style="color:#080;font-weight:bold">WHERE</span> strftime(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">%w</span><span style="color:#710">'</span></span>, created_at) <span style="color:#080;font-weight:bold">IN</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">0</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">6</span><span style="color:#710">'</span></span>)
+</pre></div>
+</div>
+</div>
+
+<h4 id="importing-dates-and-times">Importing dates and times</h4>
+
+<p>What happens when you try to import a database that <em>doesn't</em> have the datetime strings in ISO format, e.g. "Jan. 3, 2004" and "Monday, Oct. 13, 1980 7:40 PM"? Bad times. You may need to wrangle/alter the data (using a spreadsheet, or other program) <em>before</em> importing the data.</p>
+
+<p>There's a reason why I've made pre-built SQL files for the tutorials. Importing data in the wild can be a soul-crushing affair, which we'll deal with (maybe) in later lessons.</p>
+
+<h3 id="the-null-state">The NULL state</h3>
+
+<p>In both SQLite and MySQL, columns can be defined as "allowing <code>NULL</code>". <code>NULL</code> is best thought of a <strong>state</strong>, i.e. we don't yet know someone's middle name so we leave it as <code>NULL</code>. But if someone doesn't have a middle name, we might put an <em>empty</em> string there. <code>NULL</code> is <em>not equivalent</em> to an empty string nor is it equivalent to the number <code>0</code>.</p>
+
+<p>This is such an important distinction that we use a different syntax to filter for <code>NULL</code> values. Check out <a href="/tutorials/databases/sql-null">this separate tutorial I've written</a>.</p>
+
+
+        </section>
+    </div>
+</article>
+    </div>
+</body>
+<footer class="woz">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/lectures/comm_273d/2014_fall/syllabus">Syllabus</a>
+                    </li>
+                    <li>
+                        <a href="/tutorials">Tutorials</a>
+                    </li>
+                    <li>
+                        <a href="/readings">Readings</a>
+                    </li>
+                    <li>
+                        <a href="/datasets">Datasets</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/public-affairs-data-journalism/padjo">Github</a>
+                    </li>
+                    <li>
+                        <a href="/secret-menu">Secret menu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h4>
+                    <a href="/">Public Affairs Data Journalism I</a>
+                </h4>
+                <div>
+                    taught by 
+                    <div>
+                        <a href="http://danwin.com" style="padding-right: 1.0em;">Dan Nguyen</a>
+                    </div>
+                    <div>
+                        at <a href="//journalism.stanford.edu" style="padding-right: 1.0em;"> Stanford Journalism</a>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/dancow" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @dancow</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                    <div>
+                        <a href="https://twitter.com/StanfordJourn" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @StanfordJourn</a>
+                        <script>
+                            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
